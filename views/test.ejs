@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="http://getbootstrap.com/favicon.ico">
+  <title>MTaaS</title>
+  <script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
+  
+  <script src="/bower_components/Chart.js/Chart.js"></script>
+ 
+  <link rel="stylesheet" href="/bower_components/angular-chart.js/dist/angular-chart.css">
+
+  
+
+</head>
+
+<body>
+
+  
+	<!--<canvas id="polar-area" class="chart chart-polar-area" data="data" labels="labels"></canvas> -->
+	<div id="canvas-holder">
+			<canvas id="chart-area" width="300" height="300"/>
+	</div>
+   <script>
+    var pieData = [
+				{
+					value: 300,
+					color:"#F7464A",
+					highlight: "#FF5A5E",
+					label: "Red"
+				},
+				{
+					value: 50,
+					color: "#46BFBD",
+					highlight: "#5AD3D1",
+					label: "Green"
+				},
+				{
+					value: 100,
+					color: "#FDB45C",
+					highlight: "#FFC870",
+					label: "Yellow"
+				},
+				{
+					value: 40,
+					color: "#949FB1",
+					highlight: "#A8B3C5",
+					label: "Grey"
+				},
+				{
+					value: 120,
+					color: "#4D5360",
+					highlight: "#616774",
+					label: "Dark Grey"
+				}
+
+			];
+
+			window.onload = function(){
+				var ctx = document.getElementById("chart-area").getContext("2d");
+				window.myPie = new Chart(ctx).Pie(pieData);
+			};
+
+/*angular.module("app", ["chart.js"]).controller("PolarAreaCtrl", function ($scope) {
+  $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales", "Tele Sales", "Corporate Sales"];
+  $scope.data = [300, 500, 100, 40, 120];
+});*/
+              
+
+
+   
+  </script>
+
+  
+</body>
+
+</html>

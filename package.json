@@ -1,39 +1,20 @@
 {
-  "name": "OpenShift-Nodejs-Cartridge",
-  "version": "1.1.0",
-  "description": "Node.js Cartridge for OpenShift",
-  "keywords": [
-    "OpenShift",
-    "Node.js",
-    "application",
-    "openshift"
-  ],
-  "author": {
-    "name": "OpenShift",
-    "email": "ryanj@redhat.com",
-    "url":  "http://openshift.redhat.com/"
-  },
-  "homepage": "http://openshift.redhat.com/",
-  "repository": {
-    "type": "git",
-    "url": "https://gitub.com/openshift/nodejs-custom-version-openshift.git"
-  },
-
-  "engines": {
-    "node": ">= 0.12.0",
-    "npm": ">= 1.2.0"
-  },
-
-  "dependencies": {
-    "config-multipaas": "^0.1.0",
-    "restify": "^2.8.3"
-  },
-  "devDependencies": {},
-  "bundleDependencies": [],
-
+  "name": "WorkforceManagementSystem",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node server.js"
+    "start": "node app.js"
   },
-  "main": "server.js"
+  "dependencies": {
+    "express": "3.2.6",
+    "ejs": "*",
+    "express-session": "*",
+    "mysql": "2.5.5",
+    "squel": "*",
+    "bower": "*",
+    "pkgcloud": "*",
+    "underscore": "*",
+    "request": "*"
+  },
+  "main": "app.js"
 }

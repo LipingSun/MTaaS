@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="http://getbootstrap.com/favicon.ico">
+
+    <title>MTaaS</title>
+
+    <script src="/stylesheets/js/angular.min.js"></script>
+    <script src="/bower_components/Chart.js/Chart.js"></script>
+
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/stylesheets/css/bootstrap.min.css"/>
+
+    <!-- Custom styles for this template -->
+    <link href="/stylesheets/css/dashboard.css" rel="stylesheet"/>
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+    <script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="/stylesheets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="/stylesheets/css/ng-table.min.css"/>
+    <script src="/stylesheets/js/ng-table.min.js"></script>
+
+
+</head>
+
+<body ng-controller="DashboardCtrl">
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Admin</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href ng-click="tab = 0;main()">Overview</a>
+                </li>
+                <li><a href ng-click="tab = 1;usage()">Users</a>
+                </li>
+                <li><a href ng-click="tab = 2;request()">Requests</a>
+                </li>
+                <li><a href ng-click="tab = 3;mobile(); userEmulator();">Emulator</a>
+                </li>
+                <li><a href ng-click="tab = 4;billing()">Billing</a>
+                </li>
+            </ul>
+            <!--<form class="navbar-form navbar-right">
+                <input type="text" class="form-control" placeholder="Search...">
+              </form>-->
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar" ng-init="tab = 0">
+                <li ng-class="{ active:tab === 0 }"><a href ng-click="tab = 0;main()">Overview
+                        <span class="sr-only">(current)</span></a>
+                </li>
+                <li ng-class="{ active:tab === 1 }"><a href ng-click="tab = 1;usage()">Users</a>
+                </li>
+                <li ng-class="{ active:tab === 2 }"><a href ng-click="tab = 2;request()">Requests</a>
+                </li>
+                <li ng-class="{ active:tab === 3 }"><a href ng-click="tab = 3;mobile(); userEmulator();">Emulator</a>
+                </li>
+                <li ng-class="{ active:tab === 4 }"><a href ng-click="tab = 4;billing()">Billing</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div ng-show="tab === 0" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Dashboard</h1>
+
+        <div class="row placeholders">
+            <div class="col-xs-6 col-sm-3 placeholder">
+                <div id="canvas-holder">
+                    <canvas id="chart-area1" width="150" height="150"/>
+                </div>
+                <h4>HOST 1</h4>
+                <span class="text-muted">{{instance[0].ip}}</span>
+            </div>
+            <div class="col-xs-6 col-sm-3 placeholder">
+                <div id="canvas-holder">
+                    <canvas id="chart-area2" width="150" height="150"/>
+                </div>
+                <h4>HOST 2</h4>
+                <span class="text-muted">{{instance[1].ip}}</span>
+            </div>
+            <div class="col-xs-6 col-sm-3 placeholder">
+                <div id="canvas-holder">
+                    <canvas id="chart-area3" width="150" height="150"/>
+                </div>
+                <h4>HOST 3</h4>
+                <span class="text-muted">{{instance[2].ip}}</span>
+            </div>
+        </div>
+
+        <h1 class="page-header">Emulator</h1>
+
+        <div class="table-responsive">
+            <table ng-table="tableEmulator" class="table table-striped">
+                <tr ng-repeat="emulator in emulator_data">
+                    <td data-title="'Emulator ID'" sortable="'id'">
+                        {{emulator.id}}
+                    </td>
+                    <td data-title="'USER NAME'" sortable="'username'">
+                        {{emulator.username}}
+                    </td>
+                    <td data-title="'VERSION'" sortable="'version'">
+                        {{emulator.version}}
+                    </td>
+                    <td data-title="'CPU'" sortable="'cpu'">
+                        {{emulator.cpu}}
+                    </td>
+                    <td data-title="'RAM (M)'" sortable="'ram'">
+                        {{emulator.ram}}
+                    </td>
+                    <td data-title="'DISK (M)'" sortable="'disk'">
+                        {{emulator.disk}}
+                    </td>
+                    <td data-title="'RUNTIME (MINs)'" sortable="'start_time'">
+                        {{emulator.runtime}}
+                    </td>
+                    <td data-title="'ASSIGNED IP:PORT'" sortable="'ip_port'">
+                        {{emulator.ip_port}}
+                    </td>
+                    <td data-title="'STATUS'" sortable="'status'">
+                        {{emulator.status}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+    <div ng-show="tab === 1" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Users</h1>
+
+
+        <table ng-table="tableUsers" class="table">
+            <tr ng-repeat="user in user_data">
+                <td data-title="'USER NAME'" sortable="'username'">
+                    <a ng-click="showdetail(user.id)">{{user.username}}</a>
+
+                </td>
+                <td data-title="'MOBILE NUM'" sortable="'number'">
+                    {{user.number}}
+                </td>
+                <td data-title="'RAM (M)'" sortable="'totalram'">
+                    {{user.totalram}}
+                </td>
+                <td data-title="'DISK (M)'" sortable="'totaldisk'">
+                    {{user.totaldisk}}
+                </td>
+                <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">
+                    {{user.runtime}}
+                </td>
+                <td data-title="'TOTAL COST ($)'" sortable="'totalcost'">
+                    {{user.totalcost}}
+                </td>
+            </tr>
+        </table>
+        <div ng-show="usagedetail">
+            <table ng-table="tableDetails" class="table">
+                <tr ng-repeat="usage in usage_data">
+                    <td data-title="'REQUEST ID'" sortable="'id'">{{usage.id}}</td>
+                    <td data-title="'VERSION'" sortable="'version'">{{usage.version}}</td>
+                    <td data-title="'CPU'" sortable="'cpu'">{{usage.cpu}}</td>
+                    <td data-title="'RAM (M)'" sortable="'ram'">{{usage.ram}}</td>
+                    <td data-title="'DISK (M)'" sortable="'disk'">{{usage.disk}}</td>
+                    <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">{{usage.runtime}}</td>
+                    <td data-title="'STATUS'" sortable="'status'">{{usage.status}}</td>
+                    <td data-title="'COST ($)'" sortable="'cost'">{{usage.cost}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div ng-show="tab === 2" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Requests</h1>
+
+
+        <div class="table-responsive">
+            <table ng-table="tableEmulator" class="table table-striped">
+                <tr ng-repeat="request in request_data">
+                    <td data-title="'REQUEST ID'" sortable="'id'">
+                        {{request.id}}
+                    </td>
+                    <td data-title="'USER ID'" sortable="'user_id'">
+                        {{request.user_id}}
+                    </td>
+                    <td data-title="'VERSION'" sortable="'version'">
+                        {{request.version}}
+                    </td>
+                    <td data-title="'CPU'" sortable="'cpu'">
+                        {{request.cpu}}
+                    </td>
+                    <td data-title="'RAM (M)'" sortable="'ram'">
+                        {{request.ram}}
+                    </td>
+                    <td data-title="'DISK (M)'" sortable="'disk'">
+                        {{request.disk}}
+                    </td>
+                    <td data-title="'NUMBER'" sortable="'number'">
+                        {{request.number}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div ng-show="tab === 3" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+        <h1 class="page-header">Emulator</h1>
+
+        <form id="mobile">
+            <fieldset>
+                <div class="form-group">
+                    <label for="android-version">Android Version</label>
+                    <select ng-model="mobile_version" ng-options="version for version in versions" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label for="cpu">CPU</label>
+                    <select ng-model="mobile_cpu" ng-options="cpu for cpu in cpus" class="form-control"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ram">RAM (M)</label>
+                    <select ng-model="mobile_ram" ng-options="ram for ram in rams" class="form-control"></select>
+
+                </div>
+                <div class="form-group">
+                    <label for="disk">DISK (M)</label>
+                    <select ng-model="mobile_disk" ng-options="disk for disk in disks" class="form-control"></select>
+
+                </div>
+                <div class="form-group">
+                    <label for="number">NUMBER</label>
+                    <input ng-model="mobile_number" ng-init="mobile_number = 1" type="number" name="number" value="1" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary form-group" ng-click="launch()">Launch</button>
+            </fieldset>
+        </form>
+
+        <div class="table-responsive">
+            <table ng-table="tableEmulator" class="table table-striped">
+                <tr ng-repeat="emulator in userEmulator_data">
+                    <td data-title="'Emulator ID'" sortable="'id'">
+                        {{emulator.id}}
+                    </td>
+                    <td data-title="'VERSION'" sortable="'version'">
+                        {{emulator.version}}
+                    </td>
+                    <td data-title="'CPU'" sortable="'cpu'">
+                        {{emulator.cpu}}
+                    </td>
+                    <td data-title="'RAM (M)'" sortable="'ram'">
+                        {{emulator.ram}}
+                    </td>
+                    <td data-title="'DISK (M)'" sortable="'disk'">
+                        {{emulator.disk}}
+                    </td>
+                    <td data-title="'START TIME'" sortable="'start_time'">
+                        {{emulator.start_time}}
+                    </td>
+                    <td data-title="'ASSIGNED IP:PORT'" sortable="'ip_port'">
+                        {{emulator.ip_port}}
+                    </td>
+                    <td data-title="''">
+                        <input type="button" value="terminate" class="btn btn-primary" ng-click="terminate(emulator)">
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <div ng-show="tab === 4" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Billing</h1>
+        <table ng-table="tableBilling" class="table">
+            <tr ng-repeat="bill in bill_data">
+
+                <td data-title="'MOBILE ID'" sortable="'id'">{{bill.id}}</td>
+                <td data-title="'VERSION'" sortable="'version'">{{bill.version}}</td>
+                <td data-title="'CPU'" sortable="'cpu'">{{bill.cpu}}</td>
+                <td data-title="'RAM (M)'" sortable="'ram'">{{bill.ram}}</td>
+                <td data-title="'DISK (M)'" sortable="'disk'">{{bill.disk}}</td>
+                <td data-title="'RUNTIME (MINs)'" sortable="'runtime'">{{bill.runtime}}</td>
+                <td data-title="'STATUS'" sortable="'status'">{{bill.status}}</td>
+                <td data-title="'COST ($)'" sortable="'cost'">{{bill.cost}}</td>
+            </tr>
+            <tr>
+                <td data-title="'MOBILE ID'"></td>
+                <td data-title="'VERSION'"></td>
+                <td data-title="'CPU'"></td>
+                <td data-title="'RAM (M)'"></td>
+                <td data-title="'DISK (M)'"></td>
+                <td data-title="'RUNTIME (MINs)'"></td>
+                <td data-title="'STATUS'">TOTAL COST:</td>
+                <td data-title="'COST ($)'">{{totalcost}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    var app = angular.module('myApp', ['ngTable']);
+    app.controller('DashboardCtrl', function ($scope, $http, $filter, ngTableParams) {
+        var pip = function () {
+            $http.get('/loadPipData').success(function (res) {
+                //alert(JSON.stringify(res));
+                $scope.instance = res.pip;
+                var allocated = $scope.instance[0]['emulator_number'];
+                var total = $scope.instance[0]['emulator_limit'];
+                // alert((total-allocated));
+                var pieData1 = [
+                    {
+                        value: allocated,
+                        color: "#F7464A",
+                        highlight: "#FF5A5E",
+                        label: "Allocated"
+                    },
+                    {
+                        value: (total - allocated),
+                        color: "#46BFBD",
+                        highlight: "#5AD3D1",
+                        label: "Available"
+                    }
+
+                ];
+                var pieData2 = [
+                    {
+                        value: $scope.instance[1]['emulator_number'],
+                        color: "#F7464A",
+                        highlight: "#FF5A5E",
+                        label: "Allocated"
+                    },
+                    {
+                        value: ($scope.instance[1]['emulator_limit'] - $scope.instance[1]['emulator_number']),
+                        color: "#46BFBD",
+                        highlight: "#5AD3D1",
+                        label: "Available"
+                    }
+
+                ];
+                var pieData3 = [
+                    {
+                        value: $scope.instance[2]['emulator_number'],
+                        color: "#F7464A",
+                        highlight: "#FF5A5E",
+                        label: "Allocated"
+                    },
+                    {
+                        value: ($scope.instance[2]['emulator_limit'] - $scope.instance[2]['emulator_number']),
+                        color: "#46BFBD",
+                        highlight: "#5AD3D1",
+                        label: "Available"
+                    }
+
+                ];
+
+
+                var ctx1 = document.getElementById("chart-area1").getContext("2d");
+                window.myPie = new Chart(ctx1).Pie(pieData1);
+                var ctx2 = document.getElementById("chart-area2").getContext("2d");
+                window.myPie = new Chart(ctx2).Pie(pieData2);
+                var ctx3 = document.getElementById("chart-area3").getContext("2d");
+                window.myPie = new Chart(ctx3).Pie(pieData3);
+
+            });
+        };
+
+        $scope.emulator = function () {
+            $http.get('/emulators').success(function (res) {
+                //  alert(JSON.stringify(res));
+                $scope.emulator_data = res.emulators;
+                $scope.tableEmulator = new ngTableParams({
+                    page: 1, // show first page
+                    count: 5 // count per page
+                }, {
+                    total: $scope.emulator_data.length, // length of data
+                    getData: function ($defer, params) {
+                        $defer.resolve($scope.emulator_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                    }
+                });
+            });
+        };
+
+        $scope.main = function () {
+            pip();
+            $scope.emulator();
+        };
+        $scope.main();
+
+        $scope.usage = function () {
+            $scope.usagedetail = 0;
+            $http.get('/usage').success(function (res) {
+                // alert(JSON.stringify(res));
+                $scope.user_data = res.usage;
+
+
+                $scope.tableUsers = new ngTableParams({
+                    page: 1, // show first page
+                    count: 5 // count per page
+                }, {
+                    total: $scope.user_data.length, // length of data
+                    getData: function ($defer, params) {
+                        $defer.resolve($scope.user_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                    }
+                });
+            });
+        };
+
+        $scope.showdetail = function (id) {
+            //alert($scope.usagedetail);
+
+
+            $scope.usagedetail = 1;
+            // alert($scope.usagedetail);
+
+            $http({
+                method: 'GET',
+                url: '/usageDetail',
+                params: {"user_id": id}
+            }).success(function (res) {
+                //alert(JSON.stringify(res.usage));
+                if (res.usage == 'null')
+                    $scope.usage_data = [];
+                else
+                    $scope.usage_data = res.usage;
+
+                $scope.tableDetails = new ngTableParams({
+                    page: 1, // show first page
+                    count: 5 // count per page
+                }, {
+                    total: $scope.usage_data.length, // length of data
+                    getData: function ($defer, params) {
+                        $defer.resolve($scope.usage_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                    }
+                });
+
+
+            }).error(function (error) {
+                alert("error");
+
+            });
+
+        };
+
+        $scope.request = function () {
+            $http.get('/request').success(function (res) {
+                //  alert(JSON.stringify(res));
+                $scope.request_data = res.requests;
+                $scope.tableRequest = new ngTableParams({
+                    page: 1, // show first page
+                    count: 5 // count per page
+                }, {
+                    total: $scope.request_data.length, // length of data
+                    getData: function ($defer, params) {
+                        $defer.resolve($scope.request_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                    }
+                });
+            });
+
+        };
+
+        $scope.billing = function () {
+            $http.get('/bill').success(function (res) {
+                // alert(JSON.stringify(res));
+                $scope.bill_data = res.bills;
+                $scope.totalcost = res.totalcost;
+                $scope.tableBilling = new ngTableParams({
+                    page: 1, // show first page
+                    count: 5 // count per page
+                }, {
+                    total: $scope.bill_data.length, // length of data
+                    getData: function ($defer, params) {
+                        $defer.resolve($scope.bill_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                    }
+                });
+            });
+        };
+
+        $scope.mobile = function () {
+
+            $scope.versions = ["5.0.1 (API 21)", "4.4.2 (API 19)", "2.3.3 (API 10)"];
+            $scope.mobile_version = $scope.versions[0];
+            $scope.cpus = ["armeabi-v7a", "x86", "x86_64"];
+            $scope.mobile_cpu = $scope.cpus[0];
+            $scope.rams = [64, 128, 256, 512];
+            $scope.mobile_ram = $scope.rams[0];
+            $scope.disks = [128, 256, 512, 1024];
+            $scope.mobile_disk = $scope.disks[0];
+
+            $scope.launch = function () {
+                $http({
+                    method: 'POST',
+                    url: '/launch',
+                    data: {
+                        "version": $scope.mobile_version,
+                        "cpu": $scope.mobile_cpu,
+                        "ram": $scope.mobile_ram,
+                        "disk": $scope.mobile_disk,
+                        "number": $scope.mobile_number
+                    }
+
+                }).success(function (res) {
+                    if (res.launchStatus == 'Success')
+                        $http.get('/userEmulator').success(function (res) {
+                            //  alert(JSON.stringify(res));
+                            $scope.userEmulator_data = res.emulators;
+                        });
+
+                });
+            };
+
+            $scope.terminate = function (user) {
+                var ip_addr = user.ip_port.split(":", 1);
+                //alert(ip_addr+user.id);
+                $http({
+                    method: 'POST',
+                    url: '/terminateEmulator',
+                    data: {
+                        "id": user.id,
+                        "ip": ip_addr
+                    }
+
+                }).success(function (res) {
+                    if (res.terminateStatus == 'Success')
+                        $http.get('/userEmulator').success(function (res) {
+
+                            //alert(JSON.stringify(res));
+                            $scope.userEmulator_data = res.emulators;
+                        });
+
+                });
+
+            };
+        };
+
+        $scope.userEmulator = function () {
+            $http.get('/userEmulator').success(function (res) {
+                //  alert(JSON.stringify(res));
+                $scope.userEmulator_data = res.emulators;
+                $scope.tableUserEmulator = new ngTableParams({
+                    page: 1, // show first page
+                    count: 5 // count per page
+                }, {
+                    total: $scope.userEmulator_data.length, // length of data
+                    getData: function ($defer, params) {
+                        $defer.resolve($scope.userEmulator_data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                    }
+                });
+            });
+        };
+    });
+</script>
+
+<!-- Bootstrap core JavaScript
+  ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/stylesheets/js/jquery.min.js"></script>
+<script src="/stylesheets/js/bootstrap.min.js"></script>
+<!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+<script src="/stylesheets/js/holder.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="/stylesheets/js/ie10-viewport-bug-workaround.js"></script>
+</body>
+
+</html>
