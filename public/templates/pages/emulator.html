@@ -1,0 +1,154 @@
+<div class="content">
+
+    <div class="row">
+        <div class="col-mod-12">
+
+            <ul class="breadcrumb">
+                <li><a href="#/">MTaaS</a></li>
+                <li class="active">Emulators</li>
+            </ul>
+
+            <div class="form-group hiddn-minibar pull-right">
+                <input type="text" class="form-control form-cascade-control nav-input-search" size="20" placeholder="Search through site"/>
+
+                <span class="input-icon fui-search"></span>
+            </div>
+
+            <h3 class="page-header"><i class="fa fa-mobile"></i> Emulator
+                <i class="fa fa-info-circle animated bounceInDown show-info"></i></h3>
+
+            <blockquote class="page-information hidden">
+                <p>
+                    Emulators information.
+                </p>
+            </blockquote>
+        </div>
+    </div>
+    <!--<link href="emulator.css" rel="stylesheet">-->
+    <div class="profile-tabs">
+
+        <ul id="myTab" class="nav nav-tabs" ng-init="emulatorTab = 'emulators'">
+            <li ng-class="{ active: emulatorTab === 'emulators' }"><a href data-toggle="tab" ng-click="emulatorTab = 'emulators'">Emulators</a></li>
+            <li ng-class="{ active: emulatorTab === 'launch' }"><a href data-toggle="tab" ng-click="emulatorTab = 'launch'">Launch</a></li>
+        </ul>
+
+        <div id="myTabContent" class="tab-content">
+
+            <div ng-class="{ active: emulatorTab === 'emulators' }" class="tab-pane fade in" id="emulators" ng-show="emulatorTab === 'emulators'">
+                <div class="col-md-12">
+                    <div class="panel ">
+                        <div class="panel-body ">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Emulator ID</th>
+                                    <th>Name</th>
+                                    <th>Create Time</th>
+                                    <th>System</th>
+                                    <th>CPU</th>
+                                    <th>RAM</th>
+                                    <th>Disk</th>
+                                    <th>IP:Port</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="emulator in emulatorsCtrl.emulators">
+                                    <td>{{ emulator.id }}</td>
+                                    <td>{{ emulator.name }}</td>
+                                    <td>{{ emulator.create_date + " " + emulator.create_time }}</td>
+                                    <td>{{ emulator.system }}</td>
+                                    <td>{{ emulator.cpu }}</td>
+                                    <td>{{ emulator.ram }}</td>
+                                    <td>{{ emulator.disk }}</td>
+                                    <td>{{ emulator.ip + ":" +  emulator.port }}</td>
+                                    <td>{{ emulator.status }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-class="{ active: emulatorTab === 'launch' }" class="tab-pane fade in" id="launch" ng-show="emulatorTab === 'launch'">
+                <div class="col-md-12">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <form action class="form-horizontal row-border">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Android Version</label>
+
+                                    <div class="col-sm-6">
+                                        <select class="form-control">
+                                            <option>5.0.1 (API21)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- /Version -->
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">CPU</label>
+
+                                    <div class="col-sm-6">
+                                        <select class="form-control">
+                                            <option>ARM</option>
+                                            <option>INTEL</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- /phone -->
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">RAM</label>
+
+                                    <div class="col-sm-6">
+                                        <select class="form-control">
+                                            <option>64M</option>
+                                            <option>128M</option>
+                                            <option>256M</option>
+                                            <option>512M</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- /phone Ext -->
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">DISK</label>
+
+                                    <div class="col-sm-6">
+                                        <select class="form-control">
+                                            <option>128M</option>
+                                            <option>256M</option>
+                                            <option>512M</option>
+                                            <option>1024M</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- /Tax ID -->
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">NUMBER</label>
+
+                                    <div class="col-sm-6">
+                                        <input type="number" class="form-control" id="ssn" value="1"/>
+                                    </div>
+                                </div>
+                                <!-- /ssn -->
+                                <div class="row">
+                                    <div class="col-sm-6 col-sm-offset-3">
+                                        <button type="button" class="btn btn-success">Submit</button>
+                                        <button type="button" class="btn btn-danger">Cancel</button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                        <!-- /panel body -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

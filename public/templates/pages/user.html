@@ -1,0 +1,56 @@
+<div class="content">
+
+    <div class="row">
+        <div class="col-mod-12">
+            <ul class="breadcrumb">
+                <li><a href="#/">MTaaS</a></li>
+                <li class="active">Users</li>
+            </ul>
+
+            <div class="form-group hiddn-minibar pull-right">
+                <input type="text" class="form-control form-cascade-control nav-input-search" size="20" placeholder="Search through site"/>
+                <span class="input-icon fui-search"></span>
+            </div>
+
+            <h3 class="page-header"><i class="fa fa-user"></i> Users
+                <i class="fa fa-info-circle animated bounceInDown show-info"></i>
+            </h3>
+
+            <blockquote class="page-information hidden">
+                <p>
+                    Users information.
+                </p>
+            </blockquote>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel">
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>UserID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>User Type</th>
+                            <th>Email</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="user in usersCtrl.users">
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.first_name }}</td>
+                            <td>{{ user.last_name }}</td>
+                            <td>{{ user.type }}</td>
+                            <td>{{ user.email }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

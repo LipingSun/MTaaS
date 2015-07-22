@@ -1,0 +1,113 @@
+<div class="content">
+
+    <div class="row">
+        <div class="col-mod-12">
+
+            <ul class="breadcrumb">
+                <li><a href="#/">MTaaS</a></li>
+                <li class="active">Billing</li>
+            </ul>
+
+            <div class="form-group  hidden-print pull-right">
+                <input type="text" class="form-control form-cascade-control nav-input-search" size="20" placeholder="Search through site"/>
+
+                <span class="input-icon fui-search"></span>
+            </div>
+
+            <h3 class="page-header"><i class="fa fa-credit-card"></i> Billing
+                <i class="fa fa-info-circle animated bounceInDown show-info"></i></h3>
+
+            <blockquote class="page-information hidden">
+                <p>
+                    An Invoice or bill is a commercial document issued by a seller to a buyer, indicating the products, quantities, and agreed prices for products or services the seller has provided the buyer. An invoice indicates the sale transaction only.
+                </p>
+            </blockquote>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <p>
+            Year:<select ng-model="s_year" ng-options="year for year in billingCtrl.years"></select> Month:
+            <select ng-model="s_month" ng-options="month for month in billingCtrl.months"></select>
+
+                <button class="btn btn-xs btn-primary" style="margin-left: 10px" ng-click="billingCtrl.list()">List</button>
+
+        </p>
+
+
+
+    </div>
+
+    <!-- Invoice -->
+    <div class="panel panel-cascade panel-invoice">
+        <div class="panel-body">
+          <span class="pull-right" style="margin: 10px">
+              <a href="#" class=" btn btn-success btn-print text-white hidden-print"><i class="fa fa-print"></i> Print</a>
+          </span>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Emulator ID</th>
+                            <th>Version</th>
+                            <th>CPU</th>
+                            <th>RAM</th>
+                            <th>Disk</th>
+                            <th>Running Time</th>
+                            <th>Status</th>
+                            <th>Cost</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>123</td>
+                            <td>5.0.1 (API 21)</td>
+                            <td>ARM</td>
+                            <td>64</td>
+                            <td>128</td>
+                            <td>80 Mins</td>
+                            <td>Running</td>
+                            <td>$0.101</td>
+                        </tr>
+                        <tr>
+                            <td>123</td>
+                            <td>5.0.1 (API 21)</td>
+                            <td>ARM</td>
+                            <td>128</td>
+                            <td>128</td>
+                            <td>10 Mins</td>
+                            <td>Terminated</td>
+                            <td>$0.011</td>
+                        </tr>
+                        <tr>
+                            <td>123</td>
+                            <td>5.0.1 (API 21)</td>
+                            <td>Intel</td>
+                            <td>64</td>
+                            <td>256</td>
+                            <td>1180 Mins</td>
+                            <td>Running</td>
+                            <td>$1.101</td>
+                        </tr>
+                        <tr class="invoice-total" bgcolor="#f1f1f1">
+                            <td colspan="7" align="right"><strong>Subtotal</strong></td>
+                            <td>$1.213</td>
+                        </tr>
+                        <tr class="invoice-total" bgcolor="#f1f1f1">
+                            <td colspan="7" align="right"><strong>Discount</strong></td>
+                            <td>-$0.2</td>
+                        </tr>
+                        <tr class="invoice-total" bgcolor="#f1f1f1">
+                            <td colspan="7" align="right"><strong>Total</strong></td>
+                            <td>$1.013</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
