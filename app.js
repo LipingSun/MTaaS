@@ -56,15 +56,14 @@ app.get('/users', function (req, res) {
 //// System Info
 //app.get('requests', system.getRequests);
 
-//var conn = mysql.getConnectionPool();
-//
-//
-////console.log(conn);
-//conn.query('select * from user', function (err, data) {
-//    console.log(data);
-//});
 
 
+app.use('/mysql', function (req, res) {
+    var conn = mysql.getConnectionPool();
+    conn.query('show tables', function (err, data) {
+        res.send(data);
+    });
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
