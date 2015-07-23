@@ -20,8 +20,5 @@
     "mysql": "~2.7.0",
     "squel": "~4.0.0"
   },
-  "main": "bin/www",
-  "scripts": {
-//    "postinstall": "bower install"
-  }
+  "main": "bin/www"
 }
