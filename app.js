@@ -46,7 +46,7 @@ app.delete('/emulators/:emulator_id', emulators.terminateEmulator);  // Terminat
 
 // Users
 app.get('/users', function (req, res) {
-    res.json([ { "id": "12345678", "type": "admin", "email": "abc@abc.com", "first_name": "Scott", "last_name": " Tian" }, { "id": "23456789", "type": "user", "email": "abdfsc@cdsa.com", "first_name": "Kim", "last_name": " Steven" } ]);
+    res.send([ { "id": "12345678", "type": "admin", "email": "abc@abc.com", "first_name": "Scott", "last_name": " Tian" }, { "id": "23456789", "type": "user", "email": "abdfsc@cdsa.com", "first_name": "Kim", "last_name": " Steven" } ]);
 });
 
 //// Bills
