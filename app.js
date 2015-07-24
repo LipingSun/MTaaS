@@ -8,8 +8,12 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/routes');
 var auth = require('./routes/authentication');
 var emulators = require('./routes/emulators');
+var bills = require('./routes/bills');
+
 
 var mysql = require('./routes/mysql');
+
+const api_v1 = '/api/v1';
 
 var app = express();
 
@@ -32,25 +36,25 @@ app.get('/login', routes.login);  // Get login page
 app.get('/register', routes.register);  // Get register page
 
 // Authentication
-app.get('/auth/token', auth.getToken);  // Get user token
-app.post('/auth/register', auth.register);  // Post register info
-app.post('/auth/login', auth.login);  // Post login info
-app.delete('/auth/logout', auth.logout);  // Delete user session
+app.get(api_v1 + '/auth/token', auth.getToken);  // Get user token
+app.post(api_v1 + '/auth/register', auth.register);  // Post register info
+app.post(api_v1 + '/auth/login', auth.login);  // Post login info
+app.delete(api_v1 + '/auth/logout', auth.logout);  // Delete user session
 
 // Emulators
-app.get('/emulators', emulators.getEmulators);  // Get all relevant emulators
-app.post('/emulators', emulators.launchEmulators);  // Launch an emulator
-app.get('/emulators/:emulator_id', emulators.getEmulator);  // Get info of an emulator
-app.put('/emulators/:emulator_id', emulators.updateEmulator);  // Update info of an emulator
-app.delete('/emulators/:emulator_id', emulators.terminateEmulator);  // Terminate an emulator
+app.get(api_v1 + '/api/emulators', emulators.getEmulators);  // Get all relevant emulators
+app.post(api_v1 + '/emulators', emulators.launchEmulators);  // Launch an emulator
+app.get(api_v1 + '/emulators/:emulator_id', emulators.getEmulator);  // Get info of an emulator
+app.put(api_v1 + '/emulators/:emulator_id', emulators.updateEmulator);  // Update info of an emulator
+app.delete(api_v1 + '/emulators/:emulator_id', emulators.terminateEmulator);  // Terminate an emulator
 
 // Users
-app.get('/users', function (req, res) {
+app.get(api_v1 + '/users', function (req, res) {
     res.send([ { "id": "12345678", "type": "admin", "email": "abc@abc.com", "first_name": "Scott", "last_name": " Tian" }, { "id": "23456789", "type": "user", "email": "abdfsc@cdsa.com", "first_name": "Kim", "last_name": " Steven" } ]);
 });
 
 //// Bills
-//app.get('/bills', bills.getbills);
+//app.get(api_v1 + '/bills', bills.getbills);
 //app.get('/bills/bill_id', bills.getbill);
 //
 //// System Info
@@ -58,7 +62,7 @@ app.get('/users', function (req, res) {
 
 
 
-app.use('/mysql', function (req, res) {
+app.use(api_v1 + '/mysql', function (req, res) {
     var conn = mysql.getConnectionPool();
     conn.query('show tables', function (err, data) {
         res.send(data);
