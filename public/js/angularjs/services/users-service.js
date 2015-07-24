@@ -1,3 +1,3 @@
 angular.module('myApp').factory('usersService', function ($resource, host) {
-    return $resource(host + '/users/:id', {}, {})
+    return $resource(host + '/api/v1/users/:id', {}, {})
 });

@@ -1,3 +1,3 @@
 angular.module('myApp').factory('requestsService', function ($resource, host) {
-    return $resource(host + '/requests/:id', {}, {})
+    return $resource(host + '/api/v1/requests/:id', {}, {})
 });
