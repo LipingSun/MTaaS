@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "postinstall": "export HOME=$HOME/app-root/runtime/repo; bower install"
+    "postinstall": "if [ -z ${OPENSHIFT_MYSQL_DB_HOST+x} ]; then echo Running on local; else export HOME=$HOME/app-root/runtime/repo; fi; bower install"
   },
   "engines": {
     "node": ">= 0.12.0"
