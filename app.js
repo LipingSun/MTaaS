@@ -5,15 +5,16 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+const api_v1 = '/api/v1';
+var mysql = require('./routes/mysql');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
+
 var routes = require('./routes/routes');
 var auth = require('./routes/authentication');
 var emulators = require('./routes/emulators');
 var bills = require('./routes/bills');
-
-
-var mysql = require('./routes/mysql');
-
-const api_v1 = '/api/v1';
 
 var app = express();
 
@@ -29,6 +30,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.session({ secret: 'nkfjwjeiofhwhefhsfhwiehf' })); // session secret
+
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
 
 // Routes
 app.get('/', routes.index);  // Get index page
@@ -54,9 +59,11 @@ app.get(api_v1 + '/users', function (req, res) {
 });
 
 //// Bills
-//app.get(api_v1 + '/bills', bills.getbills);
-//app.get('/bills/bill_id', bills.getbill);
-//
+//app.get(api_v1 + '/bills', bills.getBills);
+//app.get(api_v1 + '/bills/:bill_id', bills.getBill);
+
+
+
 //// System Info
 //app.get('requests', system.getRequests);
 
