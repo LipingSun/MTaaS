@@ -1,7 +1,4 @@
 var mysql = require('mysql');
-var squel = require('squel');
-var crypto = require('crypto');
-
 
 var getConnectionPool = function() {
     var mysqlConnection = null;
@@ -25,6 +22,11 @@ var getConnectionPool = function() {
         };
     }
     return mysql.createPool(mysqlConnection);
+};
+
+mysql.query = function (sql, callback) {
+    console.log('SQL: ' + sql);
+    getConnectionPool().query(sql, callback);
 };
 
 function execQuery (sql, params, callback) {
@@ -51,5 +53,7 @@ function execQuery (sql, params, callback) {
         });
     });
 }
+
+module.exports = mysql;
 exports.getConnectionPool = getConnectionPool;
 exports.execQuery = execQuery;
