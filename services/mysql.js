@@ -1,9 +1,9 @@
 var mysql = require('mysql');
 
 var getConnectionPool = function() {
-    var mysqlConnection = null;
+    var setting = null;
     if (process.env.OPENSHIFT_MYSQL_DB_HOST) {
-        mysqlConnection = {
+        setting = {
             host     : process.env.OPENSHIFT_MYSQL_DB_HOST,
             port     : process.env.OPENSHIFT_MYSQL_DB_PORT,
             user     : process.env.OPENSHIFT_MYSQL_DB_USERNAME,
@@ -11,7 +11,7 @@ var getConnectionPool = function() {
             database : 'mtaas'
         };
     } else {
-        mysqlConnection = {
+        setting = {
             host     : '127.0.0.1',
             port     : '3307',
             user     : 'adminYPlWlrC',
@@ -21,12 +21,19 @@ var getConnectionPool = function() {
             //multipleStatements: true
         };
     }
-    return mysql.createPool(mysqlConnection);
+    return mysql.createPool(setting);
 };
 
 mysql.query = function (sql, callback) {
     console.log('SQL: ' + sql);
-    getConnectionPool().query(sql, callback);
+    getConnectionPool().query(sql, function (err, rows) {
+        if (err) {
+            console.log('DB ' + err);
+        } else {
+            console.log('DB Result: ' + JSON.stringify(rows));
+        }
+        callback(err, rows);
+    });
 };
 
 function execQuery (sql, params, callback) {
