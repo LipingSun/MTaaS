@@ -4,17 +4,16 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
 const api_v1 = '/api/v1';
-var mysql = require('./routes/mysql');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+var mysql = require('./services/mysql');
+var passport = require('./services/passport');
 
-
-var routes = require('./routes/routes');
-var auth = require('./routes/authentication');
+var routes = require('./routes/index');
+var auth = require('./routes/auth');
 var emulators = require('./routes/emulators');
-var bills = require('./routes/bills');
+//var bills = require('./routes/bills');
 
 var app = express();
 
@@ -30,7 +29,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.session({ secret: 'nkfjwjeiofhwhefhsfhwiehf' })); // session secret
+app.use(session({
+    secret: 'mtaas',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 15 * 60 * 1000 }
+}));
 
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
@@ -42,9 +46,9 @@ app.get('/register', routes.register);  // Get register page
 
 // Authentication
 app.get(api_v1 + '/auth/token', auth.getToken);  // Get user token
-app.post(api_v1 + '/auth/register', auth.register);  // Post register info
-app.post(api_v1 + '/auth/login', auth.login);  // Post login info
-app.delete(api_v1 + '/auth/logout', auth.logout);  // Delete user session
+app.post('/login', passport.authenticate('local'), auth.login);// Post login info
+app.post('/register', auth.register);  // Post register info
+app.all('/logout', auth.logout);  // Log out user session
 
 // Emulators
 app.get(api_v1 + '/api/emulators', emulators.getEmulators);  // Get all relevant emulators
@@ -68,13 +72,16 @@ app.get(api_v1 + '/users', function (req, res) {
 //app.get('requests', system.getRequests);
 
 
-
-app.use(api_v1 + '/mysql', function (req, res) {
+app.use(api_v1 + '/check-db', function (req, res) {
     var conn = mysql.getConnectionPool();
     conn.query('show tables', function (err, data) {
         res.send(data);
     });
 });
+
+
+
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
