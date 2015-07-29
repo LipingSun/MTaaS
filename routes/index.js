@@ -3,7 +3,11 @@
 var routes = {};
 
 routes.index = function (req, res) {
-    res.render('home.html');
+    if (req.user.type === 'admin') {
+        res.render('admin.html');
+    } else {
+        res.render('home.html');
+    }
 };
 
 routes.login = function (req, res) {
