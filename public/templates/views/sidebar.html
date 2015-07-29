@@ -1,6 +1,6 @@
 <div class="left-sidebar">
     <div class="sidebar-holder">
-        <ul class="nav nav-list" ng-init="sidebar = 'dashboard'; resourcesTab = -1">
+        <ul class="nav nav-list" ng-init="sidebar = 'dashboard'; resourcesTab = -1; billingTab=-1;">
 
             <!-- sidebar to mini Sidebar toggle -->
             <li class="nav-toggle">
@@ -38,19 +38,19 @@
 
 
             <li class="submenu">
-                <a href ng-click="sidebar = 'Billing'" data-original-title="Billing"><i class="fa fa-tint"></i><span class="hidden-minibar"> Billing </span></a>
-                <ul style="display: block;" ng-show="sidebar === 'Billing'">
+                <a href ng-click="billingTab=-billingTab" data-original-title="Billing"><i class="fa fa-tint"></i><span class="hidden-minibar"> Billing </span></a>
+                <ul style="display: block;" ng-show="billingTab>0">
                     <li ng-class="{ active: sidebar === 'Bills' }">
                         <a href="#/bills" ng-click="sidebar = 'Bills'" data-original-title="Bills"><i class="fa fa-mobile"></i><span> Bills </span></a>
                     </li>
                     <li ng-class="{ active: sidebar === 'History' }">
-                        <a href="#/history" ng-click="sidebar = 'History'" data-original-title="History"><i class="fa fa-mobile"></i><span> History </span></a>
+                        <a href="#/billing_setting" ng-click="sidebar = 'History'" data-original-title="History"><i class="fa fa-mobile"></i><span> Settings </span></a>
                     </li>
                 </ul>
             </li>
-          <!--  <li ng-class="{ active: sidebar === 'Billing' }">
-                <a href="#/billing" ng-click="sidebar = 'Billing'" data-original-title="Billing"><i class="fa fa-credit-card"></i><span> Billing </span></a>
-            </li>-->
+            <!--  <li ng-class="{ active: sidebar === 'Billing' }">
+                  <a href="#/billing" ng-click="sidebar = 'Billing'" data-original-title="Billing"><i class="fa fa-credit-card"></i><span> Billing </span></a>
+              </li>-->
         </ul>
     </div>
 </div>

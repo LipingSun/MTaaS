@@ -27,26 +27,158 @@
 
     <div class="input-group">
         <p>
-            Year:<select ng-model="s_year" ng-options="year for year in billingCtrl.years"></select> Month:
-            <select ng-model="s_month" ng-options="month for month in billingCtrl.months"></select>
+            Year: <select class="form-group" ng-model="billingCtrl.s_year" ng-options="year for year in billingCtrl.years"></select>
+            Month: <select class="form-group" ng-model="billingCtrl.s_month" ng-options="month.id as month.name for month in billingCtrl.months"></select>
 
-                <button class="btn btn-xs btn-primary" style="margin-left: 10px" ng-click="billingCtrl.list()">List</button>
+            <button class="btn btn-xs btn-primary" style="margin-left: 10px" ng-click="billingCtrl.list()">List</button>
 
         </p>
 
-
-
     </div>
+
+
+
 
     <!-- Invoice -->
     <div class="panel panel-cascade panel-invoice">
         <div class="panel-body">
+
           <span class="pull-right" style="margin: 10px">
               <a href="#" class=" btn btn-success btn-print text-white hidden-print"><i class="fa fa-print"></i> Print</a>
           </span>
 
             <div class="row">
                 <div class="col-md-12">
+
+                    <table class="table table-bordered" ng-init="billingCtrl.charges_expand=false;billingCtrl.payment_expand=false">
+
+                        <thead>
+                            <tr class="invoice-total" bgcolor="#f1f1f1">
+                                <td><strong>Summary</strong></td>
+                                <td colspan="3"><strong>Amount</strong></td>
+
+                            </tr>
+                        </thead>
+
+
+                        <tbody>
+
+                       <tr>
+                           <th>
+                               <a ng-if="billingCtrl.charges_expand" ng-click="billingCtrl.charges_expand = false">- MTaaS Charges</a>
+                               <a ng-if="!billingCtrl.charges_expand" ng-click="billingCtrl.charges_expand = true">+ MTaaS Charges</a>
+                           </th>
+
+                           <td colspan="3">
+                               {{billingCtrl.bills.bill_sum.amount}}
+                           </td>
+
+
+                       </tr>
+
+                       <tr ng-if="billingCtrl.charges_expand">
+
+                           <td><strong>plan:</strong> {{billingCtrl.bills.bill_sum.plan}}</td>
+                           <td><strong>from:</strong>  {{billingCtrl.bills.bill_sum.start_datetime}}</td>
+                           <td><strong>to:</strong> {{billingCtrl.bills.bill_sum.end_datetime}}</td>
+                           <td><strong>date</strong> {{billingCtrl.bills.bill_sum.create_date}}</td>
+
+
+
+                       </tr>
+
+
+
+                       <tr>
+                           <th>
+                               <a ng-if="billingCtrl.payment_expand" ng-click="billingCtrl.payment_expand = false">- Payment Details</a>
+                               <a ng-if="!billingCtrl.payment_expand" ng-click="billingCtrl.payment_expand = true">+ Payment Details</a>
+                           </th>
+
+                           <td colspan="3">
+                               {{billingCtrl.bills.bill_sum.amount}}
+                           </td>
+
+
+                       </tr>
+
+
+
+                       <tr ng-if="billingCtrl.payment_expand">
+
+                           <td><strong>status:</strong> {{billingCtrl.bills.bill_sum.pay_status}}</td>
+                           <td><strong>method:</strong>  {{billingCtrl.bills.bill_sum.pay_method}}</td>
+                           <td><strong>account:</strong>  {{billingCtrl.bills.bill_sum.pay_account}}</td>
+                           <td><strong>pay date:</strong> {{billingCtrl.bills.bill_sum.pay_date}}</td>
+
+                       </tr>
+
+
+                       </tbody>
+                    </table>
+
+
+                    <table class="table table-bordered" ng-init="billingCtrl.charges_expand=false;billingCtrl.payment_expand=false">
+
+                        <thead>
+                        <tr class="invoice-total" bgcolor="#f1f1f1">
+                            <td><strong>Detail</strong></td>
+                            <td><strong>Total</strong></td>
+                        </tr>
+                        </thead>
+
+
+                        <tbody>
+
+
+                       <!-- <tr>
+                            <th>
+                                <a ng-if="billingCtrl.emulators_expand" ng-click="billingCtrl.emulators_expand = false">- Emulator</a>
+                                <a ng-if="!billingCtrl.emulators_expand" ng-click="billingCtrl.emulators_expand = true">+ Emulator</a>
+                            </th>
+
+                            <td colspan="3">
+                                {{billingCtrl.bills.bill_sum.amount}}
+                            </td>
+
+
+                        </tr>-->
+
+
+                        <tr  ng-repeat-start="(key,value) in billingCtrl.bills.bill_detail">
+                            <th>
+                                <a ng-if="billingCtrl.key_expand[$index]" ng-click="billingCtrl.key_expand[$index] = false">- {{key}}</a>
+                                <a ng-if="!billingCtrl.key_expand[$index]" ng-click="billingCtrl.key_expand[$index] = true">+ {{key}}</a>
+                            </th>
+
+
+                        </tr>
+
+                        <tr ng-if="billingCtrl.key_expand[$index]" ng-repeat-end="">
+
+                            <td>
+                                <table  class="table table-bordered">
+                                    <th>Resource Id</th>
+                                    <th>Start Datetime</th>
+                                    <th>End Datetime</th>
+                                    <th>Running Time</th>
+                                    <th>Cost</th>
+                                    <tr ng-repeat="bill in value">
+
+                                        <td>{{bill.resource_id}}</td>
+                                        <td>{{bill.start_datetime}}</td>
+                                        <td>{{bill.end_datetime}}</td>
+                                        <td>{{bill.running_time}}</td>
+                                        <td>{{bill.cost}}</td>
+                                    </tr>
+
+                                </table>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+
                     <table class="table table-bordered">
                         <thead>
                         <tr>

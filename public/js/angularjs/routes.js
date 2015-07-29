@@ -31,6 +31,11 @@ angular.module('myApp')
                 controller: 'BillingController',
                 controllerAs: 'billingCtrl'
             })
+            .when('/billing_setting', {
+                templateUrl: 'templates/pages/billing_setting.html',
+                controller: 'BillingSettingController',
+                controllerAs: 'billingSettingCtrl'
+            })
             .otherwise({
                 redirectTo: '/'
             });
