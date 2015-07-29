@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="loginApp">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Login</title>
@@ -22,17 +22,17 @@
     <div class="input-box">
         <div class="row">
             <div class="col-md-8 col-md-offset-2 col-xs-10 col-xs-offset-1">
-                <form role="form" ng-controller="loginController as loginCtrl">
+                <form role="form" action="/login" method="post">
                     <div class="input-group form-group">
                         <span class="input-group-addon"><i class='fa fa-envelope'></i></span>
-                        <input type="email" class="form-control" ng-model="loginCtrl.email" placeholder="email">
+                        <input type="text" name="email" class="form-control" placeholder="email">
                     </div>
                     <div class="input-group form-group">
                         <span class="input-group-addon"><i class='fa fa-key'></i></span>
-                        <input type="password" class="form-control" ng-model="loginCtrl.password" placeholder="password">
+                        <input type="password" name="password" class="form-control" placeholder="password">
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn  btn-block  btn-submit pull-right" ng-click="loginCtrl.submit()">Submit</button>
+                        <button type="submit" class="btn  btn-block  btn-submit pull-right">Submit</button>
                     </div>
                 </form>
             </div>
@@ -43,24 +43,6 @@
     <!-- input-box -->
 </div>
 <!-- lock-box -->
-
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
-<script>
-    var app = angular.module('loginApp', []);
-    app.controller('loginController', ['$http', function ($http) {
-        var loginCtrl = this;
-        loginCtrl.submit = function () {
-            var data = {
-                email: loginCtrl.email,
-                password: loginCtrl.password
-            };
-            $http.post('/login', data).success(function (data, status) {
-                console.log(JSON.stringify(data));
-            });
-        };
-    }]);
-</script>
-
 
 </body>
 </html>

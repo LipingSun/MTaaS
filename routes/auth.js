@@ -21,7 +21,7 @@ auth.register = function (req, res) {
                 if (err) {
                     return next(err);
                 } else {
-                    return res.status(201).json("insert id: " + data.insertId);
+                    return res.status(201).redirect('/');
                 }
             });
         }

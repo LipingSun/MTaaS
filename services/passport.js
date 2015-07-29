@@ -9,7 +9,7 @@ passport.use(new LocalStrategy({
     function (email, password, done) {
         User.findOne({email: email}, function (err, user) {
             if (err) {
-                return done(err);
+                return done({message: "Error"});
             }
             if (!user) {
                 return done(null, false, {message: 'Incorrect email.'});
@@ -30,10 +30,19 @@ passport.deserializeUser(function(email, done) {
     User.findOne({email: email}, function (err, data) {
         if (err) {
             console.log(err);
+            done(err, null);
         } else {
             done(null, data);
         }
     });
 });
+
+passport.ensureAuthenticated = function(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    } else {
+        return res.redirect('/login');
+    }
+};
 
 module.exports = passport;

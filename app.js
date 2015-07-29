@@ -32,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: 'mtaas',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { maxAge: 15 * 60 * 1000 }
 }));
 
@@ -40,13 +40,13 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
 // Routes
-app.get('/', routes.index);  // Get index page
+app.get('/', passport.ensureAuthenticated, routes.index);  // Get index page
 app.get('/login', routes.login);  // Get login page
 app.get('/register', routes.register);  // Get register page
 
 // Authentication
-app.get(api_v1 + '/auth/token', auth.getToken);  // Get user token
-app.post('/login', passport.authenticate('local'), auth.login);// Post login info
+//app.get(api_v1 + '/auth/token', auth.getToken);  // Get user token
+app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login'}));  // Post login info
 app.post('/register', auth.register);  // Post register info
 app.all('/logout', auth.logout);  // Log out user session
 
