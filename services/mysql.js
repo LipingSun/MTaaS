@@ -21,6 +21,7 @@ var getConnectionPool = function() {
             //multipleStatements: true
         };
     }
+    setting.connectTimeout = 100000;
     return mysql.createPool(setting);
 };
 
