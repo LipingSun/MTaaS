@@ -12,12 +12,6 @@
             <li ng-class="{ active: sidebar === 'dashboard' }">
                 <a href="#/dashboard" ng-click="sidebar = 'dashboard'" data-original-title="Dashboard"><i class="fa fa-dashboard"></i><span class="hidden-minibar"> Dashboard </span></a>
             </li>
-            <li ng-class="{ active: sidebar === 'user' }">
-                <a href="#/user" ng-click="sidebar = 'user'" data-original-title="User"><i class="fa fa-user"></i><span> User </span></a>
-            </li>
-            <li ng-class="{ active: sidebar === 'request' }">
-                <a href="#/request" ng-click="sidebar = 'request'" data-original-title="Request"><i class="fa fa-bolt"></i><span> Request </span></a>
-            </li>
             <li class="submenu">
                 <a href ng-click="resourcesTab = -resourcesTab" data-original-title="Resources"><i class="fa fa-tint"></i><span class="hidden-minibar"> Resources </span></a>
                 <ul style="display: block;" ng-show="resourcesTab > 0">
@@ -38,7 +32,7 @@
 
 
             <li class="submenu">
-                <a href ng-click="billingTab=-billingTab" data-original-title="Billing"><i class="fa fa-tint"></i><span class="hidden-minibar"> Billing </span></a>
+                <a href ng-click="billingTab=-billingTab" data-original-title="Billing"><i class="fa fa-credit-card"></i><span class="hidden-minibar"> Billing </span></a>
                 <ul style="display: block;" ng-show="billingTab>0">
                     <li ng-class="{ active: sidebar === 'Bills' }">
                         <a href="#/bills" ng-click="sidebar = 'Bills'" data-original-title="Bills"><i class="fa fa-mobile"></i><span> Bills </span></a>
