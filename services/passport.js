@@ -23,18 +23,19 @@ passport.use(new LocalStrategy({
 ));
 
 passport.serializeUser(function(user, done) {
-    done(null, user.email);
+    var sessionUser = {
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        type: user.type,
+        last_login: user.last_login
+    };
+    done(null, sessionUser);
 });
 
-passport.deserializeUser(function(email, done) {
-    User.findOne({email: email}, function (err, data) {
-        if (err) {
-            console.log(err);
-            done(err, null);
-        } else {
-            done(null, data);
-        }
-    });
+passport.deserializeUser(function(sessionUser, done) {
+    done(null, sessionUser);
 });
 
 passport.ensureAuthenticated = function(req, res, next) {
