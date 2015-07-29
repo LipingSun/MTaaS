@@ -19,7 +19,11 @@ User.findOne = function (obj, callback) {
     var condition = Object.keys(obj)[0] + '=' +  mysql.escape(obj[Object.keys(obj)[0]]);
     var sql = squel.select().from('user').where(condition).toString();
     mysql.query(sql, function (err, rows) {
-        callback(err, rows[0]);
+        if (err) {
+            callback(err);
+        } else {
+            callback(null, rows[0]);
+        }
     });
 };
 
