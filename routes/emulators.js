@@ -1,6 +1,9 @@
 'use strict';
 
+var request = require('request');
+
 var Emulator = require('./../models/Emulator');
+var DeviceHost = require('./../models/DeviceHost');
 
 var emulators = {};
 
@@ -25,27 +28,40 @@ emulators.getEmulator = function (req, res) {
 };
 
 emulators.launchEmulators = function (req, res) {
-    Emulator.create(req.body, function () {
+    //DeviceHost.findAll(function (err, data) {
+    //    if (!err) {
+    //        var deviceHost = data[0];
+    //        //request.post();
+    //    }
+    //});
+
+
+    req.body.status = 'processing';
+    Emulator.create(req.body, function (err, data) {
         if (!err) {
-            res.status(201).json(data);
+            Emulator.findById(data.insertId, function (err, data) {
+                if (!err) {
+                    res.status(201).json(data);
+                }
+            });
         }
     });
 };
 
 emulators.updateEmulator = function (req, res) {
-    Emulator.update(req.body, function () {
+    Emulator.update(req.params.id, req.body, function (err, data) {
         if (!err) {
-            res.status(201).json(data);
+            Emulator.findById(req.params.id, function (err, data) {
+                if (!err) {
+                    res.status(201).json(data);
+                }
+            });
         }
     });
 };
 
 emulators.terminateEmulator = function (req, res) {
-    var changes = {
-        id: req.param.id,
-        status: 'terminated'
-    };
-    Emulator.update(changes, function () {
+    Emulator.update(req.params.id, { status: 'terminated'}, function (err, data) {
         if (!err) {
             res.status(200).json(data);
         }
