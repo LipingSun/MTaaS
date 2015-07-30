@@ -12,19 +12,13 @@ User.findAll = function (callback) {
 
 User.findById = function (id, callback) {
     var sql = squel.select().from('user').where('id=' + id).toString();
-    mysql.query(sql, callback);
+    mysql.queryOne(sql, callback);
 };
 
 User.findOne = function (obj, callback) {
     var condition = Object.keys(obj)[0] + '=' +  mysql.escape(obj[Object.keys(obj)[0]]);
     var sql = squel.select().from('user').where(condition).toString();
-    mysql.query(sql, function (err, rows) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, rows[0]);
-        }
-    });
+    mysql.queryOne(sql, callback);
 };
 
 User.create = function (user, callback) {
@@ -32,12 +26,14 @@ User.create = function (user, callback) {
     mysql.query(sql, callback);
 };
 
-User.deleteById = function () {
-
+User.deleteById = function (id, callback) {
+    var sql = squel.delete().from('user').where('id=' + id).toString();
+    mysql.query(sql, callback);
 };
 
-User.upsert = function () {
-
+User.update = function (user, callback) {
+    var sql = squel.update().table('user').setFields(user).where('id=' + user.id);
+    mysql.query(sql, callback);
 };
 
 module.exports = User;
