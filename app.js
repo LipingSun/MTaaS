@@ -13,7 +13,7 @@ var passport = require('./services/passport');
 var routes = require('./routes/index');
 var auth = require('./routes/auth');
 var emulators = require('./routes/emulators');
-//var bills = require('./routes/bills');
+var bills = require('./routes/bills');
 
 var app = express();
 
@@ -51,11 +51,11 @@ app.post('/register', auth.register);  // Post register info
 app.all('/logout', auth.logout);  // Log out user session
 
 // Emulators
-app.get(api_v1 + '/api/emulators', emulators.getEmulators);  // Get all relevant emulators
+app.get(api_v1 + '/emulators', emulators.getEmulators);  // Get all relevant emulators
 app.post(api_v1 + '/emulators', emulators.launchEmulators);  // Launch an emulator
-app.get(api_v1 + '/emulators/:emulator_id', emulators.getEmulator);  // Get info of an emulator
-app.put(api_v1 + '/emulators/:emulator_id', emulators.updateEmulator);  // Update info of an emulator
-app.delete(api_v1 + '/emulators/:emulator_id', emulators.terminateEmulator);  // Terminate an emulator
+app.get(api_v1 + '/emulators/:id', emulators.getEmulator);  // Get info of an emulator
+app.patch(api_v1 + '/emulators/:id', emulators.updateEmulator);  // Update info of an emulator
+app.delete(api_v1 + '/emulators/:id', emulators.terminateEmulator);  // Terminate an emulator
 
 // Users
 app.get(api_v1 + '/users', function (req, res) {
@@ -65,17 +65,16 @@ app.get(api_v1 + '/users', function (req, res) {
 //// Bills
 //app.get(api_v1 + '/bills', bills.getBills);
 //app.get(api_v1 + '/bills/:bill_id', bills.getBill);
-
+app.get(api_v1 +'/bill_plan', bills.getBillPlan);
 
 
 //// System Info
 //app.get('requests', system.getRequests);
 
 
-app.use(api_v1 + '/check-db', function (req, res) {
-    var conn = mysql.getConnectionPool();
-    conn.query('show tables', function (err, data) {
-        res.send(data);
+app.get(api_v1 + '/check_db', function (req, res) {
+    mysql.query('show tables', function (err, data) {
+        res.status(200).json(data);
     });
 });
 
