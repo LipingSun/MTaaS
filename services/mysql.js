@@ -37,7 +37,19 @@ mysql.query = function (sql, callback) {
     });
 };
 
-function execQuery (sql, params, callback) {
+mysql.queryOne = function (sql, callback) {
+    console.log('SQL: ' + sql);
+    getConnectionPool().query(sql, function (err, rows) {
+        if (err) {
+            console.log('DB ' + err);
+        } else {
+            console.log('DB Result: ' + JSON.stringify(rows));
+        }
+        callback(err, rows[0]);
+    });
+};
+
+mysql.execQuery = function (sql, params, callback) {
     var connPool = getConnectionPool();
     connPool.getConnection(function (err, connection) {
         if (err) {
@@ -60,8 +72,6 @@ function execQuery (sql, params, callback) {
             connection.release();
         });
     });
-}
+};
 
 module.exports = mysql;
-exports.getConnectionPool = getConnectionPool;
-exports.execQuery = execQuery;
