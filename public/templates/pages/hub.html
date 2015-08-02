@@ -1,0 +1,139 @@
+<div class="content">
+
+    <div class="row">
+        <div class="col-mod-12">
+
+            <ul class="breadcrumb">
+                <li><a href="#/">MTaaS</a></li>
+                <li class="active">Hubs</li>
+            </ul>
+
+            <div class="form-group hiddn-minibar pull-right">
+                <input type="text" class="form-control form-cascade-control nav-input-search" size="20" placeholder="Search through site"/>
+
+                <span class="input-icon fui-search"></span>
+            </div>
+
+            <h3 class="page-header"><i class="fa fa-mobile"></i> Hub
+                <i class="fa fa-info-circle animated bounceInDown show-info"></i></h3>
+
+            <blockquote class="page-information hidden">
+                <p>
+                    Hubs information.
+                </p>
+            </blockquote>
+        </div>
+    </div>
+    <!--<link href="hub.css" rel="stylesheet">-->
+    <div class="profile-tabs">
+
+        <ul id="myTab" class="nav nav-tabs" ng-init="hubTab = 'hubs'">
+            <li ng-class="{ active: hubTab === 'hubs' }" ng-click="hubsCtrl.getAll()"><a href data-toggle="tab" ng-click="hubTab = 'hubs'">Hubs</a></li>
+            <li ng-class="{ active: hubTab === 'launch' }"><a href data-toggle="tab" ng-click="hubTab = 'launch'">Launch</a></li>
+        </ul>
+
+        <div id="myTabContent" class="tab-content">
+
+            <div ng-class="{ active: hubTab === 'hubs' }" class="tab-pane fade in" id="hubs" ng-show="hubTab === 'hubs'">
+                <div class="col-md-12">
+                    <div class="panel ">
+                        <div class="panel-body ">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>Name</th>
+                                    <th>Create Time</th>
+                                    <th>Network Type</th>
+                                    <th>Network Provider</th>
+                                    <th>Ports Number</th>
+                                    <th>Status</th>
+                                    <th> </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="hub in hubsCtrl.hubs">
+                                    <!--<td>{{ hub.id }}</td>-->
+                                    <td>{{ hub.name }}</td>
+                                    <td>{{ hub.create_datetime }}</td>
+                                    <td>{{ hub.network_type }}</td>
+                                    <td>{{ hub.network_provider }}</td>
+                                    <td>{{ hub.ports_num }}</td>
+                                    <td>{{ hub.status }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-info" ng-click="hubsCtrl.view(hub)"><i class="fa fa-fw fa-eye"></i></button>
+                                        <button type="button" class="btn btn-danger" ng-click="hubsCtrl.delete(hub)"><i class="fa fa-fw fa-trash-o"></i></button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-class="{ active: hubTab === 'launch' }" class="tab-pane fade in" id="launch" ng-show="hubTab === 'launch'">
+                <div class="col-md-12">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <form action class="form-horizontal row-border" ng-init="newHub = {}">
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Name</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" ng-model="newHub.name" ng-init="newHub.name = 'hub'" class="form-control"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Netwrok Type</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" ng-model="newHub.network_type" ng-init="newHub.network_type = 'WiFi'">
+                                            <option>WiFi</option>
+                                            <option>Mobile Carrier Network</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Netwrok Provider</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" ng-model="newHub.network_provider" ng-init="newHub.network_provider = 'Comcast XFINITY'">
+                                            <option ng-if="newHub.network_type === 'WiFi'">Comcast XFINITY</option>
+                                            <option ng-if="newHub.network_type === 'WiFi'">AT&T U-verse</option>
+                                            <option ng-if="newHub.network_type === 'Mobile Carrier Network'">AT&T</option>
+                                            <option ng-if="newHub.network_type === 'Mobile Carrier Network'">Verizon</option>
+                                            <option ng-if="newHub.network_type === 'Mobile Carrier Network'">T-Mobile</option>
+                                            <option ng-if="newHub.network_type === 'Mobile Carrier Network'">Sprint</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Ports Number</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" ng-model="newHub.cpu" ng-init="newHub.ports_num = 5">
+                                            <option>5</option>
+                                            <option>10</option>
+                                            <option>15</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6 col-sm-offset-3">
+                                        <button type="button" class="btn btn-success" ng-click="hubsCtrl.create(newHub)">Submit</button>
+                                        <button type="button" class="btn btn-danger" ng-click="newHub = null">Cancel</button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                        <!-- /panel body -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

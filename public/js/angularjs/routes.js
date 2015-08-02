@@ -26,6 +26,11 @@ angular.module('myApp')
                 controller: 'EmulatorsController',
                 controllerAs: 'emulatorsCtrl'
             })
+            .when('/hub', {
+                templateUrl: 'templates/pages/hub.html',
+                controller: 'HubsController',
+                controllerAs: 'hubsCtrl'
+            })
             .when('/bills', {
                 templateUrl: 'templates/pages/billing.html',
                 controller: 'BillingController',

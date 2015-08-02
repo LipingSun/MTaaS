@@ -13,6 +13,7 @@ var passport = require('./services/passport');
 var routes = require('./routes/index');
 var auth = require('./routes/auth');
 var emulators = require('./routes/emulators');
+var hubs = require('./routes/hubs');
 var users = require('./routes/users');
 var bills = require('./routes/bills');
 
@@ -64,6 +65,14 @@ app.post(api_v1 + '/emulators', emulators.launchEmulators);  // Launch an emulat
 app.get(api_v1 + '/emulators/:id', emulators.getEmulator);  // Get info of an emulator
 app.patch(api_v1 + '/emulators/:id', emulators.updateEmulator);  // Update info of an emulator
 app.delete(api_v1 + '/emulators/:id', emulators.terminateEmulator);  // Terminate an emulator
+
+// Hubs
+app.get(api_v1 + '/hubs', hubs.getHubs);  // Get all relevant hubs
+app.post(api_v1 + '/hubs', hubs.launchHubs);  // Launch an hub
+app.get(api_v1 + '/hubs/:id', hubs.getHub);  // Get info of an hub
+app.patch(api_v1 + '/hubs/:id', hubs.updateHub);  // Update info of an hub
+app.delete(api_v1 + '/hubs/:id', hubs.terminateHub);  // Terminate an hub
+
 
 // Users
 app.get(api_v1 + '/users', users.getUsers);  // Get all relevant users
