@@ -21,6 +21,7 @@
     "mysql": "^2.7.0",
     "passport": "^0.2.2",
     "passport-local": "^1.0.0",
+    "request": "^2.60.0",
     "serve-favicon": "~2.3.0",
     "squel": "^4.0.0"
   },
