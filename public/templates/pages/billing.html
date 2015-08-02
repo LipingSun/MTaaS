@@ -79,9 +79,9 @@
                        <tr ng-if="billingCtrl.charges_expand">
 
                            <td><strong>plan:</strong> {{billingCtrl.bills.bill_sum.plan}}</td>
-                           <td><strong>from:</strong>  {{billingCtrl.bills.bill_sum.start_datetime}}</td>
-                           <td><strong>to:</strong> {{billingCtrl.bills.bill_sum.end_datetime}}</td>
-                           <td><strong>date</strong> {{billingCtrl.bills.bill_sum.create_date}}</td>
+                           <td><strong>from:</strong>  {{billingCtrl.bills.bill_sum.start_datetime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+                           <td><strong>to:</strong> {{billingCtrl.bills.bill_sum.end_datetime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+                           <td><strong>date:</strong> {{billingCtrl.bills.bill_sum.create_date | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
 
 
 
@@ -109,7 +109,7 @@
                            <td><strong>status:</strong> {{billingCtrl.bills.bill_sum.pay_status}}</td>
                            <td><strong>method:</strong>  {{billingCtrl.bills.bill_sum.pay_method}}</td>
                            <td><strong>account:</strong>  {{billingCtrl.bills.bill_sum.pay_account}}</td>
-                           <td><strong>pay date:</strong> {{billingCtrl.bills.bill_sum.pay_date}}</td>
+                           <td><strong>pay date:</strong> {{billingCtrl.bills.bill_sum.pay_date | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
 
                        </tr>
 
@@ -123,7 +123,7 @@
                         <thead>
                         <tr class="invoice-total" bgcolor="#f1f1f1">
                             <td><strong>Detail</strong></td>
-                            <td><strong>Total</strong></td>
+                          <!--  <td><strong>Total</strong></td>-->
                         </tr>
                         </thead>
 
@@ -152,6 +152,7 @@
                             </th>
 
 
+
                         </tr>
 
                         <tr ng-if="billingCtrl.key_expand[$index]" ng-repeat-end="">
@@ -159,15 +160,17 @@
                             <td>
                                 <table  class="table table-bordered">
                                     <th>Resource Id</th>
+                                    <th>Resource Name</th>
                                     <th>Start Datetime</th>
                                     <th>End Datetime</th>
-                                    <th>Running Time</th>
+                                    <th>Running Time (Hrs)</th>
                                     <th>Cost</th>
-                                    <tr ng-repeat="bill in value">
+                                    <tr ng-repeat="bill in value" >
 
                                         <td>{{bill.resource_id}}</td>
-                                        <td>{{bill.start_datetime}}</td>
-                                        <td>{{bill.end_datetime}}</td>
+                                        <td>{{bill.name}}</td>
+                                        <td>{{bill.start_datetime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+                                        <td>{{bill.end_datetime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
                                         <td>{{bill.running_time}}</td>
                                         <td>{{bill.cost}}</td>
                                     </tr>
@@ -179,7 +182,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-bordered">
+                  <!--  <table class="table table-bordered">
                         <thead>
                         <tr>
                             <th>Emulator ID</th>
@@ -236,7 +239,7 @@
                             <td>$1.013</td>
                         </tr>
                         </tbody>
-                    </table>
+                    </table>-->
                 </div>
             </div>
         </div>

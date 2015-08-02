@@ -2,26 +2,64 @@ angular.module('myApp').controller('BillingController', function (billingService
 
 
     var ctrl = this;
-    ctrl.years = ['2010', '2011', '2012', '2013', '2014', '2015', '2016'];
+    const api_v1 = '/api/v1';
+
+    ctrl.years = [2010, 2011, 2012, 2013, 2014, 2015, 2016];
     ctrl.months = [
-        {name: 'January', id: '1'},
-        {name: 'Febuary', id: '2'},
-        {name: 'March', 'id': '3'},
-        {name: 'April', 'id': '4'},
-        {name: 'May', 'id': '5'},
-        {name: 'June', 'id': '6'},
-        {name: 'July', 'id': '7'},
-        {name: 'August', 'id': '8'},
-        {name: 'September', 'id': '9'},
-        {name: 'October', 'id': '10'},
-        {name: 'November', 'id': '11'},
-        {name: 'December', 'id': '12'},
+        {name: 'January', id: 1},
+        {name: 'Febuary', id: 2},
+        {name: 'March', id: 3},
+        {name: 'April', id: 4},
+        {name: 'May', id: 5},
+        {name: 'June', id:6},
+        {name: 'July', id: 7},
+        {name: 'August', id: 8},
+        {name: 'September', id: 9},
+        {name: 'October', id: 10},
+        {name: 'November', id: 11},
+        {name: 'December', id: 12},
     ];
-    ctrl.people = [
-        {name: "Bob", gender: "Male", details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque quis nisi quis mi tincidunt luctus ut quis nunc. Nam non risus tincidunt risus sodales condimentum. Morbi sed gravida elit. Nunc a turpis vestibulum elit posuere blandit. Phasellus luctus lectus non porta auctor. Etiam pellentesque imperdiet posuere. Nullam adipiscing congue nisl, in vulputate odio ornare ac."},
-        {name: "Jane", gender: "Female", details: "Maecenas quis sodales lectus, vitae convallis ipsum. Ut ac viverra tellus. Quisque vulputate, orci placerat eleifend scelerisque, eros nunc rutrum odio, pharetra mattis leo neque vel eros. Cras id purus nec lorem vehicula rutrum a vel arcu. Quisque eget euismod augue. Integer volutpat auctor lorem, quis lacinia nisl tempus nec. Nunc fringilla, odio eget molestie varius, tortor turpis dignissim lacus, sed varius nunc velit eu turpis. Etiam sed congue diam. In ornare elit nec dolor faucibus ornare. Ut eget erat vel elit tristique iaculis. Maecenas et semper lorem. Nam mollis ante et ipsum vestibulum posuere. Ut non purus non risus tempor vulputate et vitae ipsum. Mauris et sem sit amet quam pulvinar fringilla."},
-        {name: "Bill", gender: "Male", details: "Quisque rhoncus scelerisque sapien, tempor vestibulum dui tincidunt eu. Maecenas scelerisque, dolor sed vehicula pulvinar, ligula erat ornare arcu, in dictum ipsum libero vel est. Donec porttitor venenatis lacus, a laoreet orci. Proin quam mi, ultrices in ullamcorper vel, malesuada suscipit lectus. Nam faucibus commodo quam, auctor vehicula felis condimentum quis. Phasellus tempor molestie enim, at vehicula justo auctor eu. Pellentesque venenatis elit eu malesuada fringilla."}
-    ];
+
+    var  now_date=new Date();
+    var now_year=now_date.getFullYear();
+    var now_month=now_date.getMonth()+1;
+
+    for (var year in ctrl.years){
+
+        if(ctrl.years[year]==now_year)
+            ctrl.s_year=ctrl.years[year];
+
+    }
+
+    for (var month in ctrl.months){
+
+        if(ctrl.months[month]['id']==now_month)
+            ctrl.s_month=ctrl.months[month]['id'];
+
+    }
+
+   $http({
+
+        method: 'GET',
+        url: api_v1 + '/bill_plan',
+       // params: {"now_date":now_date}
+
+    }).success(function (res) {
+      // alert(res.curr_plan);
+
+        $http({
+           method: 'GET',
+           url: api_v1 + '/realTimeBills',
+           params: {"curr_plan":res.curr_plan}
+
+        }).success(function (res) {
+
+            ctrl.bills=res;
+
+        });
+
+    });
+
 
 
 
@@ -29,7 +67,7 @@ angular.module('myApp').controller('BillingController', function (billingService
     ctrl.list=function(){
         var year_month=ctrl.s_year+ctrl.s_month;
 
-        ctrl.bills={
+        /*ctrl.bills={
             bill_sum:{
                 "id": "20156_000000000000001",
                 "plan": "pay_as_hour_go",
@@ -113,17 +151,19 @@ angular.module('myApp').controller('BillingController', function (billingService
                 ]
 
             }
-        }
-        /*$http({
+        }*/
+        $http({
             method: 'GET',
             url: '/bills',
-            params: {"year_month":year_month}
+            params: {"year_month":ctrl.s_year+'_'+ctrl.s_month}
 
         }).success(function (res) {
 
+            alert(res);
+
           //  $scope.guardBuilding_data = res.schedule;
 
-        });*/
+        });
 
         //alert("ok");
     }
