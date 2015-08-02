@@ -160,15 +160,16 @@
                             <td>
                                 <table  class="table table-bordered">
                                     <th>Resource Id</th>
-                                    <th>Resource Name</th>
-                                    <th>Start Datetime</th>
-                                    <th>End Datetime</th>
-                                    <th>Running Time (Hrs)</th>
+                                  <!--  <th>Resource Name</th>-->
+                                    <th>Start Billing Time</th>
+                                    <th>End Billing Time</th>
+                                    <th>Total Biling Time (Hrs)</th>
                                     <th>Cost</th>
                                     <tr ng-repeat="bill in value" >
 
+
                                         <td>{{bill.resource_id}}</td>
-                                        <td>{{bill.name}}</td>
+                                       <!-- <td>{{bill.name}}</td>-->
                                         <td>{{bill.start_datetime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
                                         <td>{{bill.end_datetime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
                                         <td>{{bill.running_time}}</td>

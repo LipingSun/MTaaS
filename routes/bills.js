@@ -83,29 +83,72 @@ exports.changeBillPlan = function (req, res) {
 
 exports.getMonthBills = function (req, res) {
 
-    var month_year=req.param('month_year');
-    var invoice_id=month_year+'_'+req.user.id;
-    var sqlStr="select * from invoice where id ="+invoice_id;
+    var emulator=[];
+    var device=[];
+    var hub=[];
+    var year_month=req.param('year_month');
+    console.log(year_month);
+    var invoice_id=year_month+'_'+req.user.id;
+    console.log(invoice_id);
 
-    var params=[];
+    var sqlStr="select * from invoice where id =?";
+
+    var params=[invoice_id];
     query.execQuery(sqlStr, params, function (err, rows) {
         console.log(rows.length);
 
         if (rows.length > 0) {
-            bill_sum=rows[0];
+            bill_sum = rows[0];
 
-            var sqlStr="select * from invoice where id ="+invoice_id;
+            var sqlStr = "select * from invoice_detail where invoice_id =?";
+            params = [invoice_id];
+            query.execQuery(sqlStr, params, function (err, rows) {
+                console.log(rows.length);
 
+                if (rows.length > 0) {
+                    emulator = rows.filter(function (el) {
+                        return (el.resource === "emulator");
+                    });
+                    device = rows.filter(function (el) {
+                        return (el.resource === "device");
+                    });
+                    hub = rows.filter(function (el) {
+                        return (el.resource === "hub");
+                    });
 
+                    console.log("emulator length:" + emulator.length);
 
+                    bill_detail.emulator = emulator;
+                    bill_detail.device = device;
+                    bill_detail.hub = hub;
 
+                    bills.bill_sum = bill_sum;
+                    bills.bill_detail = bill_detail;
+                    res.json(bills);
 
+                }
+                else {
+                    console.log("no invoice bills");
+                    //res.json(bills);
+                }
 
+                /*var sqlStr="select * from invoice where id =? and resource=?" ;
+                 params=[invoice_id,'emulator'];
+                 query.execQuery(sqlStr, params, function (err, rows) {
+                 console.log(rows.length);
+
+                 if (rows.length > 0) {
+                 emulator = rows[0];
+
+                 }
+                 else {
+                 console.log("no emulator bills");
+                 }
+                 });*/
+            });
         }
+
     });
-
-
-
 };
 
 
@@ -943,5 +986,3 @@ var getMonthBillingDate=function(end_bill_date){
     return startStop;
 //
 };
-//
-//module.exports = bills;

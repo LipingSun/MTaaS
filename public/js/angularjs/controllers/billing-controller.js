@@ -4,6 +4,8 @@ angular.module('myApp').controller('BillingController', function (billingService
     var ctrl = this;
     const api_v1 = '/api/v1';
 
+    ctrl.key_expand=[];
+
     ctrl.years = [2010, 2011, 2012, 2013, 2014, 2015, 2016];
     ctrl.months = [
         {name: 'January', id: 1},
@@ -20,7 +22,7 @@ angular.module('myApp').controller('BillingController', function (billingService
         {name: 'December', id: 12},
     ];
 
-    var  now_date=new Date();
+    var now_date=new Date();
     var now_year=now_date.getFullYear();
     var now_month=now_date.getMonth()+1;
 
@@ -38,134 +40,53 @@ angular.module('myApp').controller('BillingController', function (billingService
 
     }
 
-   $http({
+   var getRealTimeBill= function(){
+       $http({
 
-        method: 'GET',
-        url: api_v1 + '/bill_plan',
-       // params: {"now_date":now_date}
-
-    }).success(function (res) {
-      // alert(res.curr_plan);
-
-        $http({
            method: 'GET',
-           url: api_v1 + '/realTimeBills',
-           params: {"curr_plan":res.curr_plan}
+           url: api_v1 + '/bill_plan',
+           // params: {"now_date":now_date}
 
-        }).success(function (res) {
+       }).success(function (res) {
+           // alert(res.curr_plan);
 
-            ctrl.bills=res;
+           $http({
+               method: 'GET',
+               url: api_v1 + '/realTimeBills',
+               params: {"curr_plan":res.curr_plan}
 
-        });
+           }).success(function (res) {
 
-    });
+               ctrl.bills=res;
+
+           });
+
+       });
+   };
 
 
+    getRealTimeBill();
 
-
-    ctrl.key_expand=[];
     ctrl.list=function(){
-        var year_month=ctrl.s_year+ctrl.s_month;
+        if(ctrl.s_year==now_year&&ctrl.s_month==now_month){
+            getRealTimeBill();
+        }else{
 
-        /*ctrl.bills={
-            bill_sum:{
-                "id": "20156_000000000000001",
-                "plan": "pay_as_hour_go",
-                "start_datetime": "2015-06-01T00:00:00",
-                "end_datetime": "2015-07-01T00:00:00",
-                "amount": 30.000,
-                "pay_status":"paid",
-                "pay_method":"credit card",
-                "pay_account":"3244234230031",
-                "pay_date":"2015-07-01T16:18:38.777133239-07:00",
-                "create_date":"2015-07-01T16:18:38.777133239-07:00"
-            },
-            bill_detail:{
-             emulator:
-                [
-                    {
-                        "id":"1001",
-                        "resource_id":"608",
-                        "start_datetime": "2015-06-01T00:00:00",
-                        "end_datetime": "2015-07-01T00:00:00",
-                        "running_time": 15.87,
-                        "cost": 3.98
+            var year_month=ctrl.s_year+'_'+ctrl.s_month;
 
-                    },
-                    {
-                        "id":"1002",
-                        "resource_id":"608",
-                        "start_datetime": "2015-06-01T00:00:00",
-                        "end_datetime": "2015-07-01T00:00:00",
-                        "running_time": 15.87,
-                        "cost": 3.98
+            $http({
+                method: 'GET',
+                url: api_v1 +'/bills',
+                params: {"year_month":year_month}
 
-                    }
+            }).success(function (res) {
 
+                alert(res);
+                ctrl.bills=res;
 
-                ],
-            device:
-                [
-                    {
-                        "id":"1003",
-                        "resource_id":"608",
-                        "start_datetime": "2015-06-01T00:00:00",
-                        "end_datetime": "2015-07-01T00:00:00",
-                        "running_time": 15.87,
-                        "cost": 3.98
+            });
 
-                    },
-                    {
-                        "id":"1001",
-                        "resource_id":"608",
-                        "start_datetime": "2015-06-01T00:00:00",
-                        "end_datetime": "2015-07-01T00:00:00",
-                        "running_time": 15.87,
-                        "cost": 3.98
-
-                    }
-
-
-                ],
-            hub:
-                [
-                    {
-                        "id":"1001",
-                        "resource_id":"608",
-                        "start_datetime": "2015-06-01T00:00:00",
-                        "end_datetime": "2015-07-01T00:00:00",
-                        "running_time": 15.87,
-                        "cost": 3.98
-
-                    },
-                    {
-                        "id":"1001",
-                        "resource_id":"608",
-                        "start_datetime": "2015-06-01T00:00:00",
-                        "end_datetime": "2015-07-01T00:00:00",
-                        "running_time": 15.87,
-                        "cost": 3.98
-
-                    }
-
-                ]
-
-            }
-        }*/
-        $http({
-            method: 'GET',
-            url: '/bills',
-            params: {"year_month":ctrl.s_year+'_'+ctrl.s_month}
-
-        }).success(function (res) {
-
-            alert(res);
-
-          //  $scope.guardBuilding_data = res.schedule;
-
-        });
-
-        //alert("ok");
+        }
     }
-    //ctrl.billing = billingService.query();
+
 });
