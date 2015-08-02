@@ -33,11 +33,18 @@ app.use(session({
     secret: 'mtaas',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 15 * 60 * 1000 }
+    cookie: { maxAge: 30 * 60 * 1000 }
 }));
 
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
+
+app.use(function (req, res, next) {
+    console.log();
+    if (req.params && Object.keys(req.params).length  > 0) console.log('Request params: ' + JSON.stringify(req.params));
+    if (req.body && Object.keys(req.body).length  > 0) console.log('Request body: ' + JSON.stringify(req.body));
+    next();
+});
 
 // Routes
 app.get('/', passport.ensureAuthenticated, routes.index);  // Get index page
@@ -66,6 +73,8 @@ app.get(api_v1 + '/users', function (req, res) {
 //app.get(api_v1 + '/bills', bills.getBills);
 //app.get(api_v1 + '/bills/:bill_id', bills.getBill);
 app.get(api_v1 +'/bill_plan', bills.getBillPlan);
+app.post(api_v1 +'/change_bill_plan', bills.changeBillPlan);
+app.get(api_v1 +'/realTimeBills', bills.getRealTimeBills);
 
 
 //// System Info
