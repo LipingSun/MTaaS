@@ -28,7 +28,7 @@
     <div class="profile-tabs">
 
         <ul id="myTab" class="nav nav-tabs" ng-init="emulatorTab = 'emulators'">
-            <li ng-class="{ active: emulatorTab === 'emulators' }"><a href data-toggle="tab" ng-click="emulatorTab = 'emulators'">Emulators</a></li>
+            <li ng-class="{ active: emulatorTab === 'emulators' }" ng-click="emulatorsCtrl.getAll()"><a href data-toggle="tab" ng-click="emulatorTab = 'emulators'">Emulators</a></li>
             <li ng-class="{ active: emulatorTab === 'launch' }"><a href data-toggle="tab" ng-click="emulatorTab = 'launch'">Launch</a></li>
         </ul>
 
@@ -41,28 +41,37 @@
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
-                                    <th>Emulator ID</th>
+                                    <!--<th>ID</th>-->
                                     <th>Name</th>
-                                    <th>Create Time</th>
+                                    <!--<th>Create Time</th>-->
                                     <th>System</th>
+                                    <th>Version</th>
                                     <th>CPU</th>
                                     <th>RAM</th>
                                     <th>Disk</th>
-                                    <th>IP:Port</th>
+                                    <th>SSH</th>
+                                    <th>Hub</th>
                                     <th>Status</th>
+                                    <th> </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="emulator in emulatorsCtrl.emulators">
-                                    <td>{{ emulator.id }}</td>
+                                    <!--<td>{{ emulator.id }}</td>-->
                                     <td>{{ emulator.name }}</td>
-                                    <td>{{ emulator.create_date + " " + emulator.create_time }}</td>
+                                    <!--<td>{{ emulator.create_datetime }}</td>-->
                                     <td>{{ emulator.system }}</td>
+                                    <td>{{ emulator.version }}</td>
                                     <td>{{ emulator.cpu }}</td>
                                     <td>{{ emulator.ram }}</td>
                                     <td>{{ emulator.disk }}</td>
-                                    <td>{{ emulator.ip + ":" +  emulator.port }}</td>
+                                    <td>{{ emulator.ip + ":" + emulator.ssh_port }}</td>
+                                    <td>{{ emulator.hub }}</td>
                                     <td>{{ emulator.status }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-info" ng-click="emulatorsCtrl.view(emulator)"><i class="fa fa-fw fa-eye"></i></button>
+                                        <button type="button" class="btn btn-danger" ng-click="emulatorsCtrl.delete(emulator)"><i class="fa fa-fw fa-trash-o"></i></button>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -75,35 +84,51 @@
                 <div class="col-md-12">
                     <div class="panel">
                         <div class="panel-body">
-                            <form action class="form-horizontal row-border">
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Android Version</label>
+                            <form action class="form-horizontal row-border" ng-init="newEmulator = {}">
 
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Name</label>
                                     <div class="col-sm-6">
-                                        <select class="form-control">
-                                            <option>5.0.1 (API21)</option>
+                                        <input type="text" ng-model="newEmulator.name" ng-init="newEmulator.name = 'emulator'" class="form-control"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">System</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" ng-model="newEmulator.system" ng-init="newEmulator.system = 'Android'">
+                                            <option>Android</option>
+                                            <option>IOS</option>
                                         </select>
                                     </div>
                                 </div>
-                                <!-- /Version -->
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Version</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" ng-model="newEmulator.version" ng-init="newEmulator.version = '5.0.1 (API21)'">
+                                            <option ng-if="newEmulator.system === 'Android'">5.0.1 (API21)</option>
+                                            <!--<option ng-if="system === 'Android'">4.0.0</option>-->
+                                            <option ng-if="newEmulator.system === 'IOS'">8.1.3</option>
+                                            <option ng-if="newEmulator.system === 'IOS'">8.1.1</option>
+                                        </select>
+                                    </div>
+                                </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">CPU</label>
-
                                     <div class="col-sm-6">
-                                        <select class="form-control">
+                                        <select class="form-control" ng-model="newEmulator.cpu" ng-init="newEmulator.cpu = 'ARM'">
                                             <option>ARM</option>
                                             <option>INTEL</option>
                                         </select>
                                     </div>
                                 </div>
-                                <!-- /phone -->
 
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">RAM</label>
-
                                     <div class="col-sm-6">
-                                        <select class="form-control">
+                                        <select class="form-control" ng-model="newEmulator.ram" ng-init="newEmulator.ram = '64M'">
                                             <option>64M</option>
                                             <option>128M</option>
                                             <option>256M</option>
@@ -111,11 +136,9 @@
                                         </select>
                                     </div>
                                 </div>
-                                <!-- /phone Ext -->
 
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">DISK</label>
-
+                                    <label class="col-sm-3 control-label" ng-model="newEmulator.disk" ng-init="newEmulator.disk = '128M'">DISK</label>
                                     <div class="col-sm-6">
                                         <select class="form-control">
                                             <option>128M</option>
@@ -125,20 +148,18 @@
                                         </select>
                                     </div>
                                 </div>
-                                <!-- /Tax ID -->
 
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">NUMBER</label>
-
+                                    <label class="col-sm-3 control-label" ng-model="newEmulator.number" >NUMBER</label>
                                     <div class="col-sm-6">
-                                        <input type="number" class="form-control" id="ssn" value="1"/>
+                                        <input type="number" class="form-control" ng-model="newEmulator.number" ng-init="newEmulator.number = 1"/>
                                     </div>
                                 </div>
-                                <!-- /ssn -->
+
                                 <div class="row">
                                     <div class="col-sm-6 col-sm-offset-3">
-                                        <button type="button" class="btn btn-success">Submit</button>
-                                        <button type="button" class="btn btn-danger">Cancel</button>
+                                        <button type="button" class="btn btn-success" ng-click="emulatorsCtrl.create(newEmulator)">Submit</button>
+                                        <button type="button" class="btn btn-danger" ng-click="newEmulator = null">Cancel</button>
                                     </div>
                                 </div>
 
