@@ -27,25 +27,27 @@ var getConnectionPool = function() {
 
 mysql.query = function (sql, callback) {
     console.log('SQL: ' + sql);
-    getConnectionPool().query(sql, function (err, rows) {
+    getConnectionPool().query(sql, function (err, data) {
         if (err) {
             console.log('DB ' + err);
         } else {
-            console.log('DB Result: ' + JSON.stringify(rows));
+            console.log('DB Result: ' + JSON.stringify(data));
         }
-        callback(err, rows);
+        callback(err, data);
     });
 };
 
 mysql.queryOne = function (sql, callback) {
     console.log('SQL: ' + sql);
-    getConnectionPool().query(sql, function (err, rows) {
+    getConnectionPool().query(sql, function (err, data) {
         if (err) {
             console.log('DB ' + err);
+            callback(err);
         } else {
-            console.log('DB Result: ' + JSON.stringify(rows));
+            console.log('DB Result: ' + JSON.stringify(data));
+            callback(null, data[0]);
         }
-        callback(err, rows[0]);
+
     });
 };
 
