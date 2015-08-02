@@ -6,7 +6,7 @@ var DeviceHost = require('./../models/DeviceHost');
 
 var emulators = {};
 
-emulators.getEmulators = function (req, res) {// TODO
+emulators.getEmulators = function (req, res) {
     Emulator.findAll(function (err, data) {
         if (!err) {
             if (req.user.type === 'user') {
@@ -19,7 +19,7 @@ emulators.getEmulators = function (req, res) {// TODO
     });
 };
 
-emulators.getEmulator = function (req, res) {// TODO
+emulators.getEmulator = function (req, res) {
     if (req.params.id) {
         Emulator.findById(req.params.id, function (err, data) {
             if (!err) {
@@ -42,12 +42,12 @@ emulators.launchEmulators = function (req, res) {
             if (!err) {
                 DeviceHost.findOne({hostname: 'host1'} ,function (err, deviceHost) {
                     if (!err) {
-                        var addr = 'http://' + deviceHost.ip;
+                        var host = 'http://' + deviceHost.ip;
                         if (deviceHost.port) {
-                            addr += ':' + deviceHost.port;
+                            host += ':' + deviceHost.port;
                         }
                         emulator.id = Number(emulator.id);
-                        controller.launchEmulator(addr, emulator, function (err, data) {
+                        controller.emulator.launch(host, emulator, function (err, data) {
                             if (!err) {
                                 var changes = {
                                     ip: deviceHost.ip,
@@ -69,14 +69,10 @@ emulators.launchEmulators = function (req, res) {
     }
 };
 
-emulators.updateEmulator = function (req, res) {// TODO
+emulators.updateEmulator = function (req, res) {
     Emulator.update(req.params.id, req.body, function (err, data) {
         if (!err) {
-            Emulator.findById(req.params.id, function (err, data) {
-                if (!err) {
-                    res.status(201).json(data);
-                }
-            });
+            res.status(201).json(data);
         }
     });
 };
@@ -84,11 +80,11 @@ emulators.updateEmulator = function (req, res) {// TODO
 emulators.terminateEmulator = function (req, res) {
     DeviceHost.findOne({hostname: 'host1'} ,function (err, deviceHost) {
         if (!err) {
-            var addr = 'http://' +  deviceHost.ip;
+            var host = 'http://' +  deviceHost.ip;
             if (deviceHost.port) {
-                addr += ':' + deviceHost.port;
+                host += ':' + deviceHost.port;
             }
-            controller.terminateEmulator(addr, req.params.id, function () {
+            controller.emulator.terminate(host, req.params.id, function () {
                 var changes = {
                     status: 'terminated',
                     terminate_datetime: new Date().toISOString()
