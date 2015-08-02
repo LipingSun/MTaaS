@@ -13,6 +13,7 @@ var passport = require('./services/passport');
 var routes = require('./routes/index');
 var auth = require('./routes/auth');
 var emulators = require('./routes/emulators');
+var users = require('./routes/users');
 var bills = require('./routes/bills');
 
 var app = express();
@@ -65,9 +66,11 @@ app.patch(api_v1 + '/emulators/:id', emulators.updateEmulator);  // Update info 
 app.delete(api_v1 + '/emulators/:id', emulators.terminateEmulator);  // Terminate an emulator
 
 // Users
-app.get(api_v1 + '/users', function (req, res) {
-    res.send([ { "id": "12345678", "type": "admin", "email": "abc@abc.com", "first_name": "Scott", "last_name": " Tian" }, { "id": "23456789", "type": "user", "email": "abdfsc@cdsa.com", "first_name": "Kim", "last_name": " Steven" } ]);
-});
+app.get(api_v1 + '/users', users.getUsers);  // Get all relevant users
+//app.post(api_v1 + '/users', users.createUser);  // Create a user
+app.get(api_v1 + '/users/:id', users.getUser);  // Get info of a user
+app.patch(api_v1 + '/users/:id', users.updateUser);  // Update info of a user
+app.delete(api_v1 + '/users/:id', users.deleteUser);  // Delete an user
 
 //// Bills
 //app.get(api_v1 + '/bills', bills.getBills);
@@ -75,6 +78,9 @@ app.get(api_v1 + '/users', function (req, res) {
 app.get(api_v1 +'/bill_plan', bills.getBillPlan);
 app.post(api_v1 +'/change_bill_plan', bills.changeBillPlan);
 app.get(api_v1 +'/realTimeBills', bills.getRealTimeBills);
+app.get(api_v1 + '/createBills', bills.createBills);
+app.get(api_v1 + '/bills', bills.getMonthBills);
+
 
 
 //// System Info
