@@ -7,11 +7,12 @@ var controller = {};
 controller.emulator = {
 
     getAll: function (addr, callback) {
-        request.get(this.addr + '/emulators', function (err, res, body) {
+        request.get(addr + '/emulators', function (err, res, body) {
             if (!err && res.statusCode == 200) {
-                callback(body);
+                callback(null, body);
             } else {
                 console.log(err);
+                callback(err);
             }
         });
     },
@@ -36,11 +37,12 @@ controller.emulator = {
     },
 
     terminate: function (addr, id, callback) {
-        request.del(addr + '/emulators/' + Number(id), function (err, res) {
+        request.del(addr + '/emulators/' + id, function (err, res) {
             if (!err && res.statusCode == 200) {
-                callback();
+                callback(null);
             } else {
                 console.log(err);
+                callback(err);
             }
         });
     }
@@ -50,11 +52,12 @@ controller.emulator = {
 controller.hub = {
 
     getAll: function (addr, callback) {
-        request.get(this.addr + '/hubs', function (err, res, body) {
+        request.get(addr + '/hubs', function (err, res, body) {
             if (!err && res.statusCode == 200) {
-                callback(body);
+                callback(null, body);
             } else {
                 console.log(err);
+                callback(err);
             }
         });
     },
@@ -79,11 +82,23 @@ controller.hub = {
     },
 
     terminate: function (addr, id, callback) {
-        request.del(addr + '/hubs/' + Number(id), function (err, res) {
+        request.del(addr + '/hubs/' + id, function (err, res) {
             if (!err && res.statusCode == 200) {
-                callback();
+                callback(null);
             } else {
                 console.log(err);
+                callback(err);
+            }
+        });
+    },
+
+    attach: function (addr, hub_id, resource, callback) {
+        request.post(addr + '/hubs/' + hub_id + '/connections', { json: resource }, function (err, res, body) {
+            if (!err && res.statusCode == 201) {
+                callback(null, body);
+            } else {
+                console.log(err);
+                callback(err);
             }
         });
     }
