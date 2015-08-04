@@ -1,4 +1,4 @@
-angular.module('myApp').controller('EmulatorsController', ['$window', 'emulatorsService', function ($window, emulatorsService) {
+angular.module('myApp').controller('EmulatorsController', ['$http', '$window', 'emulatorsService', 'hubsService', function ($http, $window, emulatorsService, hubsService) {
 
     var ctrl = this;
 
@@ -13,6 +13,7 @@ angular.module('myApp').controller('EmulatorsController', ['$window', 'emulators
     ctrl.create = function (newEmulator) {
         var emulator = new emulatorsService(newEmulator);
         emulator.$save();
+        // TODO: see hub
     };
 
     ctrl.delete = function (emulator) {
@@ -25,5 +26,17 @@ angular.module('myApp').controller('EmulatorsController', ['$window', 'emulators
         var params = 'host=' + emulator.ip + '&' +'port=' + emulator.vnc_port;
         $window.open('bower_components/no-vnc/vnc_auto.html?' + params, emulator.name, 'height=800, width=480');
     };
+
+    ctrl.attachToHub = function (emulator, hub) {
+        var data = {
+            resource_type: 'emulator',
+            resource_id: emulator.id
+        };
+        $http.post('api/v1/hubs/' + hub.id + '/connections', data).success(function (res) {
+            //TODO
+        });
+    };
+
+    ctrl.hubs = hubsService.query();
 
 }]);
