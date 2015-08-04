@@ -1,3 +1,3 @@
-angular.module('myApp').factory('emulatorsService', function ($resource, host) {
-    return $resource(host + '/api/v1/emulators/:id', {}, {})
+angular.module('myApp').factory('hubsService', function ($resource, host) {
+    return $resource(host + '/api/v1/hubs/:id', {}, {})
 });
