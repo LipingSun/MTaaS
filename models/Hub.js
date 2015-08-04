@@ -25,8 +25,7 @@ Hub.create = function (hub, callback) {
     var sql = squel.insert().into('hub').setFields(hub).toString();
     mysql.query(sql, function (err, data) {
         if (!err) {
-            sql = squel.select().from('hub').where('id = ' + data.insertId);
-            mysql.queryOne(sql.toString(), callback);
+            Hub.findById(data.insertId, callback);
         }
     });
 };
@@ -40,8 +39,7 @@ Hub.update = function (id, hub, callback) {
     var sql = squel.update().table('hub').setFields(hub).where('id = ' + id);
     mysql.query(sql.toString(), function (err) {
         if (!err) {
-            sql = squel.select().from('hub').where('id = ' + id);
-            mysql.queryOne(sql.toString(), callback);
+            Hub.findById(id, callback);
         }
     });
 };
