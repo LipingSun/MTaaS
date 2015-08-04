@@ -112,7 +112,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Ports Number</label>
                                     <div class="col-sm-6">
-                                        <select class="form-control" ng-model="newHub.cpu" ng-init="newHub.ports_num = 5">
+                                        <select class="form-control" ng-model="newHub.ports_num" ng-init="newHub.ports_num = '5'">
                                             <option>5</option>
                                             <option>10</option>
                                             <option>15</option>
@@ -122,7 +122,7 @@
 
                                 <div class="row">
                                     <div class="col-sm-6 col-sm-offset-3">
-                                        <button type="button" class="btn btn-success" ng-click="hubsCtrl.create(newHub)">Submit</button>
+                                        <button type="button" class="btn btn-success" ng-click="hubsCtrl.create(newHub); hubTab = 'hubs';">Submit</button>
                                         <button type="button" class="btn btn-danger" ng-click="newHub = null">Cancel</button>
                                     </div>
                                 </div>
