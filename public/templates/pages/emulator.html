@@ -43,7 +43,7 @@
                                 <tr>
                                     <!--<th>ID</th>-->
                                     <th>Name</th>
-                                    <!--<th>Create Time</th>-->
+                                    <th>Create Time</th>
                                     <th>System</th>
                                     <th>Version</th>
                                     <th>CPU</th>
@@ -59,14 +59,16 @@
                                 <tr ng-repeat="emulator in emulatorsCtrl.emulators">
                                     <!--<td>{{ emulator.id }}</td>-->
                                     <td>{{ emulator.name }}</td>
-                                    <!--<td>{{ emulator.create_datetime }}</td>-->
+                                    <td>{{ emulator.create_datetime | date:'medium' }}</td>
                                     <td>{{ emulator.system }}</td>
                                     <td>{{ emulator.version }}</td>
                                     <td>{{ emulator.cpu }}</td>
                                     <td>{{ emulator.ram }}</td>
                                     <td>{{ emulator.disk }}</td>
                                     <td>{{ emulator.ip + ":" + emulator.ssh_port }}</td>
-                                    <td>{{ emulator.hub }}</td>
+                                    <td>
+                                        <select class="form-control" ng-model="hub" ng-change="emulatorsCtrl.attachToHub(emulator, hub)" ng-options="hub.name for hub in emulatorsCtrl.hubs"></select>
+                                    </td>
                                     <td>{{ emulator.status }}</td>
                                     <td>
                                         <button type="button" class="btn btn-info" ng-click="emulatorsCtrl.view(emulator)"><i class="fa fa-fw fa-eye"></i></button>
@@ -118,9 +120,9 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">CPU</label>
                                     <div class="col-sm-6">
-                                        <select class="form-control" ng-model="newEmulator.cpu" ng-init="newEmulator.cpu = 'ARM'">
-                                            <option>ARM</option>
-                                            <option>INTEL</option>
+                                        <select class="form-control" ng-model="newEmulator.cpu" ng-init="newEmulator.cpu = 'armeabi-v7a'">
+                                            <option>armeabi-v7a</option>
+                                            <option>x86</option>
                                         </select>
                                     </div>
                                 </div>
@@ -158,7 +160,7 @@
 
                                 <div class="row">
                                     <div class="col-sm-6 col-sm-offset-3">
-                                        <button type="button" class="btn btn-success" ng-click="emulatorsCtrl.create(newEmulator)">Submit</button>
+                                        <button type="button" class="btn btn-success" ng-click="emulatorsCtrl.create(newEmulator); emulatorTab = 'emulators'; emulatorsCtrl.getAll();">Submit</button>
                                         <button type="button" class="btn btn-danger" ng-click="newEmulator = null">Cancel</button>
                                     </div>
                                 </div>
