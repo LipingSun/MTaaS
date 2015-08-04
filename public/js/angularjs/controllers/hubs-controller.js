@@ -13,6 +13,8 @@ angular.module('myApp').controller('HubsController', ['hubsService', function (h
     ctrl.create = function (newEmulator) {
         var hub = new hubsService(newEmulator);
         hub.$save();
+        hub.status = 'processing';
+        ctrl.hubs.push(hub);
     };
 
     ctrl.delete = function (hub) {
