@@ -20,7 +20,10 @@ var billing_price={
     'x86': 0.030000,
     'x86_64': 0.040000,
     'ram'  :0.000780,
-    'disk':0.000156
+    'disk':0.000156,
+    '5':0.001,
+    '10': 0.002,
+    '15':0.0025
 
 };
 
@@ -165,8 +168,18 @@ exports.getRealTimeBills = function (req, res) {
     console.log(curr_plan);
 
     var end_bill_time = new Date();
-
     var start_bill_time = new Date(end_bill_time.getFullYear(), end_bill_time.getMonth(), "1");
+
+    //var e_date=new Date();
+    //var s_date=new Date(e_date.getFullYear(), e_date.getMonth(), "1");
+
+    //var start_bill_time = new Date(Date.UTC(e_date.getFullYear(), 11, 1, 0, 0, 0));
+
+    //var end_bill_time = e_date.toISOString();
+    //var start_bill_time = s_date.toISOString();
+
+    console.log(start_bill_time);
+    console.log(end_bill_time)
 
     getRealTimeEmuBills(start_bill_time,end_bill_time,curr_plan);
 
@@ -176,7 +189,7 @@ exports.getRealTimeBills = function (req, res) {
 
     var senddata=setInterval(function(){
 
-        console.log("emu_num:"+emulator_rt_count);
+        console.log("emu_num:"+emulator_rt_count+','+device_rt_count+','+hub_rt_count);
         if(emulator_rt_count==0&&device_rt_count==0&&hub_rt_count==0){
 
             console.log("done: "+emu_cost);
@@ -214,11 +227,12 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time,curr_plan) {
 
     emu_cost=0;
 
-    var sqlStr = "select * from emulator where (status='running') or (status='terminated' and terminate_datetime >'" + start_bill_time+"')";
+    var sqlStr = "select * from emulator where (status='running') or (status='processing') or (status='terminated' and terminate_datetime >'" + start_bill_time+"')";
     console.log(sqlStr);
     var params = [];
     query.execQuery(sqlStr, params, function (err, rows) {
         console.log(rows.length);
+
 
         var emulator_bill = rows;
         emulator_rt_count=rows.length;
@@ -229,10 +243,14 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time,curr_plan) {
             var end_time = null;
 
             for (var i = 0; i < emulator_bill.length; i++) {
+                console.log('create time');
+                console.log(emulator_bill[i].create_datetime);
+                console.log('terminate time');
+                console.log(emulator_bill[i].terminate_datetime);
 
                 console.log(emulator_bill[i].ram);
                 console.log(emulator_bill[i].disk);
-                if (emulator_bill[i].status == 'running') {
+                if (emulator_bill[i].status != 'terminated') {
                     if (emulator_bill[i].create_datetime < start_bill_time) {
                         start_time =start_bill_time;
                     } else {
@@ -329,7 +347,7 @@ var getRealTimeDeviceBills = function (start_bill_time, end_bill_time,curr_plan)
 
     device_cost=0;
 
-    var sqlStr = "select * from device_usage where (status='running') or (status='terminated' and terminate_datetime >'" + start_bill_time+"')";
+    var sqlStr = "select * from device_usage where (status='running') or (status='processing') or (status='terminated' and terminate_datetime >'" + start_bill_time+"')";
     console.log(sqlStr);
     var params = [];
     query.execQuery(sqlStr, params, function (err, rows) {
@@ -347,7 +365,7 @@ var getRealTimeDeviceBills = function (start_bill_time, end_bill_time,curr_plan)
 
                 console.log(device_bill[i].ram);
                 console.log(device_bill[i].disk);
-                if (device_bill[i].status == 'running') {
+                if (device_bill[i].status != 'terminated') {
                     if (device_bill[i].create_datetime < start_bill_time) {
                         start_time =start_bill_time;
                     } else {
@@ -416,7 +434,7 @@ var getRealTimeHubBills = function (start_bill_time, end_bill_time,curr_plan) {
 
     hub_cost=0;
 
-    var sqlStr = "select * from hub where (status='running') or (status='terminated' and terminate_datetime >'" + start_bill_time+"')";
+    var sqlStr = "select * from hub where (status='running') or (status='processing') or (status='terminated' and terminate_datetime >'" + start_bill_time+"')";
     console.log(sqlStr);
     var params = [];
     query.execQuery(sqlStr, params, function (err, rows) {
@@ -432,9 +450,8 @@ var getRealTimeHubBills = function (start_bill_time, end_bill_time,curr_plan) {
 
             for (var i = 0; i < hub_bill.length; i++) {
 
-                console.log(hub_bill[i].ram);
-                console.log(hub_bill[i].disk);
-                if (hub_bill[i].status == 'running') {
+
+                if (hub_bill[i].status != 'terminated') {
                     if (hub_bill[i].create_datetime < start_bill_time) {
                         start_time =start_bill_time;
                     } else {
@@ -471,7 +488,7 @@ var getRealTimeHubBills = function (start_bill_time, end_bill_time,curr_plan) {
                     // total_hour_time = hubs[i].running_time;
                     if (curr_plan == 'pay_as_hour_go') {
 
-                        var cost=billing_price[hub_bill[i].port_num]*hubs[i].running_time;
+                        var cost=billing_price[hub_bill[i].ports_num]*hubs[i].running_time;
 
                         cost=Math.round(cost * 1000) / 1000;
 
@@ -501,8 +518,94 @@ var getRealTimeHubBills = function (start_bill_time, end_bill_time,curr_plan) {
 
 exports.getAvailDateList=function(req, res){
 
+    var years=[];
+    var months=[];
+
+    var sqlStr = "select id from invoice where user_id=?";
+
+    var params = [req.user.id];
+    query.execQuery(sqlStr, params, function (err, rows) {
+        console.log(rows.length);
+            if(rows.length>0){
+                for(var i=0;i<rows.length;i++){
+
+                    var date=rows[i].id.split("_",2);
+                    years.push(date[0]);
+
+                    var month=Number(date[1]);
+
+                    var name=getMonthName(month);
+
+                    var monthObj={name:name,id:month}
+                    months.push(monthObj);
+                }
+
+            }
+
+            var now_date=new Date();
+            var now_year=now_date.getFullYear();
+
+            var now_month=now_date.getMonth()+1;
+            var now_name=getMonthName(now_month);
+
+            var monthObj={name:now_name,id:now_month};
+
+            years.push(now_year);
+            months.push(monthObj);
+
+            res.json({'years':years,'months':months});
+
+
+    });
 
 };
+
+var getMonthName=function(month){
+
+    var name=null;
+
+    switch (month) {
+
+        case 1:
+            name = "January";
+            break;
+        case 2:
+            name = "Febuary";
+            break;
+        case 3:
+            name = "March";
+            break;
+        case 4:
+            name = "April";
+            break;
+        case 5:
+            name = "May";
+            break;
+        case 6:
+            name = "June";
+            break;
+        case 7:
+            name = "July";
+            break;
+        case 8:
+            name = "August";
+            break;
+        case 9:
+            name = "September";
+            break;
+        case 10:
+            name = "October";
+            break;
+        case 11:
+            name = "November";
+            break;
+        case 12:
+            name = "December";
+            break;
+    }
+    return name;
+
+}
 
 exports.createBills = function (req, res) {
 

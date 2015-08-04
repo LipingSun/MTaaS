@@ -6,7 +6,27 @@ angular.module('myApp').controller('BillingController', function (billingService
 
     ctrl.key_expand=[];
 
-    ctrl.years = [2010, 2011, 2012, 2013, 2014, 2015, 2016];
+    var getDateList=function(){
+
+
+        $http({
+
+            method: 'GET',
+            url: api_v1 + '/availBillDates',
+            // params: {"now_date":now_date}
+
+        }).success(function (res) {
+            ctrl.years=res.years;
+            ctrl.months=res.months;
+            ctrl.s_year=ctrl.years[ctrl.years.length-1];
+            ctrl.s_month=ctrl.months[ctrl.months.length-1]['id'];
+
+        });
+    };
+
+    getDateList();
+
+    /*ctrl.years = [2010, 2011, 2012, 2013, 2014, 2015, 2016];
     ctrl.months = [
         {name: 'January', id: 1},
         {name: 'Febuary', id: 2},
@@ -21,11 +41,6 @@ angular.module('myApp').controller('BillingController', function (billingService
         {name: 'November', id: 11},
         {name: 'December', id: 12},
     ];
-
-    var now_date=new Date();
-    var now_year=now_date.getFullYear();
-    var now_month=now_date.getMonth()+1;
-
     for (var year in ctrl.years){
 
         if(ctrl.years[year]==now_year)
@@ -38,7 +53,7 @@ angular.module('myApp').controller('BillingController', function (billingService
         if(ctrl.months[month]['id']==now_month)
             ctrl.s_month=ctrl.months[month]['id'];
 
-    }
+    }*/
 
    var getRealTimeBill= function(){
        $http({
@@ -68,7 +83,7 @@ angular.module('myApp').controller('BillingController', function (billingService
     getRealTimeBill();
 
     ctrl.list=function(){
-        if(ctrl.s_year==now_year&&ctrl.s_month==now_month){
+        if(ctrl.s_year==ctrl.years[ctrl.years.length-1]&&ctrl.s_month==ctrl.months[ctrl.months.length-1]['id']){
             getRealTimeBill();
         }else{
 
@@ -87,6 +102,6 @@ angular.module('myApp').controller('BillingController', function (billingService
             });
 
         }
-    }
+    };
 
 });

@@ -1,0 +1,74 @@
+<div class="content">
+
+    <div class="row">
+        <div class="col-mod-12">
+
+            <ul class="breadcrumb">
+                <li><a href="#/">MTaaS</a></li>
+                <li class="active">Billing</li>
+            </ul>
+
+            <div class="form-group  hidden-print pull-right">
+                <input type="text" class="form-control form-cascade-control nav-input-search" size="20" placeholder="Search through site"/>
+
+                <span class="input-icon fui-search"></span>
+            </div>
+
+            <h3 class="page-header"><i class="fa fa-credit-card"></i> Billing
+                <i class="fa fa-info-circle animated bounceInDown show-info"></i></h3>
+
+            <blockquote class="page-information hidden">
+                <p>
+                    An Invoice or bill is a commercial document issued by a seller to a buyer, indicating the products, quantities, and agreed prices for products or services the seller has provided the buyer. An invoice indicates the sale transaction only.
+                </p>
+            </blockquote>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Invoice -->
+    <div class="panel panel-cascade panel-invoice">
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <h4 class="page-header"><i class="fa fa-credit-card"></i> Current Bill Plan</h4>
+
+
+                    <pre><strong> <span class="glyphicon glyphicon-ok"></span><strong style="margin: 10px">{{billingSettingCtrl.bill_plan.curr_plan}}</strong></strong></pre>
+                    <br/>
+
+                    <!--<input type="radio" ng-model="value" ng-value="billingSettingCtrl.bill_plan.curr_plan" ng-click="checkStuff()"/>-->
+
+                    <h4 class="page-header"><i class="fa fa-credit-card"></i> Next Bill Plan</h4>
+
+                    <blockquote class="page-information">
+
+                        <p> <i class="fa fa-info-circle bounceInDown show-info" style="margin-right: 10px"></i>Change  will take effect since the first day of next month. </p>
+
+                    </blockquote>
+                     <pre><input type="radio" ng-model="billingSettingCtrl.select_plan" value="pay_as_hour_go"/><strong style="margin: 10px">Pay As Hour Go</strong><br/><br/><input type="radio" ng-model="billingSettingCtrl.select_plan" value="month_flat_rate"/><strong style="margin: 10px">Month Flat Rate</strong>
+                     </pre>
+
+                    <p><span ng-if="billingSettingCtrl.plan_info!=''"><i class="fa fa-info-circle bounceInDown show-info"  style="margin-right: 10px"></i><span>{{billingSettingCtrl.plan_info}}</span></span>
+
+                    <button class=" btn btn-primary btn-sm pull-right" ng-click="billingSettingCtrl.changePlan()"> Change</button>
+                    </p>
+
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
