@@ -34,10 +34,10 @@
                     <i class="fa fa-refresh fa-4x"></i>
                 </div>
                 <div class="info-details">
-                    <h4>Visits <span class="pull-right">{{ dashboardCtrl.visits }}</span></h4>
+                    <h4>Visits <span class="pull-right">{{ DashboardCtrl.visits }}</span></h4>
 
                     <p>Today
-                        <span class="badge pull-right bg-white text-info"> {{ dashboardCtrl.visits }} <i class="fa fa-arrow-down fa-1x"></i> </span>
+                        <span class="badge pull-right bg-white text-info"> {{ DashboardCtrl.visits }} <i class="fa fa-arrow-down fa-1x"></i> </span>
                     </p>
                 </div>
             </div>
@@ -48,10 +48,10 @@
                     <i class="fa fa-user fa-4x"></i>
                 </div>
                 <div class="info-details">
-                    <h4>Users <span class="pull-right">{{ dashboardCtrl.users }}</span></h4>
+                    <h4>Users <span class="pull-right">{{ DashboardCtrl.users }}</span></h4>
 
                     <p>This Week
-                        <span class="badge pull-right bg-white text-success"> {{ dashboardCtrl.users }} <i class="fa fa-arrow-up fa-1x"></i> </span>
+                        <span class="badge pull-right bg-white text-success"> {{ DashboardCtrl.users }} <i class="fa fa-arrow-up fa-1x"></i> </span>
                     </p>
                 </div>
             </div>
@@ -61,13 +61,13 @@
                 <div class="info-icon bg-warning-dark">
                     <i class="fa fa-dollar fa-4x"></i>
                 </div>
-                <div class="info-details">
-                    <h4>This Month <span class="pull-right">{{ dashboardCtrl.profits }}</span></h4>
+                <a href="#/bills" ng-click="sidebar = 'Bills'"><div class="info-details">
+                    <h4>Bills<span class="pull-right">{{ DashboardCtrl.bills.bill_sum.amount }}</span></h4>
 
                     <p>This Month
-                        <span class="badge pull-right bg-white text-warning">{{ dashboardCtrl.profits }}<i class="fa fa-arrow-up fa-1x"></i> </span>
+                        <span class="badge pull-right bg-white text-warning">{{ DashboardCtrl.bills.bill_sum.amount }}<i class="fa fa-arrow-up fa-1x"></i> </span>
                     </p>
-                </div>
+                </div></a>
             </div>
         </div>
     </div>
@@ -80,18 +80,8 @@
                     <h3 class="panel-title">System Monitor</h3>
                 </div>
                 <div class="panel-body">
-                    <div class="col-md-4 col-centered">
-                        <canvas class="chart chart-doughnut" data="dashboardCtrl.data" labels="dashboardCtrl.labels"></canvas>
-                        <h4 class="text-center">CPU</h4>
-                    </div>
-                    <div class="col-md-4">
-                        <canvas class="chart chart-doughnut" data="dashboardCtrl.data" labels="dashboardCtrl.labels"></canvas>
-                        <h4 class="text-center">Memory</h4>
-                    </div>
-                    <div class="col-md-4">
-                        <canvas class="chart chart-doughnut" data="dashboardCtrl.data" labels="dashboardCtrl.labels"></canvas>
-                        <h4 class="text-center">Disk</h4>
-                    </div>
+                    <div id="mynetwork" class="col-md-12"></div>
+
                 </div>
             </div>
         </div>
