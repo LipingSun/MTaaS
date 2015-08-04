@@ -8,7 +8,8 @@ var getConnectionPool = function() {
             port     : process.env.OPENSHIFT_MYSQL_DB_PORT,
             user     : process.env.OPENSHIFT_MYSQL_DB_USERNAME,
             password : process.env.OPENSHIFT_MYSQL_DB_PASSWORD,
-            database : 'mtaas'
+            database : 'mtaas',
+            timezone : 'utc'
         };
     } else {
         setting = {
@@ -16,7 +17,8 @@ var getConnectionPool = function() {
             port     : '3307',
             user     : 'adminYPlWlrC',
             password : 'yBWDv3iCRCfr',
-            database : 'mtaas'
+            database : 'mtaas',
+            timezone : 'utc'
             //connectionLimit: 15,
             //multipleStatements: true
         };
