@@ -72,6 +72,7 @@ app.post(api_v1 + '/hubs', hubs.launchHubs);  // Launch an hub
 app.get(api_v1 + '/hubs/:id', hubs.getHub);  // Get info of an hub
 app.patch(api_v1 + '/hubs/:id', hubs.updateHub);  // Update info of an hub
 app.delete(api_v1 + '/hubs/:id', hubs.terminateHub);  // Terminate an hub
+app.post(api_v1 + '/hubs/:id/connections', hubs.attach);  // attach emulator or device to hub
 
 
 // Users
@@ -89,6 +90,7 @@ app.post(api_v1 +'/change_bill_plan', bills.changeBillPlan);
 app.get(api_v1 +'/realTimeBills', bills.getRealTimeBills);
 app.get(api_v1 + '/createBills', bills.createBills);
 app.get(api_v1 + '/bills', bills.getMonthBills);
+app.get(api_v1 + '/availBillDates', bills.getAvailDateList);
 
 
 
