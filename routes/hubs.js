@@ -2,14 +2,15 @@
 
 var controller = require('./../services/controller');
 var Hub = require('./../models/Hub');
-var DeviceHost = require('./../models/DeviceHost');
+var Emulator = require('./../models/Emulator');
+var ControllerHost = require('./../models/ControllerHost');
 
 var hubs = {};
 
 hubs.getHubs = function (req, res) {
     Hub.findAll(function (err, data) {
         if (!err) {
-            if (req.user.type === 'user') {
+            if (req.user && req.user.type === 'user') {
                 data = data.filter(function (hub) {
                     return hub.user_id === req.user.id && (hub.status === 'running' || hub.status === 'processing');
                 });
@@ -37,21 +38,23 @@ hubs.launchHubs = function (req, res) {
     newHub.user_id = req.user.id;
     Hub.create(newHub, function (err, hub) {
         if (!err) {
-            DeviceHost.findOne({hostname: 'host1'}, function (err, deviceHost) {
+            res.status(201).json(hub);
+            var host_id = '00000000001';
+            ControllerHost.findById(host_id, function (err, controllerHost) {
                 if (!err) {
-                    var host = 'http://' + deviceHost.ip;
-                    if (deviceHost.port) {
-                        host += ':' + deviceHost.port;
+                    var host = 'http://' + controllerHost.ip;
+                    if (controllerHost.port) {
+                        host += ':' + controllerHost.port;
                     }
-                    hub.id = Number(hub.id);
                     controller.hub.launch(host, hub, function (err, data) {
                         if (!err) {
                             var changes = {
+                                host_id: controllerHost.id,
                                 status: 'running'
                             };
                             Hub.update(hub.id, changes, function (err, data) {
                                 if (!err) {
-                                    res.status(201).json(data);
+
                                 }
                             });
                         }
@@ -71,11 +74,11 @@ hubs.updateHub = function (req, res) {
 };
 
 hubs.terminateHub = function (req, res) {
-    DeviceHost.findOne({hostname: 'host1'}, function (err, deviceHost) {
+    ControllerHost.findOne({hostname: 'host101'}, function (err, controllerHost) {
         if (!err) {
-            var host = 'http://' + deviceHost.ip;
-            if (deviceHost.port) {
-                host += ':' + deviceHost.port;
+            var host = 'http://' + controllerHost.ip;
+            if (controllerHost.port) {
+                host += ':' + controllerHost.port;
             }
             controller.hub.terminate(host, req.params.id, function () {
                 var changes = {
@@ -88,6 +91,39 @@ hubs.terminateHub = function (req, res) {
                     }
                 });
             });
+        }
+    });
+};
+
+hubs.attach = function (req, res) {
+    Hub.findById(req.params.id, function (err, hub) {
+        if (!err) {
+            ControllerHost.findById(hub.host_id , function (err, controllerHost) {
+                var host = 'http://' + controllerHost.ip;
+                if (controllerHost.port) {
+                    host += ':' + controllerHost.port;
+                }
+                controller.hub.attach(host, hub.id, req.body, function (err, data) {
+                   if (!err) {
+                       switch (req.body.resource_type) {
+                           case 'emulator':
+                               var changes = {
+                                   hub_id: data.hub_id,
+                                   hub_port: data.hub_port
+                               };
+                               Emulator.update(req.body.resource_id, changes, function (err, data) {
+                                   res.status(201).json(data);
+                               });
+                               break;
+                           case 'device': //TODO
+                               break;
+                       }
+
+                   }
+                });
+            });
+
+
         }
     });
 };
