@@ -25,8 +25,7 @@ Emulator.create = function (emulator, callback) {
     var sql = squel.insert().into('emulator').setFields(emulator).toString();
     mysql.query(sql, function (err, data) {
         if (!err) {
-            sql = squel.select().from('emulator').where('id = ' + data.insertId);
-            mysql.queryOne(sql.toString(), callback);
+            Emulator.findById(data.insertId, callback);
         }
     });
 };
@@ -40,8 +39,7 @@ Emulator.update = function (id, emulator, callback) {
     var sql = squel.update().table('emulator').setFields(emulator).where('id = ' + id);
     mysql.query(sql.toString(), function (err) {
         if (!err) {
-            sql = squel.select().from('emulator').where('id = ' + id);
-            mysql.queryOne(sql.toString(), callback);
+            Emulator.findById(id, callback);
         }
     });
 };
