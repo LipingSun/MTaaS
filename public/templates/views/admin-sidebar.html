@@ -1,6 +1,6 @@
 <div class="left-sidebar">
     <div class="sidebar-holder">
-        <ul class="nav nav-list" ng-init="sidebar = 'dashboard'; resourcesTab = -1; billingTab=-1;">
+        <ul class="nav nav-list" ng-init="sidebar = 'overview'; resourcesTab = -1; billingTab=-1;">
 
             <!-- sidebar to mini Sidebar toggle -->
             <li class="nav-toggle">
@@ -9,8 +9,8 @@
                 </button>
             </li>
 
-            <li ng-class="{ active: sidebar === 'dashboard' }">
-                <a href="#/dashboard" ng-click="sidebar = 'dashboard'" data-original-title="Dashboard"><i class="fa fa-dashboard"></i><span class="hidden-minibar"> Dashboard </span></a>
+            <li ng-class="{ active: sidebar === 'overview' }">
+                <a href="#/overview" ng-click="sidebar = 'overview'" data-original-title="Overview"><i class="fa fa-overview"></i><span class="hidden-minibar"> Overview </span></a>
             </li>
             <li ng-class="{ active: sidebar === 'user' }">
                 <a href="#/user" ng-click="sidebar = 'user'" data-original-title="User"><i class="fa fa-user"></i><span> User </span></a>
