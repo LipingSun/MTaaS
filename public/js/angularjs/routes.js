@@ -10,6 +10,11 @@ angular.module('myApp').config(function ($routeProvider) {
             controller: 'DashboardController',
             controllerAs: 'dashboardCtrl'
         })
+        .when('/wizard', {
+            templateUrl: 'templates/pages/wizard.html',
+            controller: 'WizardController',
+            controllerAs: 'wizardCtrl'
+        })
         .when('/emulator', {
             templateUrl: 'templates/pages/emulator.html',
             controller: 'EmulatorsController',
