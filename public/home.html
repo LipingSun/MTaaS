@@ -9,22 +9,20 @@
 
     <style type="text/css">
         #mynetwork {
-            width: 1200px;
-            height: 600px
+            width: 1000px;
+            height: 400px
           /*  border: 1px solid lightgray;*/
         }
     </style>
 
     <!-- Loading Bootstrap -->
-    <link href="css/bootstrap.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 
 
     <!-- Loading Stylesheets -->
     <link href="css/font-awesome.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet" type="text/css">
-
+    <link rel="stylesheet" href="bower_components/webhostinghub-glyphs/css/webhostinghub-glyphs.css">
 
     <!-- Loading Custom Stylesheets -->
     <link href="css/custom.css" rel="stylesheet">
@@ -40,7 +38,7 @@
 </head>
 
 <body>
-<div class="site-holder" ng-init="sidebar = 'dashboard'; resourcesTab = -1; billingTab=-1;">
+<div class="site-holder" ng-init="sidebar = 'dashboard'; resourcesTab = -1; billingTab = -1;">
 
     <nav class="navbar" role="navigation">
 
@@ -423,9 +421,10 @@
 </div>
 
 <!-- Angular.js -->
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-route.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-resource.js"></script>
+<script src="bower_components/angular/angular.min.js"></script>
+<script src="bower_components/angular-route/angular-route.min.js"></script>
+<script src="bower_components/angular-resource/angular-resource.min.js"></script>
+
 <script src="js/angularjs/app.js"></script>
 <script src="js/angularjs/routes.js"></script>
 
