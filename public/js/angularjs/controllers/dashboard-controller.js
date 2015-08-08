@@ -33,8 +33,10 @@ angular.module('myApp').controller('DashboardController', ['emulatorsService', '
     var draw = function () {
 
         ctrl.emulators = emulatorsService.query(function () {
+            ctrl.emulators_num = ctrl.emulators.length;
 
             ctrl.hubs = hubsService.query(function () {
+                ctrl.hubs_num = ctrl.hubs.length;
 
                 var nodes = [];
                 var edges = [];
@@ -53,7 +55,7 @@ angular.module('myApp').controller('DashboardController', ['emulatorsService', '
                     nodes.push({
                         id: ctrl.hubs[i].id,
                         label: 'HUB: ' + ctrl.hubs[i].name,
-                        image: DIR + 'Network-Pipe-icon.png',
+                        image: DIR + 'HUB.png',
                         shape: 'image'
                     });
 
@@ -126,7 +128,7 @@ angular.module('myApp').controller('DashboardController', ['emulatorsService', '
 
     draw();
 
-    ctrl.emulator_num = ctrl.emulators.length;
-    ctrl.hub_num = ctrl.hubs.length;
-    ctrl.devices_num = null;
+
+
+    ctrl.devices_num = 0;
 }]);
