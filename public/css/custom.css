@@ -9,3 +9,9 @@
 *	 You can find our other themes on: https://bootstrapguru.com/themes/
 ---------------------------------------------------------------------------------------------- */
 
+.router-customized:before {
+    font-family: "webhostinghub-glyphs";
+    content: '\e5ba';
+    font-size: 52px;
+    height: 56px
+}
