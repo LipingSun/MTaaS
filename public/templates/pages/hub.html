@@ -55,7 +55,7 @@
                                 <tr ng-repeat="hub in hubsCtrl.hubs">
                                     <!--<td>{{ hub.id }}</td>-->
                                     <td>{{ hub.name }}</td>
-                                    <td>{{ hub.create_datetime }}</td>
+                                    <td>{{ hub.create_datetime | date:'medium' }}</td>
                                     <td>{{ hub.network_type }}</td>
                                     <td>{{ hub.network_provider }}</td>
                                     <td>{{ hub.ports_num }}</td>
