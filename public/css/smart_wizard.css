@@ -30,7 +30,7 @@
 
 .swMain .stepContainer div.content {
   display:block;
-  position: absolute;  
+  position: relative;
   float:left;
   margin: 0;
   padding:5px;    
@@ -299,4 +299,18 @@
 .swMain .msgBox .close:hover{
   color: #EA8511;
   border: 1px solid #EA8511;  
+}
+.swMain ul.anchor li a {
+  display: block;
+  position: relative;
+  float: left;
+  margin: 0px 0 0 0;
+  padding: 3px;
+  height: 60px;
+  width: 230px;
+  text-decoration: none;
+  outline-style: none;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  z-index: 99;
 }
