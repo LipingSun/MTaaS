@@ -1,4 +1,17 @@
-angular.module('myApp').controller('WizardController', function () {
+angular.module('myApp').controller('WizardController', ['$http', function ($http) {
     var ctrl = this;
 
-});
+    ctrl.finish = function () {
+        var infrastructure = {
+            emulator: ctrl.newEmulators,
+            hub: ctrl.newhub
+        };
+
+        $http.post('api/v1/infrastructure/', infrastructure).success(function (res) {
+            //TODO
+        });
+
+
+    };
+
+}]);
