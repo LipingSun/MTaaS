@@ -12,7 +12,7 @@ emulators.getEmulators = function (req, res) {
         if (!err) {
             if (req.user && req.user.type === 'user') {
                 data = data.filter(function (emulator) {
-                    return emulator.user_id === req.user.id && (emulator.status === 'running' || emulator.status === 'processing' || emulator.status === 'error' );
+                    return emulator.user_id === req.user.id && emulator.status !== 'terminated';
                 });
             }
             res.status(200).json(data);
