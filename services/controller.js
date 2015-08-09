@@ -49,6 +49,51 @@ controller.emulator = {
 
 };
 
+controller.device = {
+
+    getAll: function (addr, callback) {
+        request.get(addr + '/devices', function (err, res, body) {
+            if (!err && res.statusCode == 200) {
+                callback(null, body);
+            } else {
+                console.log(err);
+                callback(err);
+            }
+        });
+    },
+
+    getById: function () { //TODO
+
+    },
+
+    launch: function (addr, device, callback) {
+        request.post(addr + '/devices', { json: device }, function (err, res, body) {
+            if (!err && res.statusCode == 201) {
+                callback(null, body);
+            } else {
+                console.log(err);
+                callback(err);
+            }
+        });
+    },
+
+    update: function () { //TODO
+
+    },
+
+    terminate: function (addr, id, callback) {
+        request.del(addr + '/devices/' + id, function (err, res) {
+            if (!err && res.statusCode == 200) {
+                callback(null);
+            } else {
+                console.log(err);
+                callback(err);
+            }
+        });
+    }
+
+};
+
 controller.hub = {
 
     getAll: function (addr, callback) {
