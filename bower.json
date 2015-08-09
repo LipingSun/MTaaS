@@ -9,7 +9,12 @@
     "tests"
   ],
   "dependencies": {
+    "bootstrap": "~3.3.5",
+    "webhostinghub-glyphs": "~0.1.3",
+    "angular": "~1.4.3",
+    "angular-route": "~1.4.3",
+    "angular-resource": "~1.4.3",
     "angular-chart.js": "~0.7.2",
-    "no-vnc": "~0.5.1"
+    "noVNC": "https://github.com/kanaka/noVNC.git#bc4414f5b1"
   }
 }
