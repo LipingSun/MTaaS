@@ -9,7 +9,8 @@ var getConnectionPool = function() {
             user     : process.env.OPENSHIFT_MYSQL_DB_USERNAME,
             password : process.env.OPENSHIFT_MYSQL_DB_PASSWORD,
             database : 'mtaas',
-            timezone : 'utc'
+            timezone : 'utc',
+            connectionLimit: 15
         };
     } else {
         setting = {
@@ -18,14 +19,16 @@ var getConnectionPool = function() {
             user     : 'adminYPlWlrC',
             password : 'yBWDv3iCRCfr',
             database : 'mtaas',
-            timezone : 'utc'
-            //connectionLimit: 15,
+            timezone : 'utc',
+            connectionLimit: 15
             //multipleStatements: true
         };
     }
     setting.connectTimeout = 100000;
     return mysql.createPool(setting);
 };
+
+getConnectionPool().query("SET @@global.time_zone='+00:00'");
 
 mysql.query = function (sql, callback) {
     console.log('SQL: ' + sql);
