@@ -2,9 +2,35 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
 
     var ctrl = this;
 
-    ctrl.getAll = function () {
-        ctrl.emulators = emulatorsService.query();
+    ctrl.hub = [];
+    var getIndexOfHub = function (emu, hubs) {
+
+        for (var i = 0; i < hubs.length; i++) {
+
+            if (emu.hub_id === hubs[i].id)
+                return i;
+        }
+        return 0;
     };
+
+    ctrl.getAll = function () {
+        ctrl.hubs = hubsService.query(function () {
+            ctrl.emulators = emulatorsService.query(function () {
+                //ctrl.emulators.forEach(function (emulator) {
+                //    emulator.hub = ctrl.hubs.filter(function (hub) {
+                //        return hub.id === emulator.hub_id
+                //    })[0];
+                //});
+                for (var i = 0; i < ctrl.emulators.length; i++) {
+
+                    ctrl.hub[i] = ctrl.hubs[getIndexOfHub(ctrl.emulators[i], ctrl.hubs)].id;
+                }
+            });
+
+        });
+    };
+
+    ctrl.getAll();
 
     ctrl.getOne = function (id) {
         ctrl.emulator = emulatorsService.get(id);
@@ -20,11 +46,9 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
         emulator.$delete({id: emulator.id});
     };
 
-    ctrl.getAll();
-
     ctrl.view = function (emulator) {
-        var params = 'host=' + emulator.ip + '&' +'port=' + emulator.vnc_port;
-        $window.open('bower_components/no-vnc/vnc_auto.html?' + params, emulator.name, 'height=800, width=480');
+        var params = 'host=' + emulator.ip + '&' + 'port=' + emulator.vnc_port + '&' + 'autoconnect=true' + '&' + 'resize=downscale';
+        $window.open('bower_components/noVNC/vnc.html?' + params, emulator.name, 'height=682, width=360, resizable=no');
     };
 
     ctrl.attachToHub = function (emulator, hub) {
@@ -37,6 +61,5 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
         });
     };
 
-    ctrl.hubs = hubsService.query();
 
 }]);
