@@ -43,7 +43,7 @@
                                 <tr>
                                     <!--<th>ID</th>-->
                                     <th>Name</th>
-                                    <th>Create Time</th>
+                                    <!--<th>Create Time</th>-->
                                     <th>System</th>
                                     <th>Version</th>
                                     <th>CPU</th>
@@ -59,7 +59,7 @@
                                 <tr ng-repeat="emulator in emulatorsCtrl.emulators">
                                     <!--<td>{{ emulator.id }}</td>-->
                                     <td>{{ emulator.name }}</td>
-                                    <td>{{ emulator.create_datetime | date:'medium' }}</td>
+                                    <!--<td>{{ emulator.create_datetime | date:'yyyy-MM-dd HH:mm:ss' }}</td>-->
                                     <td>{{ emulator.system }}</td>
                                     <td>{{ emulator.version }}</td>
                                     <td>{{ emulator.cpu }}</td>
@@ -67,7 +67,7 @@
                                     <td>{{ emulator.disk }}</td>
                                     <td>{{ emulator.ip + ":" + emulator.ssh_port }}</td>
                                     <td>
-                                        <select class="form-control" ng-model="hub" ng-change="emulatorsCtrl.attachToHub(emulator, hub)" ng-options="hub.name for hub in emulatorsCtrl.hubs"></select>
+                                        <select class="form-control" ng-init="" ng-model="emulatorsCtrl.hub[$index]" ng-change="emulatorsCtrl.attachToHub(emulator, hub)" ng-options="hub.id as hub.name for hub in emulatorsCtrl.hubs"></select>
                                     </td>
                                     <td>{{ emulator.status }}</td>
                                     <td>
@@ -140,7 +140,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label" ng-model="newEmulator.disk" ng-init="newEmulator.disk = '128M'">DISK</label>
+                                    <label class="col-sm-3 control-label" ng-model="newEmulator.disk" ng-init="newEmulator.disk = '128M'">Disk</label>
                                     <div class="col-sm-6">
                                         <select class="form-control">
                                             <option>128M</option>
@@ -152,7 +152,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label" ng-model="newEmulator.number" >NUMBER</label>
+                                    <label class="col-sm-3 control-label" ng-model="newEmulator.number">Number</label>
                                     <div class="col-sm-6">
                                         <input type="number" class="form-control" ng-model="newEmulator.number" ng-init="newEmulator.number = 1"/>
                                     </div>
@@ -164,7 +164,6 @@
                                         <button type="button" class="btn btn-danger" ng-click="newEmulator = null">Cancel</button>
                                     </div>
                                 </div>
-
                             </form>
                         </div>
                         <!-- /panel body -->
