@@ -12,7 +12,10 @@ var passport = require('./services/passport');
 
 var routes = require('./routes/index');
 var auth = require('./routes/auth');
+var infrastructure = require('./routes/infrastructure');
 var emulators = require('./routes/emulators');
+var devices = require('./routes/devices');
+var deviceStock = require('./routes/deviceStock');
 var hubs = require('./routes/hubs');
 var users = require('./routes/users');
 var bills = require('./routes/bills');
@@ -59,12 +62,28 @@ app.post('/login', passport.authenticate('local', { successRedirect: '/', failur
 app.post('/register', auth.register);  // Post register info
 app.all('/logout', auth.logout);  // Log out user session
 
+
+// Infrastructure
+app.post(api_v1 + '/infrastructure', infrastructure.setup);  // Setup infrastructure
+
 // Emulators
 app.get(api_v1 + '/emulators', emulators.getEmulators);  // Get all relevant emulators
 app.post(api_v1 + '/emulators', emulators.launchEmulators);  // Launch an emulator
 app.get(api_v1 + '/emulators/:id', emulators.getEmulator);  // Get info of an emulator
 app.patch(api_v1 + '/emulators/:id', emulators.updateEmulator);  // Update info of an emulator
 app.delete(api_v1 + '/emulators/:id', emulators.terminateEmulator);  // Terminate an emulator
+
+//Devices
+app.get(api_v1 + '/devices', devices.getDevices);  // Get all relevant devices
+app.post(api_v1 + '/devices', devices.launchDevices);  // Launch an device
+app.get(api_v1 + '/devices/:id', devices.getDevice);  // Get info of an device
+app.patch(api_v1 + '/devices/:id', devices.updateDevice);  // Update info of an device
+app.delete(api_v1 + '/devices/:id', devices.terminateDevice);  // Terminate an device
+
+//Devices in Stock
+app.get(api_v1 + '/devices-in-stock', deviceStock.getDevices);  // Get all relevant devices
+app.get(api_v1 + '/devices-in-stock/:id', deviceStock.getDevice);  // Get info of an devices
+app.patch(api_v1 + '/devices-in-stock/:id', deviceStock.updateDevice);  // Update info of an devices
 
 // Hubs
 app.get(api_v1 + '/hubs', hubs.getHubs);  // Get all relevant hubs
@@ -91,6 +110,10 @@ app.get(api_v1 +'/realTimeBills', bills.getRealTimeBills);
 app.get(api_v1 + '/createBills', bills.createBills);
 app.get(api_v1 + '/bills', bills.getMonthBills);
 app.get(api_v1 + '/availBillDates', bills.getAvailDateList);
+app.get(api_v1 + '/unpaid_bills', bills.getUnpaidBills);
+app.post(api_v1 + '/paybills', bills.payBills);
+
+
 
 
 
