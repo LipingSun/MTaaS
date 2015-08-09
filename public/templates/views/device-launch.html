@@ -1,0 +1,39 @@
+<div class="panel-body">
+    <form action class="form-horizontal row-border" ng-init="newDevice = {}">
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Name</label>
+            <div class="col-sm-6">
+                <input type="text" ng-model="newDevice.name" ng-init="newDevice.name = 'device'" class="form-control"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Brand</label>
+            <div class="col-sm-6">
+
+                <select class="form-control">
+                    <option>Samsung</option>
+                </select>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Model</label>
+            <div class="col-sm-6">
+                <select class="form-control">
+                    <option>S2</option>
+                </select>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+                <button type="button" class="btn btn-success" ng-click="devicesCtrl.create(newDevice); deviceTab = 'devices'; devicesCtrl.getAll();">Submit</button>
+                <button type="button" class="btn btn-danger" ng-click="newDevice = null">Cancel</button>
+            </div>
+        </div>
+
+    </form>
+</div>
