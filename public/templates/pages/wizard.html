@@ -1,10 +1,109 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+<div class="content">
+    <div class="row">
+        <div class="col-mod-12">
 
-</body>
-</html>
+            <ul class="breadcrumb">
+                <li><a href="#/">MTaaS</a></li>
+                <li class="active">Wizard</li>
+            </ul>
+
+            <div class="form-group hiddn-minibar pull-right">
+                <input type="text" class="form-control form-cascade-control nav-input-search" size="20" placeholder="Search through site"/>
+
+                <span class="input-icon fui-search"></span>
+            </div>
+
+            <h3 class="page-header"><i class="fa fa-mobile"></i> Wizard
+                <i class="fa fa-info-circle animated bounceInDown show-info"></i></h3>
+
+            <blockquote class="page-information hidden">
+                <p>
+                    Wizard.
+                </p>
+            </blockquote>
+        </div>
+    </div>
+
+    <!-- Basic Wizard -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-dat">
+
+                <div class="panel-body nopadding">
+
+                    <!-- Smart Wizard -->
+                    <div id="wizard" class="swMain" ng-init="step = 1">
+                        <ul class="anchor">
+                            <li>
+                                <a ng-click="step = 1" ng-class="{ selected: step === 1, done: step > 1, disabled: step < 1 }">
+                                    <label class="stepNumber">1</label>
+                                    <span class="stepDesc">
+                                        Emulator
+                                    </span>
+                                </a>
+                            </li>
+                            <li><a ng-click="step = 2" ng-class="{ selected: step === 2, done: step > 2, disabled: step < 2 }">
+                                <label class="stepNumber">2</label>
+                                <span class="stepDesc">
+                                    Device
+                                </span>
+                            </a></li>
+                            <li><a ng-click="step = 3" ng-class="{ selected: step === 3, done: step > 3, disabled: step < 3 }">
+                                <label class="stepNumber">3</label>
+                                <span class="stepDesc">
+                                    Hub
+                                </span>
+                            </a></li>
+                            <li><a ng-click="step = 4" ng-class="{ selected: step === 4, disabled: step !== 4 }">
+                                <label class="stepNumber">4</label>
+                                <span class="stepDesc">
+                                    Finish
+                                </span>
+                            </a></li>
+                        </ul>
+
+                        <div class="stepContainer">
+                            <div ng-show="step === 1" id="step-1" class="content">
+                            <h2 class="StepTitle">Create Emulator</h2>
+                            <div ng-include="'templates/views/emulator-launch.html'"></div>
+                        </div>
+                            <div ng-show="step === 2" id="step-2" class="content">
+                                <h2 class="StepTitle">Create Device</h2>
+                                <div ng-include="'templates/views/device-launch.html'"></div>
+                            </div>
+                            <div ng-show="step === 3" id="step-3" class="content">
+                                <h2 class="StepTitle">Create Hub</h2>
+                                <div ng-include="'templates/views/hub-launch.html'"></div>
+                            </div>
+                            <div ng-show="step === 4" id="step-4" class="content">
+                                <h2 class="StepTitle">Finish</h2>
+
+                                <div class="panel">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">// Describe how to use mobile test infrastructure</h3>
+                                        <p></p>
+                                        <p></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="actionBar">
+                            <div class="msgBox">
+                                <div class="content"></div>
+                                <a href="#" class="close">X</a></div>
+                            <div class="loader">Loading</div>
+                            <a ng-click="wizardCtrl.finish(newEmulator)" href="#/dashboard" class="buttonFinish" ng-class="{ buttonDisabled: step !== 4 }">Finish</a>
+                            <a ng-click="step = step + 1" class="buttonNext" ng-class="{ buttonDisabled: step >= 4 }">Next</a>
+                            <a ng-click="step = step - 1" class="buttonPrevious" ng-class="{ buttonDisabled: step <= 1 }">Previous</a>
+                        </div>
+                    </div>
+                    <!-- End SmartWizard Content -->
+
+                </div>
+                <!-- /panel body -->
+            </div>
+        </div>
+    </div>
+
+</div>
