@@ -96,7 +96,7 @@ angular.module('myApp').controller('BillingController', function (billingService
 
             }).success(function (res) {
 
-                alert(res);
+               // alert(res);
                 ctrl.bills=res;
 
             });
