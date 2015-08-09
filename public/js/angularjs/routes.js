@@ -20,6 +20,11 @@ angular.module('myApp').config(function ($routeProvider) {
             controller: 'EmulatorsController',
             controllerAs: 'emulatorsCtrl'
         })
+        .when('/device', {
+            templateUrl: 'templates/pages/device.html',
+            controller: 'DevicesController',
+            controllerAs: 'devicesCtrl'
+        })
         .when('/hub', {
             templateUrl: 'templates/pages/hub.html',
             controller: 'HubsController',
@@ -34,6 +39,11 @@ angular.module('myApp').config(function ($routeProvider) {
             templateUrl: 'templates/pages/billing_setting.html',
             controller: 'BillingSettingController',
             controllerAs: 'billingSettingCtrl'
+        })
+        .when('/payment', {
+            templateUrl: 'templates/pages/payment.html',
+            controller: 'PaymentController',
+            controllerAs: 'paymentCtrl'
         })
         .otherwise({
             redirectTo: '/'
