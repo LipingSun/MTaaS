@@ -10,8 +10,8 @@ DeviceStock.findAll = function (callback) {
     mysql.query(sql.toString(), callback);
 };
 
-DeviceStock.findById = function (id, callback) {
-    var sql = squel.select().from('device_stock').where('id = ' + id);
+DeviceStock.findById = function (imei, callback) {
+    var sql = squel.select().from('device_stock').where('imei = ' + imei);
     mysql.queryOne(sql.toString(), callback);
 };
 
@@ -30,16 +30,16 @@ DeviceStock.create = function (device_stock, callback) {
     });
 };
 
-DeviceStock.deleteById = function (id, callback) {
-    var sql = squel.delete().from('device_stock').where('id = ' + id);
+DeviceStock.deleteById = function (imei, callback) {
+    var sql = squel.delete().from('device_stock').where('imei = ' + imei);
     mysql.query(sql.toString(), callback);
 };
 
-DeviceStock.update = function (id, device_stock, callback) {
-    var sql = squel.update().table('device_stock').setFields(device_stock).where('id = ' + id);
+DeviceStock.update = function (imei, device_stock, callback) {
+    var sql = squel.update().table('device_stock').setFields(device_stock).where('imei = ' + imei);
     mysql.query(sql.toString(), function (err) {
         if (!err) {
-            device_stock.findById(id, callback);
+            DeviceStock.findById(imei, callback);
         }
     });
 };
