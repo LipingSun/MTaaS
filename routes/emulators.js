@@ -41,7 +41,7 @@ emulators.launchEmulators = function (req, res) {  // TODO: Multi-thread
         delete newEmulator.number;
         Emulator.create(newEmulator, function (err, emulator) {
             if (!err) {
-                ControllerHost.findOne({hostname: 'host101'} ,function (err, controllerHost) {
+                ControllerHost.findOne({hostname: 'host101'}, function (err, controllerHost) {
                     if (!err) {
                         var host = 'http://' + controllerHost.ip;
                         if (controllerHost.port) {
@@ -96,9 +96,9 @@ emulators.terminateEmulator = function (req, res) {
         if (!err) {
             res.status(200).json(data);
 
-            ControllerHost.findOne({hostname: 'host101'} ,function (err, controllerHost) {
+            ControllerHost.findOne({hostname: 'host101'}, function (err, controllerHost) {
                 if (!err) {
-                    var host = 'http://' +  controllerHost.ip;
+                    var host = 'http://' + controllerHost.ip;
                     if (controllerHost.port) {
                         host += ':' + controllerHost.port;
                     }
