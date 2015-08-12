@@ -3,7 +3,9 @@
 var controller = require('./../services/controller');
 var Hub = require('./../models/Hub');
 var Emulator = require('./../models/Emulator');
+var Device = require('./../models/Device');
 var ControllerHost = require('./../models/ControllerHost');
+var squel = require('squel');
 
 var hubs = {};
 
@@ -74,22 +76,26 @@ hubs.updateHub = function (req, res) {
 };
 
 hubs.terminateHub = function (req, res) {
-    ControllerHost.findOne({hostname: 'host101'}, function (err, controllerHost) {
+    var changes = {
+        status: 'terminating',
+        terminate_datetime: squel.fval('NOW()')
+    };
+    Hub.update(req.params.id, changes, function (err, data) {
         if (!err) {
-            var host = 'http://' + controllerHost.ip;
-            if (controllerHost.port) {
-                host += ':' + controllerHost.port;
-            }
-            controller.hub.terminate(host, req.params.id, function () {
-                var changes = {
-                    status: 'terminated',
-                    terminate_datetime: new Date().toISOString()
-                };
-                Hub.update(req.params.id, changes, function (err, data) {
-                    if (!err) {
-                        res.status(200).json(data);
+            res.status(200).json(data);
+
+            ControllerHost.findOne({hostname: 'host101'}, function (err, controllerHost) {
+                if (!err) {
+                    var host = 'http://' + controllerHost.ip;
+                    if (controllerHost.port) {
+                        host += ':' + controllerHost.port;
                     }
-                });
+                    controller.hub.terminate(host, req.params.id, function (err) {
+                        if (!err) {
+                            Hub.update(req.params.id, {status: 'terminated'});
+                        }
+                    });
+                }
             });
         }
     });
@@ -115,15 +121,20 @@ hubs.attach = function (req, res) {
                                    res.status(201).json(data);
                                });
                                break;
-                           case 'device': //TODO
+                           case 'device':
+                               var changes = {
+                                   hub_id: data.hub_id,
+                                   hub_port: data.hub_port
+                               };
+                               Device.update(req.body.resource_id, changes, function (err, data) {
+                                   res.status(201).json(data);
+                               });
                                break;
                        }
 
                    }
                 });
             });
-
-
         }
     });
 };
