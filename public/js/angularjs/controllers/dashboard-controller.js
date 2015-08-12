@@ -60,7 +60,7 @@ angular.module('myApp').controller('DashboardController', ['emulatorsService', '
                         nodes.push({
                             id: ctrl.hubs[i].id,
                             label: 'HUB: ' + ctrl.hubs[i].name,
-                            image: DIR + 'hub.png',
+                            image: DIR + 'HUB.png',
                             shape: 'image'
                         });
 
