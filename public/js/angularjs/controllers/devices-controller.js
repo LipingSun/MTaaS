@@ -2,45 +2,55 @@ angular.module('myApp').controller('DevicesController', ['$http', '$window', 'de
 
     var ctrl = this;
 
-    ctrl.hub=[];
+    ctrl.hub = [];
 
-    ctrl.getAvailDevices=function(){
-        var avail_devices=deviceStockService.query(
-/*  function(){
+    ctrl.getAvailDevices = function () {
+        ctrl.avail_devices = deviceStockService.query(
+            function () {
 
-           var avail_device={};
-            ctrl.avail_devices=[];
-            for(var i=0;i<avail_devices.length;i++){
+                for (var j = 0; j < ctrl.avail_devices.length; j++) {
 
-                if(ctrl.avail_devices)
+                    var device = ctrl.avail_devices[j];
 
-            }
+                    for (var i = j + 1; i < ctrl.avail_devices.length; i++) {
+                        if (ctrl.avail_devices[i].brand == device.brand && ctrl.avail_devices[i].model == device.model) {
+                            ctrl.avail_devices.splice(i, 1);
+                            i--;
+                        }
 
-
-
-        }*/);
-    };
-
-    var getIndexOfHub=function(emu,hubs){
-
-        for (var i=0;i<hubs.length;i++){
-
-            if(emu.hub_id===hubs[i].id)
-                return i;
-        }
-        return 0;
-    };
-    ctrl.getAll = function () {
-        ctrl.devices = devicesService.query(function(){
-
-            ctrl.hubs = hubsService.query(function() {
-                    for (var i = 0; i < ctrl.devices.length; i++) {
-
-                        ctrl.hub[i] = ctrl.hubs[getIndexOfHub( ctrl.devices[i], ctrl.hubs)].id;
                     }
                 }
 
-            );
+            }
+        );
+
+    };
+
+    var getIndexOfHub = function (emu, hubs) {
+
+        for (var i = 0; i < hubs.length; i++) {
+
+            if (emu.hub_id === hubs[i].id)
+                return i;
+        }
+        return -1;
+    };
+
+    ctrl.getAll = function () {
+
+        ctrl.devices = devicesService.query(function () {
+
+            ctrl.hubs = hubsService.query(function () {
+
+                for (var i = 0; i < ctrl.devices.length; i++) {
+
+                    var index = getIndexOfHub(ctrl.devices[i], ctrl.hubs);
+
+                    if (index != -1)
+
+                        ctrl.hub[i] = ctrl.hubs[index].id;
+                }
+            });
 
         });
     };
@@ -50,6 +60,8 @@ angular.module('myApp').controller('DevicesController', ['$http', '$window', 'de
     };
 
     ctrl.create = function (newDevice) {
+        newDevice.model = newDevice.brand.model;
+        newDevice.brand = newDevice.brand.brand;
         var device = new devicesService(newDevice);
         device.$save();
         // TODO: see hub
@@ -62,22 +74,58 @@ angular.module('myApp').controller('DevicesController', ['$http', '$window', 'de
     ctrl.getAll();
 
     ctrl.view = function (device) {
-        var params = 'host=' + device.ip + '&' +'port=' + device.vnc_port;
-        $window.open('bower_components/noVNC/vnc_auto.html?' + params, device.name, 'height=800, width=480');
+        var params = 'host=' + device.ip + '&' + 'port=' + device.vnc_port + '&' + 'autoconnect=true' + '&' + 'resize=downscale';
+        $window.open('bower_components/noVNC/vnc.html?' + params, device.name, 'height=682, width=360, resizable=no');
     };
 
-    ctrl.attachToHub = function (device, hub) {
+    ctrl.attachToHub = function (device, hub_id) {
         var data = {
             resource_type: 'device',
             resource_id: device.id
         };
-        $http.post('api/v1/hubs/' + hub.id + '/connections', data).success(function (res) {
+        $http.post('api/v1/hubs/' + hub_id + '/connections', data).success(function (res) {
             //TODO
         });
     };
 
 
-
-
-
 }]);
+
+/*angular.module('ui.filters').filter('unique', function () {
+
+ return function (items, filterOn) {
+
+ if (filterOn === false) {
+ return items;
+ }
+
+ if ((filterOn || angular.isUndefined(filterOn)) && angular.isArray(items)) {
+ var hashCheck = {}, newItems = [];
+
+ var extractValueToCompare = function (item) {
+ if (angular.isObject(item) && angular.isString(filterOn)) {
+ return item[filterOn];
+ } else {
+ return item;
+ }
+ };
+
+ angular.forEach(items, function (item) {
+ var valueToCheck, isDuplicate = false;
+
+ for (var i = 0; i < newItems.length; i++) {
+ if (angular.equals(extractValueToCompare(newItems[i]), extractValueToCompare(item))) {
+ isDuplicate = true;
+ break;
+ }
+ }
+ if (!isDuplicate) {
+ newItems.push(item);
+ }
+
+ });
+ items = newItems;
+ }
+ return items;
+ };
+ });*/
