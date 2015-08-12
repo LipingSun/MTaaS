@@ -93,7 +93,7 @@
                                 <div class="content"></div>
                                 <a href="#" class="close">X</a></div>
                             <div class="loader">Loading</div>
-                            <a ng-click="wizardCtrl.finish(newEmulator)" href="#/dashboard" class="buttonFinish" ng-class="{ buttonDisabled: step !== 4 }">Finish</a>
+                            <a ng-click="/*wizardCtrl.finish(newEmulator)*/" href="#/dashboard" class="buttonFinish" ng-class="{ buttonDisabled: step !== 4 }">Finish</a>
                             <a ng-click="step = step + 1" class="buttonNext" ng-class="{ buttonDisabled: step >= 4 }">Next</a>
                             <a ng-click="step = step - 1" class="buttonPrevious" ng-class="{ buttonDisabled: step <= 1 }">Previous</a>
                         </div>
