@@ -28,8 +28,12 @@
     <div class="profile-tabs">
 
         <ul id="myTab" class="nav nav-tabs" ng-init="deviceTab = 'devices'">
-            <li ng-class="{ active: deviceTab === 'devices' }" ng-click="devicesCtrl.getAll()"><a href data-toggle="tab" ng-click="deviceTab = 'devices'">Devices</a></li>
-            <li ng-class="{ active: deviceTab === 'launch' }"><a href data-toggle="tab" ng-click="devicesCtrl.getAvailDevices();deviceTab = 'launch'">Launch</a></li>
+            <li ng-class="{ active: deviceTab === 'devices' }" ng-click="devicesCtrl.getAll()">
+                <a href data-toggle="tab" ng-click="deviceTab = 'devices'">Devices</a>
+            </li>
+            <li ng-class="{ active: deviceTab === 'launch' }">
+                <a href data-toggle="tab" ng-click="devicesCtrl.getAvailDevices();deviceTab = 'launch'">Launch</a>
+            </li>
         </ul>
 
         <div id="myTabContent" class="tab-content">
@@ -43,30 +47,34 @@
                                 <tr>
                                     <!--<th>ID</th>-->
                                     <th>Name</th>
-                                    <th>Create Time</th>
-
                                     <th>Model</th>
                                     <th>SSH</th>
                                     <th>Hub</th>
+                                    <th>Create Time</th>
                                     <th>Status</th>
-                                    <th> </th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="device in devicesCtrl.devices">
                                     <!--<td>{{ device.id }}</td>-->
                                     <td>{{ device.name }}</td>
-                                    <td>{{ device.create_datetime | date:'medium' }}</td>
-
                                     <td>{{ device.model }}</td>
                                     <td>{{ device.ip + ":" + device.ssh_port }}</td>
                                     <td>
-                                        <select class="form-control" ng-model="devicesCtrl.hub[$index]" ng-change="devicesCtrl.attachToHub(device, hub)" ng-options="hub.id as hub.name for hub in devicesCtrl.hubs"></select>
+                                        <select class="form-control" ng-model="devicesCtrl.hub[$index]" ng-options="hub.id as hub.name for hub in devicesCtrl.hubs" ng-change="devicesCtrl.attachToHub(device, devicesCtrl.hub[$index])">
+                                            <option></option>
+                                        </select>
                                     </td>
+                                    <td>{{ device.create_datetime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
                                     <td>{{ device.status }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-info" ng-click="devicesCtrl.view(device)"><i class="fa fa-fw fa-eye"></i></button>
-                                        <button type="button" class="btn btn-danger" ng-click="devicesCtrl.delete(device)"><i class="fa fa-fw fa-trash-o"></i></button>
+                                        <button type="button" class="btn btn-info" ng-click="devicesCtrl.view(device)">
+                                            <i class="fa fa-fw fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger" ng-click="devicesCtrl.delete(device)">
+                                            <i class="fa fa-fw fa-trash-o"></i>
+                                        </button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -84,6 +92,7 @@
 
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Name</label>
+
                                     <div class="col-sm-6">
                                         <input type="text" ng-model="newDevice.name" ng-init="newDevice.name = 'device'" class="form-control"/>
                                     </div>
@@ -91,17 +100,16 @@
 
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Brand</label>
+
                                     <div class="col-sm-6">
-
-                                        <select class="form-control" ng-model="newDevice.brand" ng-options="avail_device.brand group by avail_device.brand for avail_device in devicesCtrl.avail_devices"></select>
-
+                                        <select class="form-control" ng-model="newDevice.brand" ng-options="avail_device.brand for avail_device in devicesCtrl.avail_devices "></select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Model</label>
-                                    <div class="col-sm-6">
-                                        <select class="form-control" ng-model="newDevice.model" ng-options="avail_device.model for avail_device in devicesCtrl.avail_devices | filter:newDevice.brand"></select>
 
+                                    <div class="col-sm-6">
+                                        <select class="form-control" ng-model="newDevice.imei" ng-options="avail_device.imei as avail_device.model for avail_device in devicesCtrl.avail_devices | filter:newDevice.brand"></select>
                                     </div>
                                 </div>
 
