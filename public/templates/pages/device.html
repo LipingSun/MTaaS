@@ -69,12 +69,8 @@
                                     <td>{{ device.create_datetime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
                                     <td>{{ device.status }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-info" ng-click="devicesCtrl.view(device)">
-                                            <i class="fa fa-fw fa-eye"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger" ng-click="devicesCtrl.delete(device)">
-                                            <i class="fa fa-fw fa-trash-o"></i>
-                                        </button>
+                                        <button type="button" class="btn btn-info" ng-click="devicesCtrl.view(device)"><i class="fa fa-fw fa-eye"></i></button>
+                                        <button type="button" class="btn btn-danger" ng-click="devicesCtrl.delete(device)"><i class="fa fa-fw fa-trash-o"></i></button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -92,7 +88,6 @@
 
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Name</label>
-
                                     <div class="col-sm-6">
                                         <input type="text" ng-model="newDevice.name" ng-init="newDevice.name = 'device'" class="form-control"/>
                                     </div>
@@ -100,14 +95,12 @@
 
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Brand</label>
-
                                     <div class="col-sm-6">
                                         <select class="form-control" ng-model="newDevice.brand" ng-options="avail_device.brand for avail_device in devicesCtrl.avail_devices "></select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Model</label>
-
                                     <div class="col-sm-6">
                                         <select class="form-control" ng-model="newDevice.imei" ng-options="avail_device.imei as avail_device.model for avail_device in devicesCtrl.avail_devices | filter:newDevice.brand"></select>
                                     </div>
