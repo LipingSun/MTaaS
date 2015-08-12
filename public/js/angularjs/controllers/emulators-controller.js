@@ -10,20 +10,19 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
             if (emu.hub_id === hubs[i].id)
                 return i;
         }
-        return 0;
+        return -1;
     };
 
     ctrl.getAll = function () {
         ctrl.hubs = hubsService.query(function () {
             ctrl.emulators = emulatorsService.query(function () {
-                //ctrl.emulators.forEach(function (emulator) {
-                //    emulator.hub = ctrl.hubs.filter(function (hub) {
-                //        return hub.id === emulator.hub_id
-                //    })[0];
-                //});
-                for (var i = 0; i < ctrl.emulators.length; i++) {
 
-                    ctrl.hub[i] = ctrl.hubs[getIndexOfHub(ctrl.emulators[i], ctrl.hubs)].id;
+                for (var i = 0; i < ctrl.emulators.length; i++) {
+                    var index=getIndexOfHub(ctrl.emulators[i], ctrl.hubs);
+
+                    if(index!=-1)
+
+                        ctrl.hub[i] = ctrl.hubs[index].id;
                 }
             });
 
@@ -51,15 +50,16 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
         $window.open('bower_components/noVNC/vnc.html?' + params, emulator.name, 'height=682, width=360, resizable=no');
     };
 
-    ctrl.attachToHub = function (emulator, hub) {
-        var data = {
-            resource_type: 'emulator',
-            resource_id: emulator.id
-        };
-        $http.post('api/v1/hubs/' + hub.id + '/connections', data).success(function (res) {
-            //TODO
-        });
+    ctrl.attachToHub = function (emulator, hub_id) {
+        if (hub_id) {
+            var data = {
+                resource_type: 'emulator',
+                resource_id: emulator.id
+            };
+            $http.post('api/v1/hubs/' + hub_id + '/connections', data).success(function (res) {
+                //TODO
+            });
+        }
     };
-
 
 }]);
