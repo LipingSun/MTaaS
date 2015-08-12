@@ -22,10 +22,10 @@ Device.findOne = function (obj, callback) {
 };
 
 Device.create = function (device, callback) {
-    var sql = squel.insert().into('device').setFields(device).toString();
-    mysql.query(sql, function (err, data) {
+    var sql = squel.insert().into('device').setFields(device);
+    mysql.query(sql.toString(), function (err, data) {
         if (!err) {
-            device.findById(data.insertId, callback);
+            Device.findById(data.insertId, callback);
         }
     });
 };
@@ -39,7 +39,7 @@ Device.update = function (id, device, callback) {
     var sql = squel.update().table('device').setFields(device).where('id = ' + id);
     mysql.query(sql.toString(), function (err) {
         if (!err) {
-            device.findById(id, callback);
+            Device.findById(id, callback);
         }
     });
 };
