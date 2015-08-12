@@ -24,7 +24,7 @@ var billing_price={
     '5':0.001,
     '10': 0.002,
     '15':0.0025,
-    'SamSung_S2':0.1
+    'Samsung_S2':0.1
 
 };
 
@@ -159,6 +159,7 @@ exports.getMonthBills = function (req, res) {
 exports.getRealTimeBills = function (req, res) {
     //var now_date=req.param('now_date');
 
+    bill_sum={};
     emulator_rt_count=1000000;
     device_rt_count=1000000;
     hub_rt_count=1000000;
@@ -232,7 +233,7 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time,curr_plan,str
     emu_cost=0;
 
 
-    var sqlStr = "select * from emulator where (status='running') or (status='processing') or (status='terminated' and terminate_datetime >'" +str_date+"')";
+    var sqlStr = "select * from emulator where (status='running') or (status='processing') or (status in ('terminated','terminating') and terminate_datetime >'" +str_date+"')";
     console.log(sqlStr);
     var params = [];
     query.execQuery(sqlStr, params, function (err, rows) {
@@ -256,7 +257,7 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time,curr_plan,str
                 console.log(emulator_bill[i]);
                 console.log(emulator_bill[i].ram);
                 console.log(emulator_bill[i].disk);
-                if (emulator_bill[i].status != 'terminated') {
+                if (emulator_bill[i].status != 'terminated'&&emulator_bill[i].status != 'terminating') {
                     if (emulator_bill[i].create_datetime < start_bill_time) {
                         start_time =start_bill_time;
                     } else {
@@ -264,7 +265,7 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time,curr_plan,str
                     }
 
                     end_time = end_bill_time;
-                } else if (emulator_bill[i].status == 'terminated') {
+                } else if (emulator_bill[i].status == 'terminated'||emulator_bill[i].status == 'terminating') {
                     if (emulator_bill[i].create_datetime < start_bill_time) {
                         start_time = start_bill_time;
                     } else {
@@ -363,7 +364,7 @@ var getRealTimeDeviceBills = function (start_bill_time, end_bill_time,curr_plan,
 
     device_cost=0;
 
-    var sqlStr = "select * from device where (status='running') or (status='processing') or (status='terminated' and terminate_datetime >'" + str_date+"')";
+    var sqlStr = "select * from device where (status='running') or (status='processing') or (status in ('terminated','terminating') and terminate_datetime >'" + str_date+"')";
     console.log(sqlStr);
     var params = [];
     query.execQuery(sqlStr, params, function (err, rows) {
@@ -381,14 +382,14 @@ var getRealTimeDeviceBills = function (start_bill_time, end_bill_time,curr_plan,
 
                 console.log(device_bill[i].ram);
                 console.log(device_bill[i].disk);
-                if (device_bill[i].status != 'terminated') {
+                if (device_bill[i].status != 'terminated' && device_bill[i].status != 'terminating') {
                     if (device_bill[i].create_datetime < start_bill_time) {
                         start_time =start_bill_time;
                     } else {
                         start_time = device_bill[i].create_datetime;
                     }
                     end_time = end_bill_time;
-                } else if (device_bill[i].status == 'terminated') {
+                } else if (device_bill[i].status == 'terminated' || device_bill[i].status == 'terminating') {
                     if (device_bill[i].create_datetime < start_bill_time) {
                         start_time = start_bill_time;
                     } else {
@@ -457,7 +458,7 @@ var getRealTimeHubBills = function (start_bill_time, end_bill_time,curr_plan,str
 
     hub_cost=0;
 
-    var sqlStr = "select * from hub where (status='running') or (status='processing') or (status='terminated' and terminate_datetime >'" + str_date+"')";
+    var sqlStr = "select * from hub where (status='running') or (status='processing') or (status in ('terminated','terminating') and terminate_datetime >'" + str_date+"')";
     console.log(sqlStr);
     var params = [];
     query.execQuery(sqlStr, params, function (err, rows) {
@@ -474,14 +475,14 @@ var getRealTimeHubBills = function (start_bill_time, end_bill_time,curr_plan,str
             for (var i = 0; i < hub_bill.length; i++) {
 
 
-                if (hub_bill[i].status != 'terminated') {
+                if (hub_bill[i].status != 'terminated'&&hub_bill[i].status != 'terminating') {
                     if (hub_bill[i].create_datetime < start_bill_time) {
                         start_time =start_bill_time;
                     } else {
                         start_time = hub_bill[i].create_datetime;
                     }
                     end_time = end_bill_time;
-                } else if (hub_bill[i].status == 'terminated') {
+                } else if (hub_bill[i].status == 'terminated'  || hub_bill[i].status == 'terminating') {
                     if (hub_bill[i].create_datetime < start_bill_time) {
                         start_time = start_bill_time;
                     } else {

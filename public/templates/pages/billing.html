@@ -69,7 +69,7 @@
                                <a ng-if="!billingCtrl.charges_expand" ng-click="billingCtrl.charges_expand = true">+ MTaaS Charges</a>
                            </th>
 
-                           <td colspan="3">
+                           <td colspan="2">
                                {{billingCtrl.bills.bill_sum.amount}}
                            </td>
 
@@ -79,10 +79,16 @@
                        <tr ng-if="billingCtrl.charges_expand">
 
                            <td><strong>plan:</strong> {{billingCtrl.bills.bill_sum.plan}}</td>
-                           <td><strong>from:</strong>  {{billingCtrl.bills.bill_sum.start_datetime }}</td>
-                           <td><strong>to:</strong> {{billingCtrl.bills.bill_sum.end_datetime }}</td>
-                           <td><strong>date:</strong> {{billingCtrl.bills.bill_sum.create_date }}</td>
+                           <td><strong>from:</strong>  {{billingCtrl.bills.bill_sum.start_datetime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                           <td><strong>to:</strong> {{billingCtrl.bills.bill_sum.end_datetime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
 
+
+
+                       </tr>
+                       <tr ng-if="billingCtrl.charges_expand&&billingCtrl.bills.bill_sum.id">
+
+                           <td><strong>bill id:</strong> {{billingCtrl.bills.bill_sum.id}}</td>
+                           <td colspan="2"><strong>create date:</strong> {{billingCtrl.bills.bill_sum.create_date | date:'yyyy-MM-dd HH:mm:ss'}}</td>
 
 
                        </tr>
@@ -95,7 +101,7 @@
                                <a ng-if="!billingCtrl.payment_expand" ng-click="billingCtrl.payment_expand = true">+ Payment Details</a>
                            </th>
 
-                           <td colspan="3">
+                           <td colspan="2">
                                {{billingCtrl.bills.bill_sum.amount}}
                            </td>
 
@@ -111,7 +117,7 @@
                            <td><strong>account:</strong>  {{billingCtrl.bills.bill_sum.pay_account}}</td>-->
 
 
-                           <td><strong>pay date:</strong> {{billingCtrl.bills.bill_sum.pay_datetime}}</td>
+                           <td colspan="2"><strong>pay date:</strong> {{billingCtrl.bills.bill_sum.pay_datetime}}</td>
 
                        </tr>
 
