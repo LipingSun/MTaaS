@@ -75,7 +75,7 @@ angular.module('myApp').controller('DevicesController', ['$http', '$window', 'de
 
     ctrl.view = function (device) {
         var params = 'host=' + device.ip + '&' + 'port=' + device.vnc_port + '&' + 'autoconnect=true' + '&' + 'resize=downscale';
-        $window.open('bower_components/noVNC/vnc.html?' + params, device.name, 'height=682, width=360, resizable=no');
+        $window.open('templates/pages/vnc.html?' + params, device.name, 'height=682, width=360, resizable=no');
     };
 
     ctrl.attachToHub = function (device, hub_id) {

@@ -47,7 +47,7 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
 
     ctrl.view = function (emulator) {
         var params = 'host=' + emulator.ip + '&' + 'port=' + emulator.vnc_port + '&' + 'autoconnect=true' + '&' + 'resize=downscale';
-        $window.open('bower_components/noVNC/vnc.html?' + params, emulator.name, 'height=682, width=360, resizable=no');
+        $window.open('templates/pages/vnc.html?' + params, emulator.name, 'height=682, width=360, resizable=no');
     };
 
     ctrl.attachToHub = function (emulator, hub_id) {
