@@ -37,8 +37,10 @@ devices.launchDevices = function (req, res) {  // TODO: Multi-thread
     var newDevice = req.body;
     newDevice.status = 'processing';
     newDevice.user_id = req.user.id;
+    newDevice.model = newDevice.brand + '_' + newDevice.model;
+    delete newDevice.brand;
 
-    DeviceStock.update({imei: newDevice.imei, status: 'occupied'}, function (err) {
+    DeviceStock.update(newDevice.imei, {status: 'available'}, function (err) {
         if (!err) {
             Device.create(newDevice, function (err, device) {
                 if (!err) {
@@ -108,7 +110,7 @@ devices.terminateDevice = function (req, res) {
                     controller.device.terminate(host, req.params.id, function (err) {
                         if (!err) {
                             Device.update(req.params.id, {status: 'terminated'});
-                            DeviceStock.update({imei: newDevice.imei, status: 'available'});
+                            DeviceStock.update(data.imei, {status: 'available'});
                         }
                     });
                 }
