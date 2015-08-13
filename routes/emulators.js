@@ -33,11 +33,11 @@ emulators.getEmulator = function (req, res) {
 };
 
 emulators.launchEmulators = function (req, res) {  // TODO: Multi-thread
-    for (var i = 1; i <= req.body.number; i++) {
+    for (var i = 0; i < req.body.number; i++) {
         var newEmulator = req.body;
         newEmulator.status = 'processing';
         newEmulator.user_id = req.user.id;
-        if (req.body.number > 1) newEmulator.name += '_' + i;
+        if (req.body.number > 1) newEmulator.name += '_' + (i + 1);
         delete newEmulator.number;
         Emulator.create(newEmulator, function (err, emulator) {
             if (!err) {
@@ -58,7 +58,8 @@ emulators.launchEmulators = function (req, res) {  // TODO: Multi-thread
                                 };
                                 Emulator.update(emulator.id, changes, function (err, data) {
                                     if (!err) {
-                                        res.status(201).json(data);
+                                        newEmulators.push(data);
+                                        if (i === req.body.number - 1) res.status(201).json(newEmulators);
                                     }
                                 });
                             } else {
