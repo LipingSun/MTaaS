@@ -13,7 +13,7 @@ emulators.getEmulators = function (req, res) {
         if (!err) {
             if (req.user && req.user.type === 'user') {
                 data = data.filter(function (emulator) {
-                    return emulator.user_id === req.user.id && emulator.status !== 'terminated';
+                    return emulator.user_id === req.user.id && (emulator.status === 'running' || emulator.status === 'processing');
                 });
             }
             res.status(200).json(data);
@@ -73,6 +73,8 @@ emulators.terminateEmulator = function (req, res) {
                     controller.emulator.terminate(host, req.params.id, function (err) {
                         if (!err) {
                             Emulator.update(req.params.id, {status: 'terminated'});
+                        } else {
+                            Emulator.update(req.params.id, {status: 'terminated Error'});
                         }
                     });
                 }
