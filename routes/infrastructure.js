@@ -1,14 +1,26 @@
 'use strict';
 
-var controller = require('./../services/controller');
-var Emulator = require('./../models/Emulator');
-var Hub = require('./../models/Hub');
-var ControllerHost = require('./../models/ControllerHost');
-var squel = require('squel');
+var emulatorCtrl = require('./../services/emulatorController');
+var hubCtrl = require('./../services/hubController');
 
 var infrastructure = {};
 
 infrastructure.setup = function (req, res) {
+
+    var hubPayload = {
+        user: req.user,
+        body: req.hub
+    };
+    var emulatorsPayload = {
+        user: req.user,
+        body: req.emulators
+    };
+    //
+    //var newHub = hubs.launchHubs(hubPayload, function () {
+    //    var newEmulators = emulators.launchEmulators(emulatorsPayload, function () {
+    //        hubs.
+    //    });
+    //});
 
     // Launch hub
     var newHub = req.body.infrastructure.hub;
