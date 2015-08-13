@@ -54,14 +54,14 @@ hubCtrl.attach = function (hub_id, resource, callback) {
                             hub_id: data.hub_id,
                             hub_port: data.hub_port
                         };
-                        switch (resource.resource_type) {
+                        switch (resource.type) {
                             case 'emulator':
-                                Emulator.update(resource.resource_id, changes, function (err, data) {
+                                Emulator.update(resource.id, changes, function (err, data) {
                                     if (!err) callback(null, data);
                                 });
                                 break;
                             case 'device':
-                                Device.update(resource.resource_id, changes, function (err, data) {
+                                Device.update(resource.id, changes, function (err, data) {
                                     if (!err) callback(null, data);
                                 });
                                 break;
