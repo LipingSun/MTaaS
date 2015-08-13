@@ -3,7 +3,7 @@ angular.module('myApp').controller('WizardController', ['$http', function ($http
 
     ctrl.finish = function () {
         var infrastructure = {
-            emulator: ctrl.newEmulators,
+            emulators: ctrl.newEmulators,
             hub: ctrl.newhub
         };
 
