@@ -52,11 +52,11 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
 
     ctrl.attachToHub = function (emulator, hub_id) {
         if (hub_id) {
-            var data = {
+            var resource = {
                 type: 'emulator',
                 id: emulator.id
             };
-            $http.post('api/v1/hubs/' + hub_id + '/connections', data).success(function (res) {
+            $http.post('api/v1/hubs/' + hub_id + '/connections', resource).success(function (res) {
                 //TODO
             });
         }
