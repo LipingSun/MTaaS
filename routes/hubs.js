@@ -1,9 +1,8 @@
 'use strict';
 
 var controller = require('./../services/controller');
+var hubCtrl = require('./../services/hubController');
 var Hub = require('./../models/Hub');
-var Emulator = require('./../models/Emulator');
-var Device = require('./../models/Device');
 var ControllerHost = require('./../models/ControllerHost');
 var squel = require('squel');
 
@@ -35,34 +34,12 @@ hubs.getHub = function (req, res) {
 };
 
 hubs.launchHubs = function (req, res) {
-    var newHub = req.body;
-    newHub.status = 'processing';
-    newHub.user_id = req.user.id;
-    Hub.create(newHub, function (err, hub) {
+    hubCtrl.launchHub(req.body, req.user.id, function (err, data) {
         if (!err) {
-            res.status(201).json(hub);
-            var host_id = '00000000001';
-            ControllerHost.findById(host_id, function (err, controllerHost) {
-                if (!err) {
-                    var host = 'http://' + controllerHost.ip;
-                    if (controllerHost.port) {
-                        host += ':' + controllerHost.port;
-                    }
-                    controller.hub.launch(host, hub, function (err, data) {
-                        if (!err) {
-                            var changes = {
-                                host_id: controllerHost.id,
-                                status: 'running'
-                            };
-                            Hub.update(hub.id, changes, function (err, data) {
-                                if (!err) {
-
-                                }
-                            });
-                        }
-                    });
-                }
-            });
+            res.status(201).json(data);
+        } else {
+            console.log(err);
+            res.status(500);
         }
     });
 };
@@ -102,40 +79,8 @@ hubs.terminateHub = function (req, res) {
 };
 
 hubs.attach = function (req, res) {
-    Hub.findById(req.params.id, function (err, hub) {
-        if (!err) {
-            ControllerHost.findById(hub.host_id , function (err, controllerHost) {
-                var host = 'http://' + controllerHost.ip;
-                if (controllerHost.port) {
-                    host += ':' + controllerHost.port;
-                }
-                controller.hub.attach(host, hub.id, req.body, function (err, data) {
-                   if (!err) {
-                       switch (req.body.resource_type) {
-                           case 'emulator':
-                               var changes = {
-                                   hub_id: data.hub_id,
-                                   hub_port: data.hub_port
-                               };
-                               Emulator.update(req.body.resource_id, changes, function (err, data) {
-                                   res.status(201).json(data);
-                               });
-                               break;
-                           case 'device':
-                               var changes = {
-                                   hub_id: data.hub_id,
-                                   hub_port: data.hub_port
-                               };
-                               Device.update(req.body.resource_id, changes, function (err, data) {
-                                   res.status(201).json(data);
-                               });
-                               break;
-                       }
-
-                   }
-                });
-            });
-        }
+    hubCtrl.attach(req.params.id, req.body, function (err, data) {
+        if (!err) res.status(201).json(data);
     });
 };
 

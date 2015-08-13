@@ -1,6 +1,7 @@
 'use strict';
 
 var controller = require('./../services/controller');
+var emulatorCtrl = require('./../services/emulatorController');
 var Emulator = require('./../models/Emulator');
 var ControllerHost = require('./../models/ControllerHost');
 var squel = require('squel');
@@ -33,51 +34,17 @@ emulators.getEmulator = function (req, res) {
 };
 
 emulators.launchEmulators = function (req, res) {  // TODO: Multi-thread
-    for (var i = 0; i < req.body.number; i++) {
-        var newEmulator = req.body;
-        newEmulator.status = 'processing';
-        newEmulator.user_id = req.user.id;
-        if (req.body.number > 1) newEmulator.name += '_' + (i + 1);
-        delete newEmulator.number;
-        Emulator.create(newEmulator, function (err, emulator) {
-            if (!err) {
-                ControllerHost.findOne({hostname: 'host101'}, function (err, controllerHost) {
-                    if (!err) {
-                        var host = 'http://' + controllerHost.ip;
-                        if (controllerHost.port) {
-                            host += ':' + controllerHost.port;
-                        }
-                        controller.emulator.launch(host, emulator, function (err, data) {
-                            if (!err) {
-                                var changes = {
-                                    host_id: controllerHost.id,
-                                    ip: controllerHost.ip,
-                                    vnc_port: data.VNCPort,
-                                    ssh_port: data.SSHPort,
-                                    status: 'running'
-                                };
-                                Emulator.update(emulator.id, changes, function (err, data) {
-                                    if (!err) {
-                                        newEmulators.push(data);
-                                        if (i === req.body.number - 1) res.status(201).json(newEmulators);
-                                    }
-                                });
-                            } else {
-                                var changes = {
-                                    status: 'error'
-                                };
-                                Emulator.update(emulator.id, changes, function (err, data) {
-                                    if (!err) {
-                                        res.status(500).json(data);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }
+    var number = req.body.number;
+    var newEmulator = req.body;
+    delete newEmulator.number;
+    emulatorCtrl.launchEmulators(newEmulator, number, req.user.id, function (err, data) {
+        if (!err) {
+            res.status(201).json(data);
+        } else {
+            console.log(err);
+            res.status(500);
+        }
+    });
 };
 
 emulators.updateEmulator = function (req, res) {
