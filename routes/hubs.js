@@ -70,6 +70,8 @@ hubs.terminateHub = function (req, res) {
                     controller.hub.terminate(host, req.params.id, function (err) {
                         if (!err) {
                             Hub.update(req.params.id, {status: 'terminated'});
+                        } else {
+                            Hub.update(req.params.id, {status: 'terminated Error'});
                         }
                     });
                 }
