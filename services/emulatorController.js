@@ -20,7 +20,7 @@ emulatorCtrl.launchEmulators = function (newEmulator, number, user_id, callback)
                 Emulator.create(newEmulator, function (err, emulator) {
                     if (!err) {
                         newEmulators.push(emulator);
-                        if (i === number - 1) {
+                        if (i === number) {
                             var completeEmulators = [];
 
                             newEmulators.forEach(function (emulator) {
