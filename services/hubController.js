@@ -13,8 +13,7 @@ hubCtrl.launchHub = function (newHub, user_id, callback) {  // TODO: Multi-threa
     newHub.status = 'processing';
     Hub.create(newHub, function (err, hub) {
         if (!err) {
-            var host_id = '00000000001';
-            ControllerHost.findById(host_id, function (err, controllerHost) {
+            ControllerHost.findOne({hostname: 'host101'}, function (err, controllerHost) {
                 if (!err) {
                     var host = 'http://' + controllerHost.ip;
                     if (controllerHost.port) {
@@ -43,7 +42,7 @@ hubCtrl.launchHub = function (newHub, user_id, callback) {  // TODO: Multi-threa
 hubCtrl.attach = function (hub_id, resource, callback) {
     Hub.findById(hub_id, function (err, hub) {
         if (!err) {
-            ControllerHost.findById(hub.host_id , function (err, controllerHost) {
+            ControllerHost.findOne({hostname: 'host101'}, function (err, controllerHost) {
                 var host = 'http://' + controllerHost.ip;
                 if (controllerHost.port) {
                     host += ':' + controllerHost.port;
