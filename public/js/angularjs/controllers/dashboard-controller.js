@@ -4,6 +4,8 @@ angular.module('myApp').controller('DashboardController', ['emulatorsService', '
 
     var ctrl = this;
 
+    ctrl.showWhich = null;
+
     var getRealTimeBill = function () {
         $http({
 
@@ -42,6 +44,12 @@ angular.module('myApp').controller('DashboardController', ['emulatorsService', '
 
                 ctrl.hubs = hubsService.query(function () {
                     ctrl.hubs_num = ctrl.hubs.length;
+
+                    if (ctrl.emulators_num + ctrl.devices_num + ctrl.hubs_num > 0) {
+                        ctrl.showWhich = 'topology';
+                    } else {
+                        ctrl.showWhich = 'quick_start';
+                    }
 
                     var nodes = [];
                     var edges = [];
