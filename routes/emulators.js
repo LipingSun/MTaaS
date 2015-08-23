@@ -64,7 +64,7 @@ emulators.terminateEmulator = function (req, res) {
         if (!err) {
             res.status(200).json(data);
 
-            ControllerHost.findOne({hostname: 'host101'}, function (err, controllerHost) {
+            ControllerHost.findOne({hostname: 'sjsu-vm1'}, function (err, controllerHost) {
                 if (!err) {
                     var host = 'http://' + controllerHost.ip;
                     if (controllerHost.port) {
@@ -72,9 +72,13 @@ emulators.terminateEmulator = function (req, res) {
                     }
                     controller.emulator.terminate(host, req.params.id, function (err) {
                         if (!err) {
-                            Emulator.update(req.params.id, {status: 'terminated'});
+                            Emulator.update(req.params.id, {status: 'terminated'}, function () {
+                                res.status(200);
+                            });
                         } else {
-                            Emulator.update(req.params.id, {status: 'terminated Error'});
+                            Emulator.update(req.params.id, {status: 'terminated Error'}, function () {
+                                res.status(200);
+                            });
                         }
                     });
                 }

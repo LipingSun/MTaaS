@@ -44,7 +44,7 @@ devices.launchDevices = function (req, res) {  // TODO: Multi-thread
         if (!err) {
             Device.create(newDevice, function (err, device) {
                 if (!err) {
-                    ControllerHost.findOne({hostname: 'host101'}, function (err, controllerHost) {
+                    ControllerHost.findOne({hostname: 'sjsu-vm1'}, function (err, controllerHost) {
                         if (!err) {
                             var host = 'http://' + controllerHost.ip;
                             if (controllerHost.port) {
@@ -101,7 +101,7 @@ devices.terminateDevice = function (req, res) {
         if (!err) {
             res.status(200).json(data);
 
-            ControllerHost.findOne({hostname: 'host101'}, function (err, controllerHost) {
+            ControllerHost.findOne({hostname: 'sjsu-vm1'}, function (err, controllerHost) {
                 if (!err) {
                     var host = 'http://' + controllerHost.ip;
                     if (controllerHost.port) {
@@ -109,8 +109,10 @@ devices.terminateDevice = function (req, res) {
                     }
                     controller.device.terminate(host, req.params.id, function (err) {
                         if (!err) {
-                            Device.update(req.params.id, {status: 'terminated'});
-                            DeviceStock.update(data.imei, {status: 'available'});
+                            Device.update(req.params.id, {status: 'terminated'}, function () {
+                                res.status(200);
+                            });
+                            DeviceStock.update(data.imei, {status: 'available'}, function () {});
                         }
                     });
                 }

@@ -61,7 +61,7 @@ hubs.terminateHub = function (req, res) {
         if (!err) {
             res.status(200).json(data);
 
-            ControllerHost.findOne({hostname: 'host101'}, function (err, controllerHost) {
+            ControllerHost.findOne({hostname: 'sjsu-vm1'}, function (err, controllerHost) {
                 if (!err) {
                     var host = 'http://' + controllerHost.ip;
                     if (controllerHost.port) {
@@ -69,9 +69,13 @@ hubs.terminateHub = function (req, res) {
                     }
                     controller.hub.terminate(host, req.params.id, function (err) {
                         if (!err) {
-                            Hub.update(req.params.id, {status: 'terminated'});
+                            Hub.update(req.params.id, {status: 'terminated'}, function () {
+                                res.status(200);
+                            });
                         } else {
-                            Hub.update(req.params.id, {status: 'terminated Error'});
+                            Hub.update(req.params.id, {status: 'terminated Error'}, function () {
+                                res.status(200);
+                            });
                         }
                     });
                 }
