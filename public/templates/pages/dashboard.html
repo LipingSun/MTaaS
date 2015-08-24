@@ -75,8 +75,87 @@
         </div>
     </div>
 
+    <!-- Quick Start -->
+    <div class="row" ng-if="dashboardCtrl.showWhich === 'quick_start'">
+        <div class="col-md-12">
+            <div class="panel panel-cascade">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Quick Start</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="price-list row">
+
+                        <div class="price-box col-md-3 col-sm-6 col-xs-12 col-lg-3">
+                            <div class="price-header bg-primary">
+                                <h3>Emulator Plan A</h3>
+                            </div>
+                            <ul class="list-group features">
+                                <li class="list-group-item"><strong>$5</strong> Per Month</li>
+                                <li class="list-group-item">1 Hub</li>
+                                <li class="list-group-item">5 <strong>Emulators</strong></li>
+                                <li class="list-group-item">SSH Access</li>
+                                <li class="list-group-item">Screen Access</li>
+                                <li class="list-group-item select">
+                                    <a class="btn btn-block bg-primary text-white btn-lg ">Choose</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="price-box col-md-3 col-sm-6 col-xs-12 col-lg-3">
+                            <div class="price-header bg-info">
+                                <h3>Emulator Plan B</h3>
+                            </div>
+                            <ul class="list-group features">
+                                <li class="list-group-item"><strong>$10</strong> Per Month</li>
+                                <li class="list-group-item">2 Hub</li>
+                                <li class="list-group-item">15 <strong>Emulators</strong></li>
+                                <li class="list-group-item">SSH Access</li>
+                                <li class="list-group-item">Screen Access</li>
+                                <li class="list-group-item select">
+                                    <a class="btn btn-block bg-primary text-white btn-lg ">Choose</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="price-box col-md-3 col-sm-6 col-xs-12 col-lg-3">
+                            <div class="price-header bg-success">
+                                <h3>Device Plan A</h3>
+                            </div>
+                            <ul class="list-group features">
+                                <li class="list-group-item"><strong>$15</strong> Per Month</li>
+                                <li class="list-group-item">1 Hub</li>
+                                <li class="list-group-item">5 <strong>Devices</strong></li>
+                                <li class="list-group-item">SSH Access</li>
+                                <li class="list-group-item">Screen Access</li>
+                                <li class="list-group-item select">
+                                    <a class="btn btn-block bg-primary text-white btn-lg ">Choose</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="price-box col-md-3 col-sm-6 col-xs-12 col-lg-3">
+                            <div class="price-header bg-warning">
+                                <h3>Device Plan B</h3>
+                            </div>
+                            <ul class="list-group features">
+                                <li class="list-group-item"><strong>$20</strong> Per Month</li>
+                                <li class="list-group-item">2 Hub</li>
+                                <li class="list-group-item">15 <strong>Devices</strong></li>
+                                <li class="list-group-item">SSH Access</li>
+                                <li class="list-group-item">Screen Access</li>
+                                <li class="list-group-item select">
+                                    <a class="btn btn-block bg-primary text-white btn-lg ">Choose</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Topology Graph -->
-    <div class="row">
+    <div class="row" ng-show="dashboardCtrl.showWhich === 'topology'">
         <div class="col-md-12">
             <div class="panel panel-cascade">
                 <div class="panel-heading">
@@ -90,7 +169,7 @@
     </div>
 
     <div class="footer">
-        © 2013 <a href="http://bootstrapguru.com">Bootstrap Guru</a>
+        <!--© 2013 <a href="http://bootstrapguru.com">Bootstrap Guru</a>-->
     </div>
 
 </div>
