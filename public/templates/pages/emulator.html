@@ -87,19 +87,19 @@
             <div ng-class="{ active: emulatorTab === 'launch' }" class="tab-pane fade in" id="launch" ng-show="emulatorTab === 'launch'">
                 <div class="col-md-12">
                     <div class="panel">
-                        <div class="panel-body">
-                            <form action class="form-horizontal row-border" ng-init="newEmulator = {}">
+                        <div class="panel-body" ng-init="newEmulator = {}">
+                            <form action class="form-horizontal row-border col-md-6" style="margin-top: 25px">
 
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Name</label>
-                                    <div class="col-sm-6">
+                                    <label class="col-md-3 control-label">Name</label>
+                                    <div class="col-md-9">
                                         <input type="text" ng-model="newEmulator.name" ng-init="newEmulator.name = 'emulator'" class="form-control"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">System</label>
-                                    <div class="col-sm-6">
+                                    <label class="col-md-3 control-label">System</label>
+                                    <div class="col-md-9">
                                         <select class="form-control" ng-model="newEmulator.system" ng-init="newEmulator.system = 'Android'">
                                             <option>Android</option>
                                             <option>IOS</option>
@@ -108,8 +108,8 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Version</label>
-                                    <div class="col-sm-6">
+                                    <label class="col-md-3 control-label">Version</label>
+                                    <div class="col-md-9">
                                         <select class="form-control" ng-model="newEmulator.version" ng-init="newEmulator.version = '5.0.1 (API21)'">
                                             <option ng-if="newEmulator.system === 'Android'">5.0.1 (API21)</option>
                                             <!--<option ng-if="system === 'Android'">4.0.0</option>-->
@@ -120,8 +120,15 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">CPU</label>
-                                    <div class="col-sm-6">
+                                    <label class="col-md-3 control-label">Device</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" ng-model="newEmulator.device" ng-options="device.name for device in emulatorsCtrl.devices" ng-init="newEmulator.device = emulatorsCtrl.devices[0]"></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" ng-show="newEmulator.Device === 'Customize'">
+                                    <label class="col-md-3 control-label">CPU</label>
+                                    <div class="col-md-9">
                                         <select class="form-control" ng-model="newEmulator.cpu" ng-init="newEmulator.cpu = 'armeabi-v7a'">
                                             <option>armeabi-v7a</option>
                                             <option>x86</option>
@@ -129,9 +136,9 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">RAM</label>
-                                    <div class="col-sm-6">
+                                <div class="form-group" ng-show="newEmulator.Device === 'Customize'">
+                                    <label class="col-md-3 control-label">RAM</label>
+                                    <div class="col-md-9">
                                         <select class="form-control" ng-model="newEmulator.ram" ng-init="newEmulator.ram = '64M'">
                                             <option>64M</option>
                                             <option>128M</option>
@@ -141,9 +148,9 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label" ng-model="newEmulator.disk" ng-init="newEmulator.disk = '128M'">Disk</label>
-                                    <div class="col-sm-6">
+                                <div class="form-group" ng-show="newEmulator.Device === 'Customize'">
+                                    <label class="col-md-3 control-label" ng-model="newEmulator.disk" ng-init="newEmulator.disk = '128M'">Disk</label>
+                                    <div class="col-md-9">
                                         <select class="form-control">
                                             <option>128M</option>
                                             <option>256M</option>
@@ -154,19 +161,28 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label" ng-model="newEmulator.number">Number</label>
-                                    <div class="col-sm-6">
+                                    <label class="col-md-3 control-label" ng-model="newEmulator.number">Number</label>
+                                    <div class="col-md-9">
                                         <input type="number" class="form-control" ng-model="newEmulator.number" ng-init="newEmulator.number = 1"/>
                                     </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-sm-6 col-sm-offset-3">
+                                    <div class="col-md-9 col-md-offset-3">
                                         <button type="button" class="btn btn-success" ng-click="emulatorsCtrl.create(newEmulator); emulatorTab = 'emulators'; emulatorsCtrl.getAll();">Submit</button>
                                         <button type="button" class="btn btn-danger" ng-click="newEmulator = null">Cancel</button>
                                     </div>
                                 </div>
                             </form>
+
+                            <div class="col-md-6">
+                                <img src="img/temp/device.jpg" width="202" class="col-md-6">
+                                <ul class="col-md-6" style="margin-top: 25px">
+                                    <li>RAM: 1536MB</li>
+                                    <li>Internal Storage: 200MB</li>
+                                    <li>SD Card: 100MB</li>
+                                </ul>
+                            </div>
                         </div>
                         <!-- /panel body -->
                     </div>
