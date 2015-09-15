@@ -83,7 +83,7 @@ exports.changeBillPlan = function (req, res) {
         }
     }
     );
-}
+};
 
 exports.getMonthBills = function (req, res) {
 
@@ -184,7 +184,7 @@ exports.getRealTimeBills = function (req, res) {
     //var start_bill_time = s_date.toISOString();
 
     console.log(start_bill_time);
-    console.log(end_bill_time)
+    console.log(end_bill_time);
 
     getRealTimeEmuBills(start_bill_time,end_bill_time,curr_plan,str_date);
 
@@ -358,7 +358,7 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time,curr_plan,str
             }
         }
     });
-}
+};
 
 var getRealTimeDeviceBills = function (start_bill_time, end_bill_time,curr_plan,str_date) {
 
@@ -451,7 +451,7 @@ var getRealTimeDeviceBills = function (start_bill_time, end_bill_time,curr_plan,
             }
         }
     });
-}
+};
 
 
 var getRealTimeHubBills = function (start_bill_time, end_bill_time,curr_plan,str_date) {
@@ -544,7 +544,7 @@ var getRealTimeHubBills = function (start_bill_time, end_bill_time,curr_plan,str
             }
         }
     });
-}
+};
 
 
 exports.getAvailDateList=function(req, res){
@@ -567,7 +567,7 @@ exports.getAvailDateList=function(req, res){
 
                     var name=getMonthName(month);
 
-                    var monthObj={name:name,id:month}
+                    var monthObj={name:name,id:month};
                     months.push(monthObj);
                 }
 
@@ -636,7 +636,7 @@ var getMonthName=function(month){
     }
     return name;
 
-}
+};
 
 exports.createBills = function (req, res) {
 
@@ -723,7 +723,7 @@ var generateMonthInvoice = function(month_start,month_end,invoice_part_id){
         }
 
     });
-}
+};
 
 var generateEmulatorBillsDetail = function(month_start,month_end,part_id){
 
