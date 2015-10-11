@@ -44,7 +44,7 @@ devices.launchDevices = function (req, res) {  // TODO: Multi-thread
         if (!err) {
             Device.create(newDevice, function (err, device) {
                 if (!err) {
-                    ControllerHost.findOne({hostname: 'sjsu-vm1'}, function (err, controllerHost) {
+                    ControllerHost.findOne({hostname: 'controller-01'}, function (err, controllerHost) {
                         if (!err) {
                             var host = 'http://' + controllerHost.ip;
                             if (controllerHost.port) {
@@ -101,7 +101,7 @@ devices.terminateDevice = function (req, res) {
         if (!err) {
             res.status(200).json(data);
 
-            ControllerHost.findOne({hostname: 'sjsu-vm1'}, function (err, controllerHost) {
+            ControllerHost.findOne({hostname: 'controller-01'}, function (err, controllerHost) {
                 if (!err) {
                     var host = 'http://' + controllerHost.ip;
                     if (controllerHost.port) {
