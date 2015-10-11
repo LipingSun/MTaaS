@@ -36,6 +36,7 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
     };
 
     ctrl.create = function (newEmulator) {
+        delete newEmulator.device;
         var emulator = new emulatorsService(newEmulator);
         emulator.$save();
         // TODO: see hub
@@ -325,6 +326,8 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
                 }
             ]
         }
-    ];
+    ].filter(function (device) {
+            return device.id === 'nexus_5'
+        });
 
 }]);
