@@ -8,9 +8,9 @@ var device_count = 1000000;
 var hub_count = 1000000;
 
 
-var emulator_rt_count;
-var device_rt_count;
-var hub_rt_count;
+//var emulator_rt_count;
+//var device_rt_count;
+//var hub_rt_count;
 
 
 var billing_price = {
@@ -154,7 +154,6 @@ exports.getMonthBills = function (req, res) {
     });
 };
 
-
 exports.getRealTimeBills = function (req, res) {
     //var now_date=req.param('now_date');
 
@@ -170,11 +169,6 @@ exports.getRealTimeBills = function (req, res) {
     hub_cost = 0;
 
 
-    emulator_rt_count = 1000000;
-    device_rt_count = 1000000;
-    hub_rt_count = 1000000;
-
-
     var curr_plan = req.param('curr_plan');
     //var curr_plan=req.params.curr_plan;
     console.log(curr_plan);
@@ -185,62 +179,57 @@ exports.getRealTimeBills = function (req, res) {
     var str_date = (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-1' + ' ' + '00:00:00';
 
 
-    //var e_date=new Date();
-    //var s_date=new Date(e_date.getFullYear(), e_date.getMonth(), "1");
-
-    //var start_bill_time = new Date(Date.UTC(e_date.getFullYear(), 11, 1, 0, 0, 0));
-
-    //var end_bill_time = e_date.toISOString();
-    //var start_bill_time = s_date.toISOString();
-
     console.log(start_bill_time);
     console.log(end_bill_time);
     var user_id=req.user.id;
 
-    getRealTimeEmuBills(start_bill_time, end_bill_time, curr_plan, str_date,user_id);
+    getRealTimeEmuBills(start_bill_time, end_bill_time, curr_plan, str_date,user_id,function(num){
 
-    getRealTimeDeviceBills(start_bill_time, end_bill_time, curr_plan, str_date,user_id);
+        if(num==0){
 
-    getRealTimeHubBills(start_bill_time, end_bill_time, curr_plan, str_date,user_id);
+            getRealTimeDeviceBills(start_bill_time, end_bill_time, curr_plan, str_date,user_id,function(num1){
 
-    var senddata = setInterval(function () {
+                if(num1==0){
+                    getRealTimeHubBills(start_bill_time, end_bill_time, curr_plan, str_date,user_id,function(num2){
 
-        console.log("emu_num:" + emulator_rt_count + ',' + device_rt_count + ',' + hub_rt_count);
-        if (emulator_rt_count == 0 && device_rt_count == 0 && hub_rt_count == 0) {
+                        if(num2==0){
+                            console.log("done: " + emu_cost);
+                            if (curr_plan == 'pay_as_hour_go')
 
-            console.log("done: " + emu_cost);
-            if (curr_plan == 'pay_as_hour_go')
+                                bill_sum.amount = Math.round((emu_cost + device_cost + hub_cost) * 1000) / 1000;
+                            else
+                                bill_sum.amount = billing_price['month_flat_rate'];
+                            bill_sum.plan = curr_plan;
 
-                bill_sum.amount = Math.round((emu_cost + device_cost + hub_cost) * 1000) / 1000;
-            else
-                bill_sum.amount = billing_price['month_flat_rate'];
-            bill_sum.plan = curr_plan;
+                            bill_sum.start_datetime = start_bill_time;
 
-            bill_sum.start_datetime = start_bill_time;
+                            bill_sum.end_datetime = end_bill_time;
+                            bill_sum.pay_status = "unpaid";
+                            bill_detail.emulator = emulators;
+                            bill_detail.device = devices;
+                            bill_detail.hub = hubs;
 
-            bill_sum.end_datetime = end_bill_time;
-            bill_sum.pay_status = "unpaid";
-            bill_detail.emulator = emulators;
-            bill_detail.device = devices;
-            bill_detail.hub = hubs;
+                            bills.bill_sum = bill_sum;
+                            bills.bill_detail = bill_detail;
+                            bills.emu_cost = emu_cost;
+                            bills.device_cost = device_cost;
+                            bills.hub_cost = hub_cost;
+                            res.json(bills);
 
-            bills.bill_sum = bill_sum;
-            bills.bill_detail = bill_detail;
-            bills.emu_cost = emu_cost;
-            bills.device_cost = device_cost;
-            bills.hub_cost = hub_cost;
-            clearInterval(senddata);
-            res.json(bills);
+                        }
+                    });
+
+                }
+
+            });
 
         }
-
-    }, 100);
-
+    });
 
 };
 
 
-var getRealTimeEmuBills = function (start_bill_time, end_bill_time, curr_plan, str_date,user_id) {
+var getRealTimeEmuBills = function (start_bill_time, end_bill_time, curr_plan, str_date,user_id,callback) {
 
     emu_cost = 0;
 
@@ -256,7 +245,7 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time, curr_plan, s
 
 
         var emulator_bill = rows;
-        emulator_rt_count = rows.length;
+        var emulator_rt_count = rows.length;
         // emulators.length=emulator_rt_count;
 
         if (rows.length !== 0) {
@@ -376,11 +365,14 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time, curr_plan, s
 
                 }
             }
+
+
         }
+        callback(emulator_rt_count);
     });
 };
 
-var getRealTimeDeviceBills = function (start_bill_time, end_bill_time, curr_plan, str_date,user_id) {
+var getRealTimeDeviceBills = function (start_bill_time, end_bill_time, curr_plan, str_date,user_id,callback) {
 
     device_cost = 0;
 
@@ -394,7 +386,7 @@ var getRealTimeDeviceBills = function (start_bill_time, end_bill_time, curr_plan
         console.log(rows.length);
 
         var device_bill = rows;
-        device_rt_count = rows.length;
+        var device_rt_count = rows.length;
 
 
         if (rows.length !== 0) {
@@ -473,16 +465,17 @@ var getRealTimeDeviceBills = function (start_bill_time, end_bill_time, curr_plan
                 }
             }
         }
+        callback(device_rt_count);
     });
 };
 
 
-var getRealTimeHubBills = function (start_bill_time, end_bill_time, curr_plan, str_date,user_id) {
+var getRealTimeHubBills = function (start_bill_time, end_bill_time, curr_plan, str_date,user_id,callback) {
 
     hub_cost = 0;
 
     //var sqlStr = "select * from hub where (status='running') or (status='processing') or (status in ('terminated','terminating') and terminate_datetime >'" + str_date+"')";
-   // var sqlStr = "select * from hub where ((status='running') or (status='processing') or (status in ('terminated','terminating') and UNIX_TIMESTAMP(terminate_datetime) >UNIX_TIMESTAMP('" + str_date + "')))";
+    // var sqlStr = "select * from hub where ((status='running') or (status='processing') or (status in ('terminated','terminating') and UNIX_TIMESTAMP(terminate_datetime) >UNIX_TIMESTAMP('" + str_date + "')))";
     var sqlStr = "select * from hub where user_id="+user_id+" and((status='running') or (status='processing') or (status in ('terminated','terminating') and UNIX_TIMESTAMP(terminate_datetime) >UNIX_TIMESTAMP('" + str_date + "')))";
 
     console.log(sqlStr);
@@ -491,7 +484,7 @@ var getRealTimeHubBills = function (start_bill_time, end_bill_time, curr_plan, s
         console.log(rows.length);
 
         var hub_bill = rows;
-        hub_rt_count = rows.length;
+        var hub_rt_count = rows.length;
 
 
         if (rows.length !== 0) {
@@ -569,6 +562,7 @@ var getRealTimeHubBills = function (start_bill_time, end_bill_time, curr_plan, s
                 }
             }
         }
+        callback(hub_rt_count);
     });
 };
 
