@@ -8,11 +8,11 @@
                 <li class="active">Hubs</li>
             </ul>
 
-            <div class="form-group hiddn-minibar pull-right">
+           <!-- <div class="form-group hiddn-minibar pull-right">
                 <input type="text" class="form-control form-cascade-control nav-input-search" size="20" placeholder="Search through site"/>
 
                 <span class="input-icon fui-search"></span>
-            </div>
+            </div>-->
 
             <h3 class="page-header"><i class="fa fa-mobile"></i> Hub
                 <i class="fa fa-info-circle animated bounceInDown show-info"></i></h3>
@@ -90,7 +90,7 @@
                                     <div class="col-sm-6">
                                         <select class="form-control" ng-model="newHub.network_type" ng-init="newHub.network_type = 'WiFi'">
                                             <option>WiFi</option>
-                                            <option>Mobile Carrier Network</option>
+                                          <!--  <option>Mobile Carrier Network</option>-->
                                         </select>
                                     </div>
                                 </div>
@@ -100,7 +100,7 @@
                                     <div class="col-sm-6">
                                         <select class="form-control" ng-model="newHub.network_provider" ng-init="newHub.network_provider = 'Comcast XFINITY'">
                                             <option ng-if="newHub.network_type === 'WiFi'">Comcast XFINITY</option>
-                                            <option ng-if="newHub.network_type === 'WiFi'">AT&T U-verse</option>
+                                          <!--  <option ng-if="newHub.network_type === 'WiFi'">AT&T U-verse</option>-->
                                             <option ng-if="newHub.network_type === 'Mobile Carrier Network'">AT&T</option>
                                             <option ng-if="newHub.network_type === 'Mobile Carrier Network'">Verizon</option>
                                             <option ng-if="newHub.network_type === 'Mobile Carrier Network'">T-Mobile</option>
