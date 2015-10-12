@@ -10,7 +10,7 @@ var getConnectionPool = function() {
             password : process.env.OPENSHIFT_MYSQL_DB_PASSWORD,
             database : 'mtaas',
             timezone : 'utc',
-            connectionLimit: 20//,
+            connectionLimit: 120//,
             //acquireTimeout: 100000
         };
     } else {
@@ -21,7 +21,7 @@ var getConnectionPool = function() {
             password : 'yBWDv3iCRCfr',
             database : 'mtaas',
             timezone : 'utc',
-            connectionLimit: 20//,
+            connectionLimit: 120//,
             //acquireTimeout: 100000
             //multipleStatements: true
         };
