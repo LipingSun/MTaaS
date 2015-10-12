@@ -67,18 +67,18 @@ app.all('/logout', auth.logout);  // Log out user session
 app.post(api_v1 + '/infrastructure', infrastructure.setup);  // Setup infrastructure
 
 // Emulators
-app.get(api_v1 + '/emulators', emulators.getEmulators);  // Get all relevant emulators
-app.post(api_v1 + '/emulators', emulators.launchEmulators);  // Launch an emulator
-app.get(api_v1 + '/emulators/:id', emulators.getEmulator);  // Get info of an emulator
-app.patch(api_v1 + '/emulators/:id', emulators.updateEmulator);  // Update info of an emulator
-app.delete(api_v1 + '/emulators/:id', emulators.terminateEmulator);  // Terminate an emulator
+app.get(api_v1 + '/emulators', passport.ensureAuthenticated, emulators.getEmulators);  // Get all relevant emulators
+app.post(api_v1 + '/emulators', passport.ensureAuthenticated, emulators.launchEmulators);  // Launch an emulator
+app.get(api_v1 + '/emulators/:id', passport.ensureAuthenticated, emulators.getEmulator);  // Get info of an emulator
+app.patch(api_v1 + '/emulators/:id', passport.ensureAuthenticated, emulators.updateEmulator);  // Update info of an emulator
+app.delete(api_v1 + '/emulators/:id', passport.ensureAuthenticated, emulators.terminateEmulator);  // Terminate an emulator
 
 //Devices
-app.get(api_v1 + '/devices', devices.getDevices);  // Get all relevant devices
-app.post(api_v1 + '/devices', devices.launchDevices);  // Launch an device
-app.get(api_v1 + '/devices/:id', devices.getDevice);  // Get info of an device
-app.patch(api_v1 + '/devices/:id', devices.updateDevice);  // Update info of an device
-app.delete(api_v1 + '/devices/:id', devices.terminateDevice);  // Terminate an device
+app.get(api_v1 + '/devices', passport.ensureAuthenticated, devices.getDevices);  // Get all relevant devices
+app.post(api_v1 + '/devices', passport.ensureAuthenticated, devices.launchDevices);  // Launch an device
+app.get(api_v1 + '/devices/:id', passport.ensureAuthenticated, devices.getDevice);  // Get info of an device
+app.patch(api_v1 + '/devices/:id', passport.ensureAuthenticated, devices.updateDevice);  // Update info of an device
+app.delete(api_v1 + '/devices/:id', passport.ensureAuthenticated, devices.terminateDevice);  // Terminate an device
 
 //Devices in Stock
 app.get(api_v1 + '/devices-in-stock', deviceStock.getDevices);  // Get all relevant devices
@@ -86,12 +86,12 @@ app.get(api_v1 + '/devices-in-stock/:id', deviceStock.getDevice);  // Get info o
 app.patch(api_v1 + '/devices-in-stock/:id', deviceStock.updateDevice);  // Update info of an devices
 
 // Hubs
-app.get(api_v1 + '/hubs', hubs.getHubs);  // Get all relevant hubs
-app.post(api_v1 + '/hubs', hubs.launchHubs);  // Launch an hub
-app.get(api_v1 + '/hubs/:id', hubs.getHub);  // Get info of an hub
-app.patch(api_v1 + '/hubs/:id', hubs.updateHub);  // Update info of an hub
-app.delete(api_v1 + '/hubs/:id', hubs.terminateHub);  // Terminate an hub
-app.post(api_v1 + '/hubs/:id/connections', hubs.attach);  // attach emulator or device to hub
+app.get(api_v1 + '/hubs', passport.ensureAuthenticated, hubs.getHubs);  // Get all relevant hubs
+app.post(api_v1 + '/hubs', passport.ensureAuthenticated, hubs.launchHubs);  // Launch an hub
+app.get(api_v1 + '/hubs/:id', passport.ensureAuthenticated, hubs.getHub);  // Get info of an hub
+app.patch(api_v1 + '/hubs/:id', passport.ensureAuthenticated, hubs.updateHub);  // Update info of an hub
+app.delete(api_v1 + '/hubs/:id', passport.ensureAuthenticated, hubs.terminateHub);  // Terminate an hub
+app.post(api_v1 + '/hubs/:id/connections', passport.ensureAuthenticated, hubs.attach);  // attach emulator or device to hub
 
 
 // Users
