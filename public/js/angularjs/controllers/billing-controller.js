@@ -65,6 +65,7 @@ angular.module('myApp').controller('BillingController', function (billingService
        }).success(function (res) {
            // alert(res.curr_plan);
 
+           ctrl.curr_plan=res.curr_plan;
            $http({
                method: 'GET',
                url: api_v1 + '/realTimeBills',
