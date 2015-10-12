@@ -45,11 +45,12 @@ angular.module('myApp').controller('DashboardController', ['emulatorsService', '
                 ctrl.hubs = hubsService.query(function () {
                     ctrl.hubs_num = ctrl.hubs.length;
 
-                    if (ctrl.emulators_num + ctrl.devices_num + ctrl.hubs_num > 0) {
-                        ctrl.showWhich = 'topology';
-                    } else {
-                        ctrl.showWhich = 'quick_start';
-                    }
+                    //if (ctrl.emulators_num + ctrl.devices_num + ctrl.hubs_num > 0) {
+                    //    ctrl.showWhich = 'topology';
+                    //} else {
+                    //    ctrl.showWhich = 'quick_start';
+                    //}
+                    ctrl.showWhich = 'topology';
 
                     var nodes = [];
                     var edges = [];
