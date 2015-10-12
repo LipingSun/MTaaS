@@ -4,7 +4,7 @@ body {
 }
 .login-box {
   background: #FFFFFF;
-  min-height: 300px;
+  min-height: 350px;
   width: 350px;
   margin: 0px auto;
   margin-top: 200px;
@@ -64,6 +64,11 @@ body {
   box-shadow: none;
 }
 .login-box .input-box .btn-submit {
+  background: #5eb6bc;
+  color: #FFFFFF;
+  border-radius: 0px;
+  outline: none !important;
+}.btn-register {
   background: #dd636d;
   color: #FFFFFF;
   border-radius: 0px;
