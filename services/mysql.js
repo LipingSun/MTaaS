@@ -34,27 +34,43 @@ getConnectionPool().query("SET @@global.time_zone='+00:00'");
 
 mysql.query = function (sql, callback) {
     console.log('SQL: ' + sql);
-    getConnectionPool().query(sql, function (err, data) {
-        if (err) {
+    getConnectionPool().getConnection(function (err, connection) {
+        connection.query(sql, function (err, data) {
+            connection.release();
+            if (err) {
+                console.log('DB ' + err);
+                //callback(err);
+                return;
+            } else {
+                console.log('DB Result: ' + JSON.stringify(data));
+                callback(null, data);
+            }
+        });
+        connection.on('error', function(err) {
             console.log('DB ' + err);
-        } else {
-            console.log('DB Result: ' + JSON.stringify(data));
-        }
-        callback(err, data);
+            return;
+        });
     });
 };
 
 mysql.queryOne = function (sql, callback) {
     console.log('SQL: ' + sql);
-    getConnectionPool().query(sql, function (err, data) {
-        if (err) {
+    getConnectionPool().getConnection(function (err, connection) {
+        connection.query(sql, function (err, data) {
+            connection.release();
+            if (err) {
+                console.log('DB ' + err);
+                //callback(err);
+                return;
+            } else {
+                console.log('DB Result: ' + JSON.stringify(data[0]));
+                callback(null, data[0]);
+            }
+        });
+        connection.on('error', function(err) {
             console.log('DB ' + err);
-            callback(err);
-        } else {
-            console.log('DB Result: ' + JSON.stringify(data));
-            callback(null, data[0]);
-        }
-
+            return;
+        });
     });
 };
 
