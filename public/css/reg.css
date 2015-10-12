@@ -4,10 +4,10 @@ body {
 }
 .reg-box {
   background: #FFFFFF;
-  min-height: 400px;
+  min-height: 450px;
   width: 400px;
   margin: 0px auto;
-  margin-top: 200px;
+  margin-top: 100px;
 }
 .reg-box a {
   padding-left: 5px;
