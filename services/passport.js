@@ -29,7 +29,9 @@ passport.serializeUser(function(user, done) {
         last_name: user.last_name,
         email: user.email,
         type: user.type,
-        last_login: user.last_login
+        last_login: user.last_login,
+        curr_plan: user.curr_plan,
+        next_plan: user.next_plan
     };
     done(null, sessionUser);
 });
