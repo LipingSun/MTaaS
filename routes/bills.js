@@ -15,7 +15,7 @@ var hub_rt_count;
 
 
 var billing_price={
-    'month_flat_rate': 10,
+    'month_flat_rate': 50,
     'armeabi-v7a':0.049800,
     'x86': 0.030000,
     'x86_64': 0.040000,
@@ -233,7 +233,10 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time,curr_plan,str
     emu_cost=0;
 
 
-    var sqlStr = "select * from emulator where (status='running') or (status='processing') or (status in ('terminated','terminating') and terminate_datetime >'" +str_date+"')";
+    //var sqlStr = "select * from emulator where (status='running') or (status='processing') or (status in ('terminated','terminating') and terminate_datetime >'" +str_date+"')";
+    var sqlStr = "select * from emulator where (status='running') or (status='processing') or (status in ('terminated','terminating') and UNIX_TIMESTAMP(terminate_datetime) >UNIX_TIMESTAMP('"+str_date+"'))";
+
+
     console.log(sqlStr);
     var params = [];
     query.execQuery(sqlStr, params, function (err, rows) {
@@ -253,6 +256,10 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time,curr_plan,str
                 console.log(emulator_bill[i].create_datetime);
                 console.log('terminate time');
                 console.log(emulator_bill[i].terminate_datetime);
+                console.log('start time');
+                console.log(start_bill_time);
+                console.log('end time');
+                console.log(end_bill_time);
 
                 console.log(emulator_bill[i]);
                 console.log(emulator_bill[i].ram);
@@ -272,14 +279,16 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time,curr_plan,str
                         start_time = emulator_bill[i].create_datetime;
                     }
 
-                    if(emulator_bill[i].terminate_datetime<end_bill_time ){
+                    end_time=emulator_bill[i].terminate_datetime;
+
+                    /*if(emulator_bill[i].terminate_datetime<end_bill_time ){
                         end_time=emulator_bill[i].terminate_datetime;
                     }
                     else{
 
                         end_time = end_bill_time;
 
-                    }
+                    }*/
 
                 } else {
 
