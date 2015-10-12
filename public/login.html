@@ -22,17 +22,18 @@
     <div class="input-box">
         <div class="row">
             <div class="col-md-8 col-md-offset-2 col-xs-10 col-xs-offset-1">
-                <form role="form" action="/login" method="post">
+                <form role="form" name="login-form" action="/login" onsubmit="return validateForm()" method="post">
                     <div class="input-group form-group">
                         <span class="input-group-addon"><i class='fa fa-envelope'></i></span>
-                        <input type="text" name="email" class="form-control" placeholder="email">
+                        <input type="text" name="email" id="email" class="form-control" placeholder="email">
                     </div>
                     <div class="input-group form-group">
                         <span class="input-group-addon"><i class='fa fa-key'></i></span>
-                        <input type="password" name="password" class="form-control" placeholder="password">
+                        <input type="password" name="password" id="password" class="form-control" placeholder="password">
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn  btn-block  btn-submit pull-right">Submit</button>
+                        <button type="submit" class="btn btn-block btn-submit pull-right">Submit</button>
+                        <a href="register" class="btn btn-block btn-register pull-right">Register</a>
                     </div>
                 </form>
             </div>
@@ -43,6 +44,22 @@
     <!-- input-box -->
 </div>
 <!-- lock-box -->
+
+<script>
+    function validateForm() {
+        var email = document.forms["login-form"]["email"].value;
+        var password = document.forms["login-form"]["password"].value;
+        if (email === "") {
+            alert("please input your email");
+            return false;
+        } else if (password === "") {
+            alert("please input your password");
+            return false;
+        } else {
+            return true;
+        }
+    }
+</script>
 
 </body>
 </html>
