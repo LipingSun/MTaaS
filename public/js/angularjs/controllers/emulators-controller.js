@@ -65,12 +65,20 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
     ctrl.create = function (newEmulator) {
         delete newEmulator.device;
         var emulator = new emulatorsService(newEmulator);
-        emulator.$save();
-        //ctrl.emulators.push(emulator);
+        emulator.ip = null;
+        emulator.ssh_port = null;
+        emulator.status = "processing";
+        ctrl.emulators.push(emulator);
+        emulator.$save(function(data){
+            emulator = data;
+        });
     };
 
     ctrl.delete = function (emulator) {
         emulator.$delete({id: emulator.id});
+        ctrl.emulators = ctrl.emulators.filter(function (item) {
+            return item !== emulator;
+        });
     };
 
     ctrl.view = function (emulator) {
