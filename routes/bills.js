@@ -161,6 +161,14 @@ exports.getRealTimeBills = function (req, res) {
     bill_sum = {};
     bill_detail = {};
     bill = {};
+    emulators = [];
+    devices = [];
+    hubs = [];
+
+    emu_cost = 0;
+    device_cost = 0;
+    hub_cost = 0;
+
 
     emulator_rt_count = 1000000;
     device_rt_count = 1000000;
@@ -187,12 +195,13 @@ exports.getRealTimeBills = function (req, res) {
 
     console.log(start_bill_time);
     console.log(end_bill_time);
+    var user_id=req.user.id;
 
-    getRealTimeEmuBills(start_bill_time, end_bill_time, curr_plan, str_date);
+    getRealTimeEmuBills(start_bill_time, end_bill_time, curr_plan, str_date,user_id);
 
-    getRealTimeDeviceBills(start_bill_time, end_bill_time, curr_plan, str_date);
+    getRealTimeDeviceBills(start_bill_time, end_bill_time, curr_plan, str_date,user_id);
 
-    getRealTimeHubBills(start_bill_time, end_bill_time, curr_plan, str_date);
+    getRealTimeHubBills(start_bill_time, end_bill_time, curr_plan, str_date,user_id);
 
     var senddata = setInterval(function () {
 
@@ -222,20 +231,22 @@ exports.getRealTimeBills = function (req, res) {
             bills.hub_cost = hub_cost;
             clearInterval(senddata);
             res.json(bills);
+
         }
 
-    }, 200);
+    }, 100);
+
 
 };
 
 
-var getRealTimeEmuBills = function (start_bill_time, end_bill_time, curr_plan, str_date) {
+var getRealTimeEmuBills = function (start_bill_time, end_bill_time, curr_plan, str_date,user_id) {
 
     emu_cost = 0;
 
 
     //var sqlStr = "select * from emulator where (status='running') or (status='processing') or (status in ('terminated','terminating') and terminate_datetime >'" +str_date+"')";
-    var sqlStr = "select * from emulator where (status='running') or (status='processing') or (status in ('terminated','terminating') and UNIX_TIMESTAMP(terminate_datetime) >UNIX_TIMESTAMP('" + str_date + "'))";
+    var sqlStr = "select * from emulator where user_id="+user_id+" and((status='running') or (status='processing') or (status in ('terminated','terminating') and UNIX_TIMESTAMP(terminate_datetime) >UNIX_TIMESTAMP('" + str_date + "')))";
 
 
     console.log(sqlStr);
@@ -369,12 +380,13 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time, curr_plan, s
     });
 };
 
-var getRealTimeDeviceBills = function (start_bill_time, end_bill_time, curr_plan, str_date) {
+var getRealTimeDeviceBills = function (start_bill_time, end_bill_time, curr_plan, str_date,user_id) {
 
     device_cost = 0;
 
     //sqlStr = "select * from device where (status='running') or (status='processing') or (status in ('terminated','terminating') and terminate_datetime >'" + str_date+"')";
-    var sqlStr = "select * from device where ((status='running') or (status='processing') or (status in ('terminated','terminating') and UNIX_TIMESTAMP(terminate_datetime) >UNIX_TIMESTAMP('" + str_date + "')))";
+    //var sqlStr = "select * from device where ((status='running') or (status='processing') or (status in ('terminated','terminating') and UNIX_TIMESTAMP(terminate_datetime) >UNIX_TIMESTAMP('" + str_date + "')))";
+    var sqlStr = "select * from device where user_id="+user_id+" and((status='running') or (status='processing') or (status in ('terminated','terminating') and UNIX_TIMESTAMP(terminate_datetime) >UNIX_TIMESTAMP('" + str_date + "')))";
 
     console.log(sqlStr);
     var params = [];
@@ -465,12 +477,13 @@ var getRealTimeDeviceBills = function (start_bill_time, end_bill_time, curr_plan
 };
 
 
-var getRealTimeHubBills = function (start_bill_time, end_bill_time, curr_plan, str_date) {
+var getRealTimeHubBills = function (start_bill_time, end_bill_time, curr_plan, str_date,user_id) {
 
     hub_cost = 0;
 
     //var sqlStr = "select * from hub where (status='running') or (status='processing') or (status in ('terminated','terminating') and terminate_datetime >'" + str_date+"')";
-    var sqlStr = "select * from hub where ((status='running') or (status='processing') or (status in ('terminated','terminating') and UNIX_TIMESTAMP(terminate_datetime) >UNIX_TIMESTAMP('" + str_date + "')))";
+   // var sqlStr = "select * from hub where ((status='running') or (status='processing') or (status in ('terminated','terminating') and UNIX_TIMESTAMP(terminate_datetime) >UNIX_TIMESTAMP('" + str_date + "')))";
+    var sqlStr = "select * from hub where user_id="+user_id+" and((status='running') or (status='processing') or (status in ('terminated','terminating') and UNIX_TIMESTAMP(terminate_datetime) >UNIX_TIMESTAMP('" + str_date + "')))";
 
     console.log(sqlStr);
     var params = [];
