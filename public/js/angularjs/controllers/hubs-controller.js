@@ -12,13 +12,18 @@ angular.module('myApp').controller('HubsController', ['hubsService', function (h
 
     ctrl.create = function (newEmulator) {
         var hub = new hubsService(newEmulator);
-        hub.$save();
         hub.status = 'processing';
         ctrl.hubs.push(hub);
+        hub.$save(function (data) {
+            hub = data;
+        });
     };
 
     ctrl.delete = function (hub) {
         hub.$delete({id: hub.id});
+        ctrl.hubs = ctrl.hubs.filter(function (item) {
+            return item !== hub;
+        });
     };
 
     ctrl.getAll();
