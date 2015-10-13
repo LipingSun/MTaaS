@@ -5,20 +5,28 @@ var hubCtrl = require('./../services/hubController');
 var Hub = require('./../models/Hub');
 var ControllerHost = require('./../models/ControllerHost');
 var squel = require('squel');
+var NodeCache = require( "node-cache" );
 
 var hubs = {};
+var nodeCache = new NodeCache();
 
 hubs.getHubs = function (req, res) {
-    Hub.findAll(function (err, data) {
-        if (!err) {
-            if (req.user && req.user.type === 'user') {
-                data = data.filter(function (hub) {
-                    return hub.user_id === req.user.id && (hub.status === 'running' || hub.status === 'processing');
-                });
-            }
-            res.status(200).json(data);
+    if (req.user && req.user.type === 'user') {
+        var cache = nodeCache.get('hubsByUserId-' + req.user.id);
+        if (cache) {
+            res.status(200).json(cache);
+        } else {
+            Hub.findAllByUserId(req.user.id ,function (err, data) {
+                if (!err) {
+                    data = data.filter(function (hub) {
+                        return (hub.status === 'running' || hub.status === 'processing');
+                    });
+                }
+                nodeCache.set('hubsByUserId-' + req.user.id, data);
+                res.status(200).json(data);
+            });
         }
-    });
+    }
 };
 
 hubs.getHub = function (req, res) {
@@ -35,6 +43,7 @@ hubs.getHub = function (req, res) {
 
 hubs.launchHubs = function (req, res) {
     hubCtrl.launchHub(req.body, req.user.id, function (err, data) {
+        nodeCache.del('hubsByUserId-' + req.user.id);
         if (!err) {
             res.status(201).json(data);
         } else {
@@ -46,6 +55,7 @@ hubs.launchHubs = function (req, res) {
 
 hubs.updateHub = function (req, res) {
     Hub.update(req.params.id, req.body, function (err, data) {
+        nodeCache.del('hubsByUserId-' + req.user.id);
         if (!err) {
             res.status(201).json(data);
         }
@@ -58,6 +68,7 @@ hubs.terminateHub = function (req, res) {
         terminate_datetime: squel.fval('NOW()')
     };
     Hub.update(req.params.id, changes, function (err, data) {
+        nodeCache.del('hubsByUserId-' + req.user.id);
         if (!err) {
             res.status(200).json(data);
 
