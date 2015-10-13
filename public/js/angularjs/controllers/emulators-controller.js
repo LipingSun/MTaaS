@@ -1,4 +1,4 @@
-angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '$interval', 'emulatorsService', 'hubsService', function ($http, $window, $interval, emulatorsService, hubsService) {
+angular.module('myApp').controller('EmulatorsController', ['$http', '$window', 'emulatorsService', 'hubsService', function ($http, $window, emulatorsService, hubsService) {
 
     var ctrl = this;
 
@@ -23,34 +23,7 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
                     if (index != -1) {
                         ctrl.hub[i] = ctrl.hubs[index].id;
                     }
-
-                    //if (ctrl.emulators[i].status === "processing" || ctrl.emulators[i].status === "terminating") {
-                    //    var updateStatus = $interval(function () {
-                    //        emulatorsService.get({id: ctrl.emulators[i].id}, function (updatedEmulator) {
-                    //            if (updatedEmulator.status !== "processing" && updatedEmulator.status !== "terminating") {
-                    //                $interval.cancel(updateStatus);
-                    //                ctrl.emulators[i] = updatedEmulator;
-                    //                //ctrl.getAll();
-                    //            }
-                    //        });
-                    //    }, 5000);
-                    //}
                 }
-
-                //ctrl.emulators.forEach(function (emulator) {
-                //    if (emulator.status === "processing" || emulator.status === "terminating") {
-                //        var updateStatus = $interval(function () {
-                //            emulatorsService.get({id: emulator.id}, function (updatedEmulator) {
-                //                if (updatedEmulator.status !== "processing" && updatedEmulator.status !== "terminating") {
-                //                    $interval.cancel(updateStatus);
-                //                    emulator = updatedEmulator;
-                //                    //ctrl.getAll();
-                //                }
-                //            });
-                //        }, 5000);
-                //    }
-                //});
-
             });
 
         });
@@ -69,7 +42,7 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
         emulator.ssh_port = null;
         emulator.status = "processing";
         ctrl.emulators.push(emulator);
-        emulator.$save(function(data){
+        emulator.$save(function (data){
             emulator = data;
         });
     };
