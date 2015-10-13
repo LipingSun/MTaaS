@@ -10,13 +10,18 @@ Emulator.findAll = function (callback) {
     mysql.query(sql.toString(), callback);
 };
 
+Emulator.findAllByUserId = function (id, callback) {
+    var sql = squel.select().from('emulator').where('user_id = ' + mysql.escape(id));
+    mysql.query(sql.toString(), callback);
+};
+
 Emulator.findById = function (id, callback) {
     var sql = squel.select().from('emulator').where('id = ' + id);
     mysql.queryOne(sql.toString(), callback);
 };
 
 Emulator.findOne = function (obj, callback) {
-    var condition = Object.keys(obj)[0] + ' = ' +  mysql.escape(obj[Object.keys(obj)[0]]);
+    var condition = generateCondition(obj);
     var sql = squel.select().from('emulator').where(condition);
     mysql.queryOne(sql.toString(), callback);
 };
@@ -43,5 +48,17 @@ Emulator.update = function (id, emulator, callback) {
         }
     });
 };
+
+function generateCondition(filter) {
+    if (!filter) {
+        return '';
+    }
+    var condition = '';
+    Object.keys(filter).forEach(function (key) {
+        condition += key +  ' = ' + mysql.escape(filter[key]) + ' AND ';
+    });
+    condition = condition.slice(0, -5);
+    return condition;
+}
 
 module.exports = Emulator;
