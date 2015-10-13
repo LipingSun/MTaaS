@@ -10,6 +10,11 @@ Hub.findAll = function (callback) {
     mysql.query(sql.toString(), callback);
 };
 
+Hub.findAllByUserId = function (id, callback) {
+    var sql = squel.select().from('hub').where('user_id = ' + mysql.escape(id));
+    mysql.query(sql.toString(), callback);
+};
+
 Hub.findById = function (id, callback) {
     var sql = squel.select().from('hub').where('id = ' + id);
     mysql.queryOne(sql.toString(), callback);
