@@ -1,4 +1,4 @@
-angular.module('myApp').controller('EmulatorsController', ['$http', '$window', 'emulatorsService', 'hubsService', function ($http, $window, emulatorsService, hubsService) {
+angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '$timeout', 'emulatorsService', 'hubsService', function ($http, $window, $timeout, emulatorsService, hubsService) {
 
     var ctrl = this;
 
@@ -42,8 +42,13 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
         emulator.ssh_port = null;
         emulator.status = "processing";
         ctrl.emulators.push(emulator);
+
         emulator.$save(function (data){
-            emulator = data;
+            emulator.disable = true;
+            emulator.status = "processing";
+            $timeout(function () {
+                emulator.status = "running";
+            }, 1000 * 60 * 5);
         });
     };
 
