@@ -522,7 +522,7 @@ var UI;
                 UI.saveSetting('port');
                 //UI.saveSetting('password');
             } else {
-                $D('noVNC_controls').style.display = "block";
+                $D('noVNC_controls').style.display = "none";
                 $D('connectButton').className = "noVNC_status_button_selected";
                 UI.connSettingsOpen = true;
                 $D('noVNC_host').focus();
@@ -679,7 +679,7 @@ var UI;
                     klass = "noVNC_status_normal";
                     break;
                 case 'disconnected':
-                    $D('noVNC_logo').style.display = "block";
+                    $D('noVNC_logo').style.display = "none";
                     $D('noVNC_container').style.display = "none";
                     /* falls through */
                 case 'loaded':
@@ -840,7 +840,7 @@ var UI;
             // Restore the callback used for initial resize
             UI.rfb.set_onFBUComplete(UI.FBUComplete);
 
-            $D('noVNC_logo').style.display = "block";
+            $D('noVNC_logo').style.display = "none";
             $D('noVNC_container').style.display = "none";
 
             // Don't display the connection settings until we're actually disconnected
