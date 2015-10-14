@@ -192,7 +192,7 @@
         </div>
 
         <!-- Connection Panel -->
-        <div id="noVNC_controls" class="triangle-right top">
+        <div id="noVNC_controls" class="triangle-right top" hidden>
             <ul>
                 <li><label><strong>Host: </strong><input id="noVNC_host" /></label></li>
                 <li><label><strong>Port: </strong><input id="noVNC_port" /></label></li>
@@ -205,7 +205,7 @@
 
 
     <div id="noVNC_screen">
-        <h1 id="noVNC_logo"><span>no</span><br />VNC</h1>
+        <h1 id="noVNC_logo" hidden><span>no</span><br />VNC</h1>
 
         <!-- HTML5 Canvas -->
         <div id="noVNC_container">
@@ -216,7 +216,7 @@
 
     </div>
     <script src="util.js"></script>
-    <script src="/bower_components/noVNC/include/ui.js"></script>
+    <script src="ui.js"></script>
 
  </body>
 </html>
