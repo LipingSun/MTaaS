@@ -42,11 +42,11 @@ emulators.getEmulator = function (req, res) {
 };
 
 emulators.launchEmulators = function (req, res) {  // TODO: Multi-thread
+    nodeCache.del('emulatorsByUserId-' + req.user.id);
     var number = req.body.number;
     var newEmulator = req.body;
     delete newEmulator.number;
     emulatorCtrl.launchEmulators(newEmulator, number, req.user.id, function (err, data) {
-        nodeCache.del('emulatorsByUserId-' + req.user.id);
         if (!err) {
             res.status(201).json(data);
         } else {
@@ -57,8 +57,8 @@ emulators.launchEmulators = function (req, res) {  // TODO: Multi-thread
 };
 
 emulators.updateEmulator = function (req, res) {
+    nodeCache.del('emulatorsByUserId-' + req.user.id);
     Emulator.update(req.params.id, req.body, function (err, data) {
-        nodeCache.del('emulatorsByUserId-' + req.user.id);
         if (!err) {
             res.status(201).json(data);
         }
@@ -66,12 +66,12 @@ emulators.updateEmulator = function (req, res) {
 };
 
 emulators.terminateEmulator = function (req, res) {
+    nodeCache.del('emulatorsByUserId-' + req.user.id);
     var changes = {
         status: 'terminating',
         terminate_datetime: squel.fval('NOW()')
     };
     Emulator.update(req.params.id, changes, function (err, data) {
-        nodeCache.del('emulatorsByUserId-' + req.user.id);
         if (!err) {
             res.status(200).json(data);
 
