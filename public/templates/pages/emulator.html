@@ -73,7 +73,7 @@
                                     </td>
                                     <td>{{ emulator.status }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-info" ng-click="emulatorsCtrl.view(emulator)"><i class="fa fa-fw fa-eye"></i></button>
+                                        <button type="button" class="btn btn-info" ng-disabled="emulator.status === 'processing'" ng-click="emulatorsCtrl.view(emulator)"><i class="fa fa-fw fa-eye"></i></button>
                                         <button type="button" class="btn btn-danger" ng-click="emulatorsCtrl.delete(emulator)"><i class="fa fa-fw fa-trash-o"></i></button>
                                     </td>
                                 </tr>
