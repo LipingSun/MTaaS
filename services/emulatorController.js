@@ -14,17 +14,25 @@ emulatorCtrl.launchEmulators = function (newEmulator, number, user_id, callback)
         var host = 'http://' + controllerHost.ip;
         if (controllerHost.port) host += ':' + controllerHost.port;
 
-        newEmulator.status = 'processing';
-        newEmulator.user_id = user_id;
-        newEmulator.host_id = controllerHost.id;
-        newEmulator.ip = controllerHost.ip;
+        var insertEmulator = {
+            name: newEmulator.name,
+            system: newEmulator.system,
+            version: newEmulator.version,
+            cpu: newEmulator.cpu,
+            ram: newEmulator.ram,
+            disk: newEmulator.disk,
+            ip: controllerHost.ip,
+            status: 'processing',
+            user_id: user_id,
+            host_id: controllerHost.id
+        };
 
-        Emulator.create(newEmulator, function (err, emulator) {
+        Emulator.create(insertEmulator, function (err, emulator) {
             if (err) {
                 callback(err);
             }
             controller.emulator.launch(host, emulator, function (err, data) {
-                if (!err) {
+                if (!err && data.VNCPort && data.SSHPort) {
                     var changes = {
                         vnc_port: data.VNCPort,
                         ssh_port: data.SSHPort,
