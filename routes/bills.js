@@ -262,7 +262,7 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time, curr_plan, s
                 console.log('end time');
                 console.log(end_bill_time);
 
-                console.log(emulator_bill[i]);
+                //console.log(emulator_bill[i]);
                 console.log(emulator_bill[i].ram);
                 console.log(emulator_bill[i].disk);
                 if (emulator_bill[i].status != 'terminated' && emulator_bill[i].status != 'terminating') {
@@ -322,7 +322,7 @@ var getRealTimeEmuBills = function (start_bill_time, end_bill_time, curr_plan, s
                         console.log(typeof cost);
                         emulators[i].cost = cost;
 
-                        console.log(emulators[i]);
+                        //console.log(emulators[i]);
                         emu_cost = emu_cost + cost;
                         console.log(typeof emu_cost);
                         console.log(emu_cost);
@@ -448,7 +448,7 @@ var getRealTimeDeviceBills = function (start_bill_time, end_bill_time, curr_plan
                         console.log(typeof cost);
                         devices[i].cost = cost;
 
-                        console.log(devices[i]);
+                        //console.log(devices[i]);
                         device_cost = device_cost + cost;
                         console.log(typeof device_cost);
                         console.log(device_cost);
@@ -545,7 +545,7 @@ var getRealTimeHubBills = function (start_bill_time, end_bill_time, curr_plan, s
                         console.log(typeof cost);
                         hubs[i].cost = cost;
 
-                        console.log(hubs[i]);
+                        //console.log(hubs[i]);
                         hub_cost = hub_cost + cost;
                         console.log(typeof hub_cost);
                         console.log(hub_cost);
