@@ -23,7 +23,6 @@ emulatorCtrl.launchEmulators = function (newEmulator, number, user_id, callback)
             cpu: newEmulator.cpu,
             ram: newEmulator.ram,
             disk: newEmulator.disk,
-            ip: controllerHost.ip,
             status: 'processing',
             user_id: user_id,
             host_id: controllerHost.id
@@ -35,17 +34,17 @@ emulatorCtrl.launchEmulators = function (newEmulator, number, user_id, callback)
             }
             controller.emulator.launch(host, emulator, function (err, data) {
                 if (!err && data.VNCPort && data.SSHPort) {
-                    var changes = {
-                        vnc_port: data.VNCPort,
-                        ssh_port: data.SSHPort,
-                        status: 'running'
-                    };
-                    Emulator.update(emulator.id, changes, function (err, data) {
-                        if (err) {
-                            callback(err);
-                        }
-                        callback(null, data);
-                    });
+                    callback(null, emulator);
+                    setTimeout(function () {
+                        var changes = {
+                            ip: controllerHost.ip,
+                            vnc_port: data.VNCPort,
+                            ssh_port: data.SSHPort,
+                            status: 'running'
+                        };
+                        Emulator.update(emulator.id, changes, function (err, data) {
+                        });
+                    }, 1000 * 60 * 4);
                 } else {
                     Emulator.update(emulator.id, {status: 'error'}, function (err, data) {
                         if (err) {
@@ -64,7 +63,9 @@ emulatorCtrl.launchEmulatorss = function (newEmulator, number, user_id, callback
             callback(err);
         }
         var host = 'http://' + controllerHost.ip;
-        if (controllerHost.port) host += ':' + controllerHost.port;
+        if (controllerHost.port) {
+            host += ':' + controllerHost.port;
+        }
 
         newEmulator.status = 'processing';
         newEmulator.user_id = user_id;
@@ -73,7 +74,9 @@ emulatorCtrl.launchEmulatorss = function (newEmulator, number, user_id, callback
 
         var newEmulators = [];
         for (var i = 0; i < number; i++) {
-            if (number > 1) newEmulator.name += '_' + (i + 1);
+            if (number > 1) {
+                newEmulator.name += '_' + (i + 1);
+            }
             newEmulators.push(newEmulator);
         }
 
@@ -118,12 +121,16 @@ emulatorCtrl.launchEmulatorsss = function (newEmulator, number, user_id, callbac
     ControllerHost.findOne({hostname: 'controller-01'}, function (err, controllerHost) {
         if (!err) {
             var host = 'http://' + controllerHost.ip;
-            if (controllerHost.port) host += ':' + controllerHost.port;
+            if (controllerHost.port) {
+                host += ':' + controllerHost.port;
+            }
 
             for (var i = 0; i < number; i++) {
                 newEmulator.status = 'processing';
                 newEmulator.user_id = user_id;
-                if (number > 1) newEmulator.name += '_' + (i + 1);
+                if (number > 1) {
+                    newEmulator.name += '_' + (i + 1);
+                }
                 Emulator.create(newEmulator, function (err, emulator) {
                     if (!err) {
                         newEmulators.push(emulator);

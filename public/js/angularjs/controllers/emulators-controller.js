@@ -1,14 +1,15 @@
+"use strict";
+
 angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '$timeout', 'emulatorsService', 'hubsService', function ($http, $window, $timeout, emulatorsService, hubsService) {
 
     var ctrl = this;
 
     ctrl.hub = [];
     var getIndexOfHub = function (emu, hubs) {
-
         for (var i = 0; i < hubs.length; i++) {
-
-            if (emu.hub_id === hubs[i].id)
+            if (emu.hub_id === hubs[i].id) {
                 return i;
+            }
         }
         return -1;
     };
@@ -20,7 +21,7 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
                 for (var i = 0; i < ctrl.emulators.length - 1; i++) {
                     var index = getIndexOfHub(ctrl.emulators[i], ctrl.hubs);
 
-                    if (index != -1) {
+                    if (index !== -1) {
                         ctrl.hub[i] = ctrl.hubs[index].id;
                     }
                 }
@@ -43,11 +44,14 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
         emulator.status = "processing";
         ctrl.emulators.push(emulator);
 
-        emulator.$save(function (data){
-            emulator.disable = true;
-            emulator.status = "processing";
+        emulator.$save(function () {
             $timeout(function () {
-                emulator.status = "running";
+                var data = emulatorsService.get({id: emulator.id}, function () {
+                    emulator.ip = data.ip;
+                    emulator.ssh_port = data.ssh_port;
+                    emulator.vnc_port = data.vnc_port;
+                    emulator.status = data.status;
+                });
             }, 1000 * 60 * 5);
         });
     };

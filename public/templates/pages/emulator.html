@@ -71,7 +71,13 @@
                                             <option></option>
                                         </select>
                                     </td>
-                                    <td>{{ emulator.status }}</td>
+                                    <!--<td>{{ emulator.status }}</td>-->
+                                    <td>
+                                        <div ng-show="emulator.status === 'running'">{{ emulator.status }}</div>
+                                        <div class="progress progress-striped active" ng-show="emulator.status === 'processing'">
+                                            <div class="progress-bar three-sec-ease-in-out" aria-valuetransitiongoal="100" aria-valuenow="100" style="width: 100%;"></div>
+                                        </div>
+                                    </td>
                                     <td>
                                         <button type="button" class="btn btn-info" ng-disabled="emulator.status === 'processing'" ng-click="emulatorsCtrl.view(emulator)"><i class="fa fa-fw fa-eye"></i></button>
                                         <button type="button" class="btn btn-danger" ng-click="emulatorsCtrl.delete(emulator)"><i class="fa fa-fw fa-trash-o"></i></button>
