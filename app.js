@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -45,9 +47,12 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
 app.use(function (req, res, next) {
-    console.log();
-    if (req.params && Object.keys(req.params).length  > 0) console.log('Request params: ' + JSON.stringify(req.params));
-    if (req.body && Object.keys(req.body).length  > 0) console.log('Request body: ' + JSON.stringify(req.body));
+    if (req.params && Object.keys(req.params).length  > 0) {
+        console.log('Request params: ' + JSON.stringify(req.params));
+    }
+    if (req.body && Object.keys(req.body).length  > 0) {
+        console.log('Request body: ' + JSON.stringify(req.body));
+    }
     next();
 });
 
@@ -114,9 +119,6 @@ app.get(api_v1 + '/unpaid_bills', bills.getUnpaidBills);
 app.post(api_v1 + '/paybills', bills.payBills);
 
 
-
-
-
 //// System Info
 //app.get('requests', system.getRequests);
 
@@ -126,9 +128,6 @@ app.get(api_v1 + '/check_db', function (req, res) {
         res.status(200).json(data);
     });
 });
-
-
-
 
 
 // catch 404 and forward to error handler
