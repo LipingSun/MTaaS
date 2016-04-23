@@ -1,3 +1,5 @@
+'use strict';
+
 var mysql = require('mysql');
 
 var getConnectionPool = function() {
@@ -10,8 +12,8 @@ var getConnectionPool = function() {
             password : process.env.OPENSHIFT_MYSQL_DB_PASSWORD,
             database : 'mtaas',
             timezone : 'utc',
-            connectionLimit: 120//,
-            //acquireTimeout: 100000
+            connectionLimit: 120,
+            acquireTimeout: 20000
         };
     } else {
         setting = {
@@ -21,8 +23,8 @@ var getConnectionPool = function() {
             password : 'yBWDv3iCRCfr',
             database : 'mtaas',
             timezone : 'utc',
-            connectionLimit: 120//,
-            //acquireTimeout: 100000
+            connectionLimit: 120,
+            acquireTimeout: 20000
             //multipleStatements: true
         };
     }
@@ -35,42 +37,46 @@ getConnectionPool().query("SET @@global.time_zone='+00:00'");
 mysql.query = function (sql, callback) {
     console.log('SQL: ' + sql);
     getConnectionPool().getConnection(function (err, connection) {
-        connection.query(sql, function (err, data) {
-            connection.release();
-            if (err) {
-                console.log('DB ' + err);
-                //callback(err);
-                return;
-            } else {
-                console.log('DB Result: ' + JSON.stringify(data));
-                callback(null, data);
-            }
-        });
-        connection.on('error', function(err) {
-            console.log('DB ' + err);
-            return;
-        });
+        if (err) {
+            console.log("DB connection err: " + err);
+        } else {
+            connection.query(sql, function (err, data) {
+                connection.release();
+                if (err) {
+                    console.log('DB ' + err);
+                    callback(err);
+                } else {
+                    console.log('DB Result: ' + JSON.stringify(data));
+                    callback(null, data);
+                }
+            });
+            //connection.on('error', function(err) {
+            //    console.log('DB ' + err);
+            //});
+        }
     });
 };
 
 mysql.queryOne = function (sql, callback) {
     console.log('SQL: ' + sql);
     getConnectionPool().getConnection(function (err, connection) {
-        connection.query(sql, function (err, data) {
-            connection.release();
-            if (err) {
-                console.log('DB ' + err);
-                //callback(err);
-                return;
-            } else {
-                console.log('DB Result: ' + JSON.stringify(data[0]));
-                callback(null, data[0]);
-            }
-        });
-        connection.on('error', function(err) {
-            console.log('DB ' + err);
-            return;
-        });
+        if (err) {
+            console.log("DB connection err: " + err);
+        } else {
+            connection.query(sql, function (err, data) {
+                connection.release();
+                if (err) {
+                    console.log('DB ' + err);
+                    callback(err);
+                } else {
+                    console.log('DB Result: ' + JSON.stringify(data[0]));
+                    callback(null, data[0]);
+                }
+            });
+            //connection.on('error', function (err) {
+            //    console.log('DB ' + err);
+            //});
+        }
     });
 };
 
