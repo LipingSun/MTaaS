@@ -3,28 +3,23 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "postinstall": "if [ -z ${OPENSHIFT_MYSQL_DB_HOST+x} ]; then echo Running on local; else echo Running on OpenShift; export HOME=$HOME/app-root/runtime/repo; fi; bower install"
-  },
-  "engines": {
-    "node": ">= 0.12.0"
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
-    "bower": "^1.4.1",
+    "bower": "^1.7.9",
     "cookie-parser": "~1.3.5",
     "debug": "~2.2.0",
     "ejs": "~2.3.3",
-    "express": "^4.13.1",
-    "express-session": "^1.11.3",
+    "express": "^4.14.0",
+    "express-session": "^1.14.1",
     "morgan": "~1.6.1",
-    "mysql": "^2.9.0",
-    "node-cache": "^3.0.0",
+    "mysql": "^2.11.1",
+    "node-cache": "^3.2.1",
     "passport": "^0.2.2",
     "passport-local": "^1.0.0",
-    "request": "^2.60.0",
+    "request": "^2.75.0",
     "serve-favicon": "~2.3.0",
-    "squel": "^4.0.0"
-  },
-  "main": "bin/www"
+    "squel": "^4.4.2"
+  }
 }
