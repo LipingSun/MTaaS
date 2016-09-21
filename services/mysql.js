@@ -3,31 +3,17 @@
 var mysql = require('mysql');
 
 var getConnectionPool = function() {
-    var setting = null;
-    if (process.env.OPENSHIFT_MYSQL_DB_HOST) {
-        setting = {
-            host     : process.env.OPENSHIFT_MYSQL_DB_HOST,
-            port     : process.env.OPENSHIFT_MYSQL_DB_PORT,
-            user     : process.env.OPENSHIFT_MYSQL_DB_USERNAME,
-            password : process.env.OPENSHIFT_MYSQL_DB_PASSWORD,
-            database : 'mtaas',
-            timezone : 'utc',
-            connectionLimit: 120,
-            acquireTimeout: 20000
-        };
-    } else {
-        setting = {
-            host     : '127.0.0.1',
-            port     : '3307',
-            user     : 'adminYPlWlrC',
-            password : 'yBWDv3iCRCfr',
-            database : 'mtaas',
-            timezone : 'utc',
-            connectionLimit: 120,
-            acquireTimeout: 20000
-            //multipleStatements: true
-        };
-    }
+    var setting = {
+        host     : process.env.MYSQL_DB_HOST,
+        port     : process.env.MYSQL_DB_PORT,
+        user     : process.env.MYSQL_DB_USERNAME,
+        password : process.env.MYSQL_DB_PASSWORD,
+        database : process.env.MYSQL_DB_DATABASE,
+        timezone : 'utc',
+        connectionLimit: 120,
+        acquireTimeout: 20000
+        //multipleStatements: true
+    };
     //setting.connectTimeout = 100000;
     return mysql.createPool(setting);
 };
