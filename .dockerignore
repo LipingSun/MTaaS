@@ -2,3 +2,4 @@
 .git
 *.iml
 node_modules
+public/bower_components

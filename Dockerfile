@@ -1,4 +1,4 @@
-FROM node:5-slim
+FROM node:6
 MAINTAINER Liping
 # Create app directory
 RUN mkdir -p /usr/src/app
