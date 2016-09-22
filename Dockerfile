@@ -7,10 +7,10 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 # Install app dependencies
 RUN npm install --production
-RUN bower install --production
+RUN node_modules/bower/bin/bower install --allow-root --production
 # Environment Variables
 ARG MYSQL_DB_HOST
-#ENV MYSQL_DB_HOST=$MYSQL_DB_HOST
+ENV MYSQL_DB_HOST=$MYSQL_DB_HOST
 ARG MYSQL_DB_PORT
 ENV MYSQL_DB_PORT=$MYSQL_DB_PORT
 ARG MYSQL_DB_USERNAME
@@ -22,4 +22,4 @@ ENV MYSQL_DB_DATABASE=$MYSQL_DB_DATABASE
 # Expose Port
 EXPOSE 8080
 # Start app
-CMD MYSQL_DB_HOST=$MYSQL_DB_HOST && npm start
+CMD ["npm", "start"]
