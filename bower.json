@@ -15,6 +15,6 @@
     "angular-route": "~1.4.3",
     "angular-resource": "~1.4.3",
     "angular-chart.js": "~0.7.2",
-    "noVNC": "https://github.com/kanaka/noVNC.git#bc4414f5b1"
+    "noVNC": "~0.6.1"
   }
 }
