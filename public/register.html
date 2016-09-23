@@ -131,6 +131,7 @@
             alert("please choose your bill plan");
             return false;
         } else {
+            sessionStorage.user = email;
             return true;
         }
     }

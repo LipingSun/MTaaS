@@ -1,22 +1,22 @@
 <div class="content">
-
+    
     <div class="row">
         <div class="col-mod-12">
-
+            
             <ul class="breadcrumb">
                 <li><a href="#/">MTaaS</a></li>
                 <li class="active">Devices</li>
             </ul>
-
+            
             <!--<div class="form-group hiddn-minibar pull-right">
                 <input type="text" class="form-control form-cascade-control nav-input-search" size="20" placeholder="Search through site"/>
 
                 <span class="input-icon fui-search"></span>
             </div>-->
-
+            
             <h3 class="page-header"><i class="fa fa-mobile"></i> Device
                 <i class="fa fa-info-circle animated bounceInDown show-info"></i></h3>
-
+            
             <blockquote class="page-information hidden">
                 <p>
                     Devices information.
@@ -26,18 +26,18 @@
     </div>
     <!--<link href="device.css" rel="stylesheet">-->
     <div class="profile-tabs">
-
+        
         <ul id="myTab" class="nav nav-tabs" ng-init="deviceTab = 'devices'">
             <li ng-class="{ active: deviceTab === 'devices' }" ng-click="devicesCtrl.getAll()">
-                <a href data-toggle="tab" ng-click="deviceTab = 'devices'">Devices</a>
+                <a href data-toggle="tab" ng-click="devicesCtrl.getAll(); deviceTab = 'devices'">Devices</a>
             </li>
             <li ng-class="{ active: deviceTab === 'launch' }">
-                <a href data-toggle="tab" ng-click="devicesCtrl.getAvailDevices();deviceTab = 'launch'">Launch</a>
+                <a href data-toggle="tab" ng-click="devicesCtrl.getAvailableDevices();deviceTab = 'launch'">Launch</a>
             </li>
         </ul>
-
+        
         <div id="myTabContent" class="tab-content">
-
+            
             <div ng-class="{ active: deviceTab === 'devices' }" class="tab-pane fade in" id="devices" ng-show="deviceTab === 'devices'">
                 <div class="col-md-12">
                     <div class="panel ">
@@ -46,11 +46,11 @@
                                 <thead>
                                 <tr>
                                     <!--<th>ID</th>-->
-                                    <th>Name</th>
+                                    <!--<th>Name</th>-->
+                                    <th>Brand</th>
                                     <th>Model</th>
-                                    <th>SSH</th>
-                                    <th>Hub</th>
-                                    <th>Create Time</th>
+                                    <th>ADB</th>
+                                    <!--<th>Create Time</th>-->
                                     <th>Status</th>
                                     <th></th>
                                 </tr>
@@ -58,19 +58,18 @@
                                 <tbody>
                                 <tr ng-repeat="device in devicesCtrl.devices">
                                     <!--<td>{{ device.id }}</td>-->
-                                    <td>{{ device.name }}</td>
-                                    <td>{{ device.model }}</td>
-                                    <td>{{ device.ip + ":" + device.ssh_port }}</td>
-                                    <td>
-                                        <select class="form-control" ng-model="devicesCtrl.hub[$index]" ng-options="hub.id as hub.name for hub in devicesCtrl.hubs" ng-change="devicesCtrl.attachToHub(device, devicesCtrl.hub[$index])">
-                                            <option></option>
-                                        </select>
-                                    </td>
-                                    <td>{{ device.create_datetime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                                    <td>{{ device.spec.brand }}</td>
+                                    <td>{{ device.spec.model }}</td>
+                                    <td>{{ device.adb_uri }}</td>
+                                    <!--<td>{{ device.create_datetime | date:'yyyy-MM-dd HH:mm:ss' }}</td>-->
                                     <td>{{ device.status }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-info" ng-click="devicesCtrl.view(device)"><i class="fa fa-fw fa-eye"></i></button>
-                                        <button type="button" class="btn btn-danger" ng-click="devicesCtrl.delete(device)"><i class="fa fa-fw fa-trash-o"></i></button>
+                                        <!--<button type="button" class="btn btn-info" ng-click="devicesCtrl.view(device)">-->
+                                            <!--<i class="fa fa-fw fa-eye"></i>-->
+                                        <!--</button>-->
+                                        <button type="button" class="btn btn-danger" ng-click="devicesCtrl.delete(device)">
+                                            <i class="fa fa-fw fa-trash-o"></i>
+                                        </button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -79,53 +78,59 @@
                     </div>
                 </div>
             </div>
-
+            
             <div ng-class="{ active: deviceTab === 'launch' }" class="tab-pane fade in" id="launch" ng-show="deviceTab === 'launch'">
                 <div class="col-md-12">
                     <div class="panel">
                         <div class="panel-body" ng-init="newDevice = {}">
-                            <form action class="form-horizontal row-border col-md-6"  style="margin-top: 25px">
-
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Name</label>
-                                    <div class="col-md-9">
-                                        <input type="text" ng-model="newDevice.name" ng-init="newDevice.name = 'device'" class="form-control"/>
-                                    </div>
-                                </div>
-
+                            <form action class="form-horizontal row-border col-md-6" style="margin-top: 25px">
+                                
+                                <!--<div class="form-group">-->
+                                <!--<label class="col-md-3 control-label">Name</label>-->
+                                <!--<div class="col-md-9">-->
+                                <!--<input type="text" ng-model="newDevice.name" ng-init="newDevice.name = 'device'" class="form-control"/>-->
+                                <!--</div>-->
+                                <!--</div>-->
+                                
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Brand</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" ng-model="newDevice.brand" ng-options="avail_device.brand for avail_device in devicesCtrl.avail_devices "></select>
+                                        <select class="form-control" ng-model="selectedBrand">
+                                            <option ng-repeat="device in devicesCtrl.availableDevices | unique: 'spec.brand'">{{ device.spec.brand }}</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Model</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" ng-model="newDevice.imei" ng-options="avail_device.imei as avail_device.model for avail_device in devicesCtrl.avail_devices | filter:newDevice.brand"></select>
+                                        <select class="form-control" ng-model="selectedModel">
+                                            <option ng-repeat="device in devicesCtrl.availableDevices | filterBy: ['spec.brand']: selectedBrand | unique: 'spec.model'">{{ device.spec.model }}</option>
+                                        </select>
                                     </div>
                                 </div>
-
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Device</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" ng-model="selectedDevice" ng-options="device.spec.imei for device in devicesCtrl.availableDevices | filterBy: ['spec.brand']: selectedBrand | filterBy: ['spec.model']: selectedModel"></select>
+                                    </div>
+                                </div>
+                                
                                 <div class="row">
                                     <div class="col-md-9 col-md-offset-3">
-                                        <button type="button" class="btn btn-success" ng-click="devicesCtrl.create(newDevice); deviceTab = 'devices'; devicesCtrl.getAll();">Submit</button>
+                                        <button type="button" class="btn btn-success" ng-click="devicesCtrl.create(selectedDevice);">Submit</button>
                                         <button type="button" class="btn btn-danger" ng-click="newDevice = null">Cancel</button>
                                     </div>
                                 </div>
-
+                            
                             </form>
-
-                            <div class="col-md-6" ng-show="newDevice.brand && newDevice.imei">
-                                <img src="img/temp/samsung_s2.jpg" class="col-md-4 col-md-offset-1">
+                            
+                            <div class="col-md-6" ng-show="selectedDevice">
+                                <!--<img src="img/temp/samsung_s2.jpg" class="col-md-4 col-md-offset-1">-->
                                 <ul class="col-md-6 col-md-offset-1" style="margin-top: 25px">
-                                    <li>OS: Android 4.1.2</li>
-                                    <li>Physical size: 4.3 inches</li>
-                                    <li>Resolution: 480 x 800 pixels</li>
-                                    <li>Pixel density: 218 ppi</li>
-                                    <li>CPU: Samsung Exynos 4210</li>
-                                    <li>RAM: 1024MB</li>
-                                    <li>Internal Storage: 32GB</li>
-                                    <li>SD Card: 4GB</li>
+                                    <li>OS Release: {{ selectedDevice.spec.os_release }}</li>
+                                    <li>OS Version: {{ selectedDevice.spec.os_version }}</li>
+                                    <li>OS CPU: {{ selectedDevice.spec.cpu }}</li>
+                                    <li>OS Memory: {{ selectedDevice.spec.memory }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -133,7 +138,7 @@
                     </div>
                 </div>
             </div>
-
+        
         </div>
     </div>
 </div>

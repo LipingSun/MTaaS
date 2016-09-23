@@ -59,6 +59,7 @@
             alert("please input your password");
             return false;
         } else {
+            sessionStorage.user = email;
             return true;
         }
     }

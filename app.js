@@ -7,8 +7,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var mongoose = require('mongoose');
+var mers = require('mers');
 
-const api_v1 = '/api/v1';
+const API_V1 = '/api/v1';
+const API_V2 = '/api/v2';
 var mysql = require('./services/mysql');
 var passport = require('./services/passport');
 
@@ -21,6 +24,7 @@ var deviceStock = require('./routes/deviceStock');
 var hubs = require('./routes/hubs');
 var users = require('./routes/users');
 var bills = require('./routes/bills');
+var DevicePool = require('./models/DevicePool');
 
 var app = express();
 
@@ -46,6 +50,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
+// MongoDB for DevicePool
+mongoose.connect(process.env.MONGODB_URI);
+app.use(API_V2, mers({mongoose: mongoose}).rest());
+
 app.use(function (req, res, next) {
     if (req.params && Object.keys(req.params).length  > 0) {
         console.log('Request params: ' + JSON.stringify(req.params));
@@ -69,61 +77,61 @@ app.all('/logout', auth.logout);  // Log out user session
 
 
 // Infrastructure
-app.post(api_v1 + '/infrastructure', infrastructure.setup);  // Setup infrastructure
+app.post(API_V1 + '/infrastructure', infrastructure.setup);  // Setup infrastructure
 
 // Emulators
-app.get(api_v1 + '/emulators', passport.ensureAuthenticated, emulators.getEmulators);  // Get all relevant emulators
-app.post(api_v1 + '/emulators', passport.ensureAuthenticated, emulators.launchEmulators);  // Launch an emulator
-app.get(api_v1 + '/emulators/:id', passport.ensureAuthenticated, emulators.getEmulator);  // Get info of an emulator
-app.patch(api_v1 + '/emulators/:id', passport.ensureAuthenticated, emulators.updateEmulator);  // Update info of an emulator
-app.delete(api_v1 + '/emulators/:id', passport.ensureAuthenticated, emulators.terminateEmulator);  // Terminate an emulator
+app.get(API_V1 + '/emulators', passport.ensureAuthenticated, emulators.getEmulators);  // Get all relevant emulators
+app.post(API_V1 + '/emulators', passport.ensureAuthenticated, emulators.launchEmulators);  // Launch an emulator
+app.get(API_V1 + '/emulators/:id', passport.ensureAuthenticated, emulators.getEmulator);  // Get info of an emulator
+app.patch(API_V1 + '/emulators/:id', passport.ensureAuthenticated, emulators.updateEmulator);  // Update info of an emulator
+app.delete(API_V1 + '/emulators/:id', passport.ensureAuthenticated, emulators.terminateEmulator);  // Terminate an emulator
 
 //Devices
-app.get(api_v1 + '/devices', passport.ensureAuthenticated, devices.getDevices);  // Get all relevant devices
-app.post(api_v1 + '/devices', passport.ensureAuthenticated, devices.launchDevices);  // Launch an device
-app.get(api_v1 + '/devices/:id', passport.ensureAuthenticated, devices.getDevice);  // Get info of an device
-app.patch(api_v1 + '/devices/:id', passport.ensureAuthenticated, devices.updateDevice);  // Update info of an device
-app.delete(api_v1 + '/devices/:id', passport.ensureAuthenticated, devices.terminateDevice);  // Terminate an device
+app.get(API_V1 + '/devices', passport.ensureAuthenticated, devices.getDevices);  // Get all relevant devices
+app.post(API_V1 + '/devices', passport.ensureAuthenticated, devices.launchDevices);  // Launch an device
+app.get(API_V1 + '/devices/:id', passport.ensureAuthenticated, devices.getDevice);  // Get info of an device
+app.patch(API_V1 + '/devices/:id', passport.ensureAuthenticated, devices.updateDevice);  // Update info of an device
+app.delete(API_V1 + '/devices/:id', passport.ensureAuthenticated, devices.terminateDevice);  // Terminate an device
 
 //Devices in Stock
-app.get(api_v1 + '/devices-in-stock', deviceStock.getDevices);  // Get all relevant devices
-app.get(api_v1 + '/devices-in-stock/:id', deviceStock.getDevice);  // Get info of an devices
-app.patch(api_v1 + '/devices-in-stock/:id', deviceStock.updateDevice);  // Update info of an devices
+app.get(API_V1 + '/devices-in-stock', deviceStock.getDevices);  // Get all relevant devices
+app.get(API_V1 + '/devices-in-stock/:id', deviceStock.getDevice);  // Get info of an devices
+app.patch(API_V1 + '/devices-in-stock/:id', deviceStock.updateDevice);  // Update info of an devices
 
 // Hubs
-app.get(api_v1 + '/hubs', passport.ensureAuthenticated, hubs.getHubs);  // Get all relevant hubs
-app.post(api_v1 + '/hubs', passport.ensureAuthenticated, hubs.launchHubs);  // Launch an hub
-app.get(api_v1 + '/hubs/:id', passport.ensureAuthenticated, hubs.getHub);  // Get info of an hub
-app.patch(api_v1 + '/hubs/:id', passport.ensureAuthenticated, hubs.updateHub);  // Update info of an hub
-app.delete(api_v1 + '/hubs/:id', passport.ensureAuthenticated, hubs.terminateHub);  // Terminate an hub
-app.post(api_v1 + '/hubs/:id/connections', passport.ensureAuthenticated, hubs.attach);  // attach emulator or device to hub
+app.get(API_V1 + '/hubs', passport.ensureAuthenticated, hubs.getHubs);  // Get all relevant hubs
+app.post(API_V1 + '/hubs', passport.ensureAuthenticated, hubs.launchHubs);  // Launch an hub
+app.get(API_V1 + '/hubs/:id', passport.ensureAuthenticated, hubs.getHub);  // Get info of an hub
+app.patch(API_V1 + '/hubs/:id', passport.ensureAuthenticated, hubs.updateHub);  // Update info of an hub
+app.delete(API_V1 + '/hubs/:id', passport.ensureAuthenticated, hubs.terminateHub);  // Terminate an hub
+app.post(API_V1 + '/hubs/:id/connections', passport.ensureAuthenticated, hubs.attach);  // attach emulator or device to hub
 
 
 // Users
-app.get(api_v1 + '/users', users.getUsers);  // Get all relevant users
+app.get(API_V1 + '/users', users.getUsers);  // Get all relevant users
 //app.post(api_v1 + '/users', users.createUser);  // Create a user
-app.get(api_v1 + '/users/:id', users.getUser);  // Get info of a user
-app.patch(api_v1 + '/users/:id', users.updateUser);  // Update info of a user
-app.delete(api_v1 + '/users/:id', users.deleteUser);  // Delete an user
+app.get(API_V1 + '/users/:id', users.getUser);  // Get info of a user
+app.patch(API_V1 + '/users/:id', users.updateUser);  // Update info of a user
+app.delete(API_V1 + '/users/:id', users.deleteUser);  // Delete an user
 
 //// Bills
 //app.get(api_v1 + '/bills', bills.getBills);
 //app.get(api_v1 + '/bills/:bill_id', bills.getBill);
-app.get(api_v1 +'/bill_plan', bills.getBillPlan);
-app.post(api_v1 +'/change_bill_plan', bills.changeBillPlan);
-app.get(api_v1 +'/realTimeBills', bills.getRealTimeBills);
-app.get(api_v1 + '/createBills', bills.createBills);
-app.get(api_v1 + '/bills', bills.getMonthBills);
-app.get(api_v1 + '/availBillDates', bills.getAvailDateList);
-app.get(api_v1 + '/unpaid_bills', bills.getUnpaidBills);
-app.post(api_v1 + '/paybills', bills.payBills);
+app.get(API_V1 +'/bill_plan', bills.getBillPlan);
+app.post(API_V1 +'/change_bill_plan', bills.changeBillPlan);
+app.get(API_V1 +'/realTimeBills', bills.getRealTimeBills);
+app.get(API_V1 + '/createBills', bills.createBills);
+app.get(API_V1 + '/bills', bills.getMonthBills);
+app.get(API_V1 + '/availBillDates', bills.getAvailDateList);
+app.get(API_V1 + '/unpaid_bills', bills.getUnpaidBills);
+app.post(API_V1 + '/paybills', bills.payBills);
 
 
 //// System Info
 //app.get('requests', system.getRequests);
 
 
-app.get(api_v1 + '/check_db', function (req, res) {
+app.get(API_V1 + '/check_db', function (req, res) {
     mysql.query('show tables', function (err, data) {
         res.status(200).json(data);
     });

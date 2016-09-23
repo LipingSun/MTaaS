@@ -1,77 +1,60 @@
-angular.module('myApp').controller('DevicesController', ['$http', '$window', 'devicesService', 'deviceStockService', 'hubsService', function ($http, $window, devicesService, deviceStockService, hubsService) {
+angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$window', 'devicesService', 'deviceStockService', 'devicePoolService', 'hubsService', function ($scope, $http, $window, devicesService, deviceStockService, devicePoolService, hubsService) {
 
     var ctrl = this;
 
+    ctrl.devices = [];
+
     ctrl.hub = [];
 
-    ctrl.getAvailDevices = function () {
-        ctrl.avail_devices = deviceStockService.query(
-            function () {
-
-                for (var j = 0; j < ctrl.avail_devices.length; j++) {
-
-                    var device = ctrl.avail_devices[j];
-
-                    for (var i = j + 1; i < ctrl.avail_devices.length; i++) {
-                        if (ctrl.avail_devices[i].brand == device.brand && ctrl.avail_devices[i].model == device.model) {
-                            ctrl.avail_devices.splice(i, 1);
-                            i--;
-                        }
-
-                    }
-                }
-
-            }
-        );
-
-    };
-
-    var getIndexOfHub = function (emu, hubs) {
-
-        for (var i = 0; i < hubs.length; i++) {
-
-            if (emu.hub_id === hubs[i].id)
-                return i;
-        }
-        return -1;
-    };
+    ctrl.availableDevices = [];
 
     ctrl.getAll = function () {
-
-        ctrl.devices = devicesService.query(function () {
-
-            ctrl.hubs = hubsService.query(function () {
-
-                for (var i = 0; i < ctrl.devices.length; i++) {
-
-                    var index = getIndexOfHub(ctrl.devices[i], ctrl.hubs);
-
-                    if (index != -1)
-
-                        ctrl.hub[i] = ctrl.hubs[index].id;
-                }
-            });
-
+        devicePoolService.findAllByOccupant(function (data) {
+            ctrl.devices = data.payload;
         });
     };
 
+    ctrl.getAll();
+
     ctrl.getOne = function (id) {
-        ctrl.device = devicesService.get(id);
+        ctrl.device = devicePoolService.get(id);
     };
 
-    ctrl.create = function (newDevice) {
-        newDevice.model = newDevice.brand.model;
-        newDevice.brand = newDevice.brand.brand;
-        var device = new devicesService(newDevice);
-        device.$save();
+    ctrl.getAvailableDevices = function () {
+        devicePoolService.findAllAvailable(function (data) {
+            ctrl.availableDevices = data.payload;
+            ctrl.availableBrands = ctrl.availableDevices.map(function (device) {
+                console.log(device);
+                return device.spec.brand;
+            });
+        });
+    };
+
+    ctrl.create = function (selectedDevice) {
+        if (!selectedDevice) {
+            $window.alert('Please select device');
+            return;
+        }
+        selectedDevice.status = 'occupied';
+        selectedDevice.occupant = sessionStorage.user;
+        $id = selectedDevice._id;
+        devicePoolService.update({id: $id}, selectedDevice, function () {
+            ctrl.getAll();
+            $scope.deviceTab = 'devices';
+        });
+        // var device = new devicesService(newDevice);
+        // device.$save();
         // TODO: see hub
     };
 
     ctrl.delete = function (device) {
-        device.$delete({id: device.id});
+        device.occupant = null;
+        device.status = 'available';
+        $id = device._id;
+        devicePoolService.update({id: $id}, device, function () {
+            ctrl.getAll();
+        });
     };
-
-    ctrl.getAll();
 
     ctrl.view = function (device) {
         var params = 'host=' + device.ip + '&' + 'port=' + device.vnc_port + '&' + 'autoconnect=true' + '&' + 'resize=downscale';
@@ -88,5 +71,15 @@ angular.module('myApp').controller('DevicesController', ['$http', '$window', 'de
         });
     };
 
+    var getIndexOfHub = function (emu, hubs) {
+
+        for (var i = 0; i < hubs.length; i++) {
+
+            if (emu.hub_id === hubs[i].id) {
+                return i;
+            }
+        }
+        return -1;
+    };
 
 }]);
