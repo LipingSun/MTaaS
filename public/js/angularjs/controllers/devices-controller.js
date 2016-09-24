@@ -25,7 +25,7 @@ angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$wi
             ctrl.availableDevices = data.payload;
             ctrl.availableBrands = ctrl.availableDevices.map(function (device) {
                 console.log(device);
-                return device.spec.brand;
+                return device.spec.manufacturer;
             });
         });
     };

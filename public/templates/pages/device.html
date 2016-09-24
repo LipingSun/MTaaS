@@ -46,11 +46,12 @@
                                 <thead>
                                 <tr>
                                     <!--<th>ID</th>-->
-                                    <!--<th>Name</th>-->
+                                    <!--<th>Create Time</th>-->
                                     <th>Brand</th>
                                     <th>Model</th>
+                                    <th>CPU</th>
+                                    <th>Android Version</th>
                                     <th>ADB</th>
-                                    <!--<th>Create Time</th>-->
                                     <th>Status</th>
                                     <th></th>
                                 </tr>
@@ -58,10 +59,12 @@
                                 <tbody>
                                 <tr ng-repeat="device in devicesCtrl.devices">
                                     <!--<td>{{ device.id }}</td>-->
-                                    <td>{{ device.spec.brand }}</td>
-                                    <td>{{ device.spec.model }}</td>
-                                    <td>{{ device.adb_uri }}</td>
                                     <!--<td>{{ device.create_datetime | date:'yyyy-MM-dd HH:mm:ss' }}</td>-->
+                                    <td>{{ device.spec.manufacture }}</td>
+                                    <td>{{ device.spec.model }}</td>
+                                    <td>{{ device.spec.cpu }}</td>
+                                    <td>{{ device.spec.os_release }}</td>
+                                    <td>{{ device.adb_uri }}</td>
                                     <td>{{ device.status }}</td>
                                     <td>
                                         <!--<button type="button" class="btn btn-info" ng-click="devicesCtrl.view(device)">-->
@@ -96,7 +99,7 @@
                                     <label class="col-md-3 control-label">Brand</label>
                                     <div class="col-md-9">
                                         <select class="form-control" ng-model="selectedBrand">
-                                            <option ng-repeat="device in devicesCtrl.availableDevices | unique: 'spec.brand'">{{ device.spec.brand }}</option>
+                                            <option ng-repeat="device in devicesCtrl.availableDevices | unique: 'spec.manufacture'">{{ device.spec.manufacture }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -104,14 +107,14 @@
                                     <label class="col-md-3 control-label">Model</label>
                                     <div class="col-md-9">
                                         <select class="form-control" ng-model="selectedModel">
-                                            <option ng-repeat="device in devicesCtrl.availableDevices | filterBy: ['spec.brand']: selectedBrand | unique: 'spec.model'">{{ device.spec.model }}</option>
+                                            <option ng-repeat="device in devicesCtrl.availableDevices | filterBy: ['spec.manufacture']: selectedBrand | unique: 'spec.model'">{{ device.spec.model }}</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Device</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" ng-model="selectedDevice" ng-options="device.spec.imei for device in devicesCtrl.availableDevices | filterBy: ['spec.brand']: selectedBrand | filterBy: ['spec.model']: selectedModel"></select>
+                                        <select class="form-control" ng-model="selectedDevice" ng-options="device.spec.imei for device in devicesCtrl.availableDevices | filterBy: ['spec.manufacture']: selectedBrand | filterBy: ['spec.model']: selectedModel"></select>
                                     </div>
                                 </div>
                                 
@@ -127,10 +130,11 @@
                             <div class="col-md-6" ng-show="selectedDevice">
                                 <!--<img src="img/temp/samsung_s2.jpg" class="col-md-4 col-md-offset-1">-->
                                 <ul class="col-md-6 col-md-offset-1" style="margin-top: 25px">
-                                    <li>OS Release: {{ selectedDevice.spec.os_release }}</li>
-                                    <li>OS Version: {{ selectedDevice.spec.os_version }}</li>
-                                    <li>OS CPU: {{ selectedDevice.spec.cpu }}</li>
-                                    <li>OS Memory: {{ selectedDevice.spec.memory }}</li>
+                                    <li>CPU: {{ selectedDevice.spec.cpu }}</li>
+                                    <li>Android Version: {{ selectedDevice.spec.os_release }}</li>
+                                    <li>Android SDK: {{ selectedDevice.spec.os_sdk }}</li>
+                                    <li>Internal Storage: {{ selectedDevice.spec.total_internal_storage }}</li>
+                                    <li>External Storage: {{ selectedDevice.spec.total_disk }}</li>
                                 </ul>
                             </div>
                         </div>
