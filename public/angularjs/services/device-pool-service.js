@@ -6,7 +6,7 @@ angular.module('myApp').factory('devicePoolService', function ($resource, host) 
         },
         findAllByOccupant: {
             method: 'GET',
-            params: {'filter[occupant]': sessionStorage.user}
+            params: {'filter[status]': 'occupied', 'filter[occupant]': sessionStorage.user}
         },
         update: {
             method: 'PUT'
