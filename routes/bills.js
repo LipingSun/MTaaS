@@ -23,8 +23,9 @@ var billing_price = {
     '5': 0.001,
     '10': 0.002,
     '15': 0.0025,
-    'Samsung_S2': 0.1
-
+    'Samsung S2': 0.1,
+    'Incredible S S710e': 0.08,
+    'SGH-I727': 0.06
 };
 
 var emulators = [];
@@ -577,11 +578,15 @@ exports.getAvailDateList = function (req, res) {
     var params = [req.user.id];
     query.execQuery(sqlStr, params, function (err, rows) {
         console.log(rows.length);
+        var now_date = new Date();
         if (rows.length > 0) {
             for (var i = 0; i < rows.length; i++) {
 
                 var date = rows[i].id.split("_", 2);
-                years.push(date[0]);
+
+                if(years.indexOf(date[0].toString()) <= -1) {
+                    years.push(date[0]);
+                }
 
                 var month = Number(date[1]);
 
@@ -593,7 +598,7 @@ exports.getAvailDateList = function (req, res) {
 
         }
 
-        var now_date = new Date();
+
         var now_year = now_date.getFullYear();
 
         var now_month = now_date.getMonth() + 1;
@@ -601,7 +606,9 @@ exports.getAvailDateList = function (req, res) {
 
         var monthObj = {name: now_name, id: now_month};
 
-        years.push(now_year);
+        if(years.indexOf(now_year.toString()) <= -1){
+            years.push(now_year);
+        }
         months.push(monthObj);
 
         res.json({'years': years, 'months': months});
@@ -665,38 +672,41 @@ exports.createBills = function (req, res) {
     hub_count = 10000;
 
     var now_date = new Date();
-    if (now_date.getDate() == 1) {
-        var month_billing_date = getMonthBillingDate(now_date);
-        var month_start = month_billing_date[0];
-        var month_end = month_billing_date[1];
+    //if (now_date.getDate() == 1) {
+    var month_billing_date = getMonthBillingDate(now_date);
+    var month_start = month_billing_date[0];
+    var month_end = month_billing_date[1];
 
-        console.log(month_start);
-        console.log(month_end);
-        console.log(month_start.getMonth() + 1);
+    console.log(month_start);
+    console.log(month_end);
+    console.log(month_start.getMonth() + 1);
 
-        var invoice_part_id = month_start.getFullYear() + '_' + (month_start.getMonth() + 1);
-        console.log(invoice_part_id);
+    var invoice_part_id = month_start.getFullYear() + '_' + (month_start.getMonth() + 1);
+    console.log(invoice_part_id);
 
-        generateEmulatorBillsDetail(month_start, month_end, invoice_part_id);
-        generateDeviceBillsDetail(month_start, month_end, invoice_part_id);
-        generateHubBillsDetail(month_start, month_end, invoice_part_id);
+    generateEmulatorBillsDetail(month_start, month_end, invoice_part_id);
+    generateDeviceBillsDetail(month_start, month_end, invoice_part_id);
+    generateHubBillsDetail(month_start, month_end, invoice_part_id);
 
-        var senddata = setInterval(function () {
+    var senddata = setInterval(function () {
 
-            console.log("emubills_num:" + emulator_count);
-            if (emulator_count == 0 && device_count == 0 && hub_count == 0) {
+        console.log("emu_num:" + emulator_count);
+        console.log("device_num:" + device_count);
+        console.log("hub_num:" + hub_count);
 
-                console.log("done: ");
+        if (emulator_count == 0 && device_count == 0 && hub_count == 0) {
 
-                clearInterval(senddata);
+            console.log("done: ");
 
-                generateMonthInvoice(month_start, month_end, invoice_part_id);
+            clearInterval(senddata);
 
-            }
+            generateMonthInvoice(month_start, month_end, invoice_part_id);
 
-        }, 200);
+        }
 
-    }
+    }, 200);
+
+    //}
 
 };
 
@@ -709,15 +719,15 @@ var generateMonthInvoice = function (month_start, month_end, invoice_part_id) {
         if (rows.length > 0) {
             for (var i = 0; i < rows.length; i++) {
 
-                var insertSql = "insert into invoice(id,user_id,plan,start_datetime,end_datetime,amount,create_date) values (?,?,?,?,?,?,?)";
+                var insertSql = "insert into invoice(id,user_id,plan,start_datetime,end_datetime,amount, pay_status, create_date) values (?,?,?,?,?,?,?,?)";
                 if (rows[i].curr_plan == 'pay_as_hour_go') {
 
-                    params = [rows[i].invoice_id, rows[i].user_id, rows[i].curr_plan, month_start, month_end, rows[i].amount, new Date()];
+                    params = [rows[i].invoice_id, rows[i].user_id, rows[i].curr_plan, month_start, month_end, rows[i].amount, 'unpaid', new Date()];
 
 
                 } else if (rows[i].curr_plan == 'month_flat_rate') {
 
-                    params = [rows[i].invoice_id, rows[i].user_id, rows[i].curr_plan, month_start, month_end, billing_price['month_flat_rate'], new Date()];
+                    params = [rows[i].invoice_id, rows[i].user_id, rows[i].curr_plan, month_start, month_end, billing_price['month_flat_rate'],'unpaid', new Date()];
                 }
 
                 query.execQuery(insertSql, params, function (err, data) {
@@ -747,8 +757,10 @@ var generateMonthInvoice = function (month_start, month_end, invoice_part_id) {
 
 var generateEmulatorBillsDetail = function (month_start, month_end, part_id) {
 
-//    //var sqlStr = "select emulator.id, username, version, cpu, ram, disk, TIMESTAMPDIFF(MINUTE,start_time,end_time) AS runtime, ip_port, status from user, emulator where user.id=emulator.user_id";
-    var sqlStr = "select e.*,u.curr_plan from (emulator e left join user u on e.user_id=u.id)  where (e.status='running' and e.create_datetime<'" + month_end + "') or (e.status='terminated' and e.terminate_datetime >'" + month_start + "' and e.create_datetime<'" + month_end + "')";
+    var start_str = month_start.getFullYear()+"-"+(month_start.getMonth()+1)+"-"+month_start.getDate()+" 00:00:00";
+    var end_str = month_end.getFullYear()+"-"+(month_end.getMonth()+1)+"-"+month_end.getDate()+" 23:59:59";
+
+    var sqlStr = "select e.*,u.curr_plan from (emulator e left join user u on e.user_id=u.id)  where UNIX_TIMESTAMP(e.create_datetime) < UNIX_TIMESTAMP('" + end_str + "') and (e.status='running' or (e.status='terminated' and UNIX_TIMESTAMP(e.terminate_datetime) >UNIX_TIMESTAMP('" + start_str + "')))";
 
     var params = [];
     query.execQuery(sqlStr, params, function (err, rows) {
@@ -784,12 +796,14 @@ var generateEmulatorBillsDetail = function (month_start, month_end, part_id) {
 
                 }
 
+                console.log(start_time);
+                console.log(end_time);
+
+                console.log(emulator_bill[i]);
+
                 if (start_time !== null & end_time !== null) {
 
                     if (emulator_bill[i].curr_plan == 'month_flat_rate') {
-
-//                          //  var sqlStr = "update emulator t set t.cost=((select b.price from billingrule b where b.resource=t.cpu)+(select b.price from billingrule b where b.resource='ram')*t.ram+(select b.price from billingrule b where b.resource='disk')*t.disk)*TIMESTAMPDIFF(MINUTE,t.start_time,t.end_time) where t.user_id=?";
-
 
                         var insertSql = "insert into invoice_detail(user_id,resource,resource_id,start_datetime,end_datetime,running_time,invoice_id) values (?,?,?,?,?,?,?)";
                         params = [emulator_bill[i].user_id, 'emulator', emulator_bill[i].id, start_time, end_time, (end_time - start_time) / (1000 * 60 * 60), (part_id + '_' + emulator_bill[i].user_id)];
@@ -798,7 +812,7 @@ var generateEmulatorBillsDetail = function (month_start, month_end, part_id) {
                             if (err) {
                                 //res.send({'errorMessage': "Please enter a valid email and password"});
                                 console.log("ERROR: " + err.message);
-                                console.log("create a bill detail of emulator failed, id: " + params[2]);
+                                console.log("create a bill detail of emulator failed.");
                                 //res.render({errorMessage: 'Sign Up Fail!'});
 
                             } else {
@@ -809,8 +823,6 @@ var generateEmulatorBillsDetail = function (month_start, month_end, part_id) {
 
                             emulator_count--;
                             console.log(emulator_count);
-
-
                         });
 
 
@@ -839,65 +851,26 @@ var generateEmulatorBillsDetail = function (month_start, month_end, part_id) {
                             emulator_count--;
                             console.log(emulator_count);
                         });
-
-
-                        /* var sqlStr = "select price from billingrule where resource in (?,?,?)";
-                         params = [emulator_bill[i].cpu, 'ram', 'disk'];
-
-                         query.execQuery(sqlStr, params, function (err, data) {
-                         console.log(data.length);
-                         if (data.length !== 0) {
-
-                         var total_hour_time = (end_time - start_time) / 1000 * 60 * 60;
-                         var cost = (data[0].price + data[1].price * emulator_bill[i].ram + data[2].price * emulator_bill[i].disk) * total_hour_time;
-
-                         var insertSql = "insert into invoice_detail(user_id,resource,resource_id,start_datetime,end_datetime,running_time,cost,invoice_id) values (?,?,?,?,?,?,?)";
-
-                         params = [emulator_bill[i].user_id, 'emulator', emulator_bill[i].id, start_time, end_time, (end_time - start_time) / 1000 * 60 * 60, cost,(part_id+'_'+emulator_bill[i].user_id.toString)];
-
-                         query.execQuery(insertSql, params, function (err, rows) {
-                         if (err) {
-                         //res.send({'errorMessage': "Please enter a valid email and password"});
-                         console.log("ERROR: " + err.message);
-                         console.log("create a bill detail of emulator failed, id: " + rows[i].id);
-                         //res.render({errorMessage: 'Sign Up Fail!'});
-
-                         } else {
-                         // res.json({"signup":'Success'})
-                         console.log("create a bill detail of emulator succeed: " + rows.insertId);
-                         }
-                         emulator_count--;
-                         });
-
-                         } else {
-                         console.log('no unit price of resource in billing rule found!');
-
-                         }
-                         });*/
                     }
-
-
                 }
-
-
             }
-
         } else {
             //res.send({'errorMessage': "Please enter a valid email and password"});
             console.log("no bill details from emulator");
             //res.render('signin', {errorMessage: 'Please enter a valid email and password'});
         }
     });
+
 };
 
 var generateHubBillsDetail = function (month_start, month_end, part_id) {
-
-    var sqlStr = "select e.*,u.curr_plan from (hub e left join user u on e.user_id=u.id)  where (e.status='running' and e.create_datetime<'" + month_end + "') or (e.status='terminated' and e.terminate_datetime >'" + month_start + "' and e.create_datetime<'" + month_end + "')";
-
+    //var sqlStr = "select e.*,u.curr_plan from (hub e left join user u on e.user_id=u.id)  where (e.status='running' and e.create_datetime<'" + month_end + "') or (e.status='terminated' and e.terminate_datetime >'" + month_start + "' and e.create_datetime<'" + month_end + "')";
+    var start_str = month_start.getFullYear()+"-"+(month_start.getMonth()+1)+"-"+month_start.getDate()+" 00:00:00";
+    var end_str = month_end.getFullYear()+"-"+(month_end.getMonth()+1)+"-"+month_end.getDate()+" 23:59:59";
+    var sqlStr = "select e.*,u.curr_plan from (hub e left join user u on e.user_id=u.id)  where UNIX_TIMESTAMP(e.create_datetime) < UNIX_TIMESTAMP('" + end_str + "') and (e.status='running' or (e.status='terminated' and UNIX_TIMESTAMP(e.terminate_datetime) >UNIX_TIMESTAMP('" + start_str + "')))";
     var params = [];
     query.execQuery(sqlStr, params, function (err, rows) {
         console.log(rows.length);
-
         var hub_bill = rows;
         hub_count = rows.length;
 
@@ -931,9 +904,7 @@ var generateHubBillsDetail = function (month_start, month_end, part_id) {
                 if (start_time !== null & end_time !== null) {
 
                     if (hub_bill[i].curr_plan == 'month_flat_rate') {
-
 //                          //  var sqlStr = "update emulator t set t.cost=((select b.price from billingrule b where b.resource=t.cpu)+(select b.price from billingrule b where b.resource='ram')*t.ram+(select b.price from billingrule b where b.resource='disk')*t.disk)*TIMESTAMPDIFF(MINUTE,t.start_time,t.end_time) where t.user_id=?";
-
 
                         var insertSql = "insert into invoice_detail(user_id,resource,resource_id,start_datetime,end_datetime,running_time,invoice_id) values (?,?,?,?,?,?,?)";
                         params = [hub_bill[i].user_id, 'hub', hub_bill[i].id, start_time, end_time, (end_time - start_time) / (1000 * 60 * 60), (part_id + '_' + hub_bill[i].user_id)];
@@ -953,11 +924,7 @@ var generateHubBillsDetail = function (month_start, month_end, part_id) {
 
                             hub_count--;
                             console.log(hub_count);
-
-
                         });
-
-
                     }
                     else if (hub_bill[i].curr_plan == 'pay_as_hour_go') {
 
@@ -985,10 +952,7 @@ var generateHubBillsDetail = function (month_start, month_end, part_id) {
                         });
 
                     }
-
-
                 }
-
 
             }
 
@@ -1002,7 +966,13 @@ var generateHubBillsDetail = function (month_start, month_end, part_id) {
 
 var generateDeviceBillsDetail = function (month_start, month_end, part_id) {
 
-    var sqlStr = "select e.*,u.curr_plan from (device e left join user u on e.user_id=u.id)  where (e.status='running' and e.create_datetime<'" + month_end + "') or (e.status='terminated' and e.terminate_datetime >'" + month_start + "' and e.create_datetime<'" + month_end + "')";
+    // var sqlStr = "select e.*,u.curr_plan from (device e left join user u on e.user_id=u.id)  where ((e.status='running' and UNIX_TIMESTAMP(e.create_datetime)< UNIX_TIMESTAMP(" + month_end + ")) or (e.status='terminated' and  UNIX_TIMESTAMP(e.terminate_datetime) > UNIX_TIMESTAMP(" + month_start + ") and  UNIX_TIMESTAMP(e.create_datetime)< UNIX_TIMESTAMP(" + month_end + ")))";
+
+    //var sqlStr = "select e.*,u.curr_plan from (device e left join user u on e.user_id=u.id)  where ((e.status='running' and e.create_datetime<'" + month_end + "') or (e.status='terminated' and e.terminate_datetime >'" + month_start + "' and e.create_datetime<'" + month_end + "'))";
+    var start_str = month_start.getFullYear()+"-"+(month_start.getMonth()+1)+"-"+month_start.getDate()+" 00:00:00";
+    var end_str = month_end.getFullYear()+"-"+(month_end.getMonth()+1)+"-"+month_end.getDate()+" 23:59:59";
+
+    var sqlStr = "select e.*,u.curr_plan from (device e left join user u on e.user_id=u.id)  where UNIX_TIMESTAMP(e.create_datetime) < UNIX_TIMESTAMP('" + end_str + "') and (e.status='running' or (e.status='terminated' and UNIX_TIMESTAMP(e.terminate_datetime) >UNIX_TIMESTAMP('" + start_str + "')))";
 
     var params = [];
     query.execQuery(sqlStr, params, function (err, rows) {
@@ -1037,6 +1007,11 @@ var generateDeviceBillsDetail = function (month_start, month_end, part_id) {
                 } else {
 
                 }
+
+                console.log(start_time);
+                console.log(end_time);
+
+                console.log(device_bill[i]);
 
                 if (start_time !== null & end_time !== null) {
 
@@ -1090,13 +1065,8 @@ var generateDeviceBillsDetail = function (month_start, month_end, part_id) {
                             device_count--;
                             console.log(device_count);
                         });
-
                     }
-
-
                 }
-
-
             }
 
         } else {
@@ -1108,37 +1078,58 @@ var generateDeviceBillsDetail = function (month_start, month_end, part_id) {
 };
 
 var getMonthBillingDate = function (end_bill_date) {
-//
-////起止日期數組
-//
+
     var startStop = new Array();
+
+    var year = end_bill_date.getFullYear();
+    var month = end_bill_date.getMonth();
+    if(month==0)
+    {
+        month=12;
+        year=year-1;
+    }
+    // if (month < 10) {
+    //     month = "0" + month;
+    // }
+    //var firstDay = year + "-" + month + "-" + "01";
+    startStop.push(new Date(year, month-1, 1, 0, 0, 0));
+
+    var myDate = new Date(year, month, 0);
+    var lastDay = year + "-" + month + "-" + myDate.getDate();
+    //startStop.push(new Date(year, month, myDate.getDate(), 23, 59, 59));
+    startStop.push(new Date(year, month, 0, 23, 59, 59));
+
+    console.log("mongth_fistday:"+startStop[0]);
+    console.log("mongth_lastday:"+startStop[1]);
+
+    /*
+     //
+     var end_billing_date = end_bill_date;
+     //
+     /
+     //
+     var millisecond = 1000 * 60 * 60 * 24;
+     //
+     //
+
+     //
+     var last_month_last_day = new Date(end_billing_date.getTime() - millisecond);
+     //
+     var start_billing_date = new Date(last_month_last_day.getFullYear(), last_month_last_day.getMonth(), "1");
+     end_billing_date = new Date(last_month_last_day.getFullYear(), last_month_last_day.getMonth() + 1, "1");
+     //
+
+
+     */
 //
-////獲取月初時間
 //
-    var end_billing_date = end_bill_date;
+    // startStop.push(new Date(lastDay));
 //
-//    //一天的毫秒數
-//
-    var millisecond = 1000 * 60 * 60 * 24;
-//
-//
-////求出上月的最後一天
-//
-    var last_month_last_day = new Date(end_billing_date.getTime() - millisecond);
-//
-    var start_billing_date = new Date(last_month_last_day.getFullYear(), last_month_last_day.getMonth(), "1");
-    end_billing_date = new Date(last_month_last_day.getFullYear(), last_month_last_day.getMonth() + 1, "1");
-//
-////添加至數組中返回
-//
-    startStop.push(start_billing_date);
-//
-    startStop.push(end_billing_date);
-//
-////返回
+
 //
     return startStop;
 //
+
 };
 
 exports.getUnpaidBills = function (req, res) {
@@ -1150,17 +1141,12 @@ exports.getUnpaidBills = function (req, res) {
     query.execQuery(sqlStr, params, function (err, rows) {
         console.log(rows.length);
         if (rows.length > 0) {
-
             res.json(rows);
-
         }
         else {
-
             console.log('no record of unpaid bills');
         }
     });
-
-
 };
 
 exports.payBills = function (req, res) {
@@ -1174,11 +1160,8 @@ exports.payBills = function (req, res) {
                 //res.send({'errorMessage': "Please enster a valid email and password"});
                 console.log("ERROR: " + err.message);
                 //res.render({errorMessage: 'Sign Up Fail!'});
-
             } else {
-
                 res.json("ok");
-
 
             }
         }
