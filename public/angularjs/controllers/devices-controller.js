@@ -20,7 +20,7 @@ angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$wi
         ctrl.device = devicePoolService.get(id);
     };
 
-    var availableDeviceIds;
+    var availableDevices;
 
     ctrl.updateAvailableDevices = function () {
         ctrl.intervalId = $interval(function () {
@@ -28,11 +28,11 @@ angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$wi
                 data.payload = data.payload.filter(function (device) {
                     return device.status === 'available' || device.status === 'online';
                 });
-                var newAvailableDeviceIds = data.payload.map(function (device) {
-                    return device._id;
+                var newAvailableDevices = data.payload.map(function (device) {
+                    return { id: device._id, status: device.status, adb_uri: device.adb_uri };
                 });
-                if (JSON.stringify(availableDeviceIds) !== JSON.stringify(newAvailableDeviceIds)) {
-                    availableDeviceIds = newAvailableDeviceIds;
+                if (JSON.stringify(availableDevices) !== JSON.stringify(newAvailableDevices)) {
+                    availableDevices = newAvailableDevices;
                     ctrl.availableDevices = data.payload;
                     // ctrl.availableBrands = ctrl.availableDevices.map(function (device) {
                     //     console.log(device);
