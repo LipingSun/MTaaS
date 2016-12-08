@@ -1,5 +1,6 @@
 'use strict';
 
+var squel = require('squel');
 var controller = require('./controller');
 var Hub = require('./../models/Hub');
 var Emulator = require('./../models/Emulator');
@@ -10,33 +11,40 @@ var hubCtrl = {};
 
 hubCtrl.launchHub = function (newHub, user_id, callback) {  // TODO: Multi-thread
     newHub.user_id = user_id;
-    newHub.status = 'processing';
-    Hub.create(newHub, function (err, hub) {
-        if (!err) {
-            ControllerHost.findOne({hostname: 'controller-01'}, function (err, controllerHost) {
-                if (!err) {
-                    var host = 'http://' + controllerHost.ip;
-                    if (controllerHost.port) {
-                        host += ':' + controllerHost.port;
-                    }
-                    controller.hub.launch(host, hub, function (err, data) {
-                        if (!err) {
-                            var changes = {
-                                host_id: controllerHost.id,
-                                status: 'running'
-                            };
-                            Hub.update(hub.id, changes, function (err, data) {
-                                if (!err) {
-                                    callback(null,data);
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        }
-    });
+    newHub.status = 'running';
+    newHub.create_datetime = squel.fval('NOW()');
+    Hub.create(newHub, function () {});
 };
+
+// hubCtrl.launchHub = function (newHub, user_id, callback) {  // TODO: Multi-thread
+//     newHub.user_id = user_id;
+//     newHub.status = 'processing';
+//     Hub.create(newHub, function (err, hub) {
+//         if (!err) {
+//             ControllerHost.findOne({hostname: 'controller-01'}, function (err, controllerHost) {
+//                 if (!err) {
+//                     var host = 'http://' + controllerHost.ip;
+//                     if (controllerHost.port) {
+//                         host += ':' + controllerHost.port;
+//                     }
+//                     controller.hub.launch(host, hub, function (err, data) {
+//                         if (!err) {
+//                             var changes = {
+//                                 host_id: controllerHost.id,
+//                                 status: 'running'
+//                             };
+//                             Hub.update(hub.id, changes, function (err, data) {
+//                                 if (!err) {
+//                                     callback(null,data);
+//                                 }
+//                             });
+//                         }
+//                     });
+//                 }
+//             });
+//         }
+//     });
+// };
 
 
 hubCtrl.attach = function (hub_id, resource, callback) {
