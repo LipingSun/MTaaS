@@ -122,7 +122,7 @@ angular.module('myApp').controller('DashboardController', ['emulatorsService', '
                     for (var i = 0; i < ctrl.devices.length; i++) {
                         nodes.push({
                             id: ctrl.devices[i].id,
-                            label: 'Device: ' + ctrl.devices[i].name,
+                            label: 'Device: ' + ctrl.devices[i].model,
                             image: DIR + 'Hardware-My-PDA-02-icon.png',
                             shape: 'image'
                         });
@@ -148,6 +148,13 @@ angular.module('myApp').controller('DashboardController', ['emulatorsService', '
                                     to: ctrl.devices[i].id,
                                     length: EDGE_LENGTH_MAIN
                                 });
+                        } else {
+                            edges.push({
+                                from: ctrl.hubs[0].id,
+                                to: ctrl.devices[i].id,
+                                length: EDGE_LENGTH_MAIN
+                            });
+
                         }
                     }
 
