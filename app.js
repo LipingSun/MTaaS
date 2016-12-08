@@ -20,6 +20,7 @@ var auth = require('./routes/auth');
 var infrastructure = require('./routes/infrastructure');
 var emulators = require('./routes/emulators');
 var devices = require('./routes/devices');
+var device = require('./routes/device');
 var deviceStock = require('./routes/deviceStock');
 var hubs = require('./routes/hubs');
 var users = require('./routes/users');
@@ -50,10 +51,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
-// MongoDB for DevicePool
-mongoose.connect(process.env.MONGODB_URI);
-app.use(API_V2, mers({mongoose: mongoose}).rest());
-
 app.use(function (req, res, next) {
     if (req.params && Object.keys(req.params).length  > 0) {
         console.log('Request params: ' + JSON.stringify(req.params));
@@ -63,6 +60,11 @@ app.use(function (req, res, next) {
     }
     next();
 });
+
+// API V2
+app.put(API_V2 + '/device/:id', passport.ensureAuthenticated, device.updateDevice);  // Launch an device
+mongoose.connect(process.env.MONGODB_URI);
+app.use(API_V2, mers({mongoose: mongoose}).rest());
 
 // Routes
 app.get('/', passport.ensureAuthenticated, routes.index);  // Get index page

@@ -35,11 +35,11 @@ Device.deleteById = function (id, callback) {
     mysql.query(sql.toString(), callback);
 };
 
-Device.update = function (id, device, callback) {
-    var sql = squel.update().table('device').setFields(device).where('id = ' + id);
+Device.update = function (imei, device, callback) {
+    var sql = squel.update().table('device').setFields(device).where('imei = ' + imei);
     mysql.query(sql.toString(), function (err) {
         if (!err) {
-            Device.findById(id, callback);
+            Device.findById(imei, callback);
         }
     });
 };
