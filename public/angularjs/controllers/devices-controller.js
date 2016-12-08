@@ -1,4 +1,4 @@
-angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$window', 'devicesService', 'deviceStockService', 'devicePoolService', 'hubsService', function ($scope, $http, $window, devicesService, deviceStockService, devicePoolService, hubsService) {
+angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$window', '$interval', 'devicesService', 'deviceStockService', 'devicePoolService', 'hubsService', function ($scope, $http, $window, $interval, devicesService, deviceStockService, devicePoolService, hubsService) {
 
     var ctrl = this;
 
@@ -20,19 +20,37 @@ angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$wi
         ctrl.device = devicePoolService.get(id);
     };
 
-    ctrl.getAvailableDevices = function () {
-        devicePoolService.findAllAvailable(function (data) {
-            ctrl.availableDevices = data.payload;
-            ctrl.availableBrands = ctrl.availableDevices.map(function (device) {
-                console.log(device);
-                return device.spec.manufacturer;
+    var availableDeviceIds;
+
+    ctrl.updateAvailableDevices = function () {
+        ctrl.intervalId = $interval(function () {
+            devicePoolService.get(function (data) {
+                data.payload = data.payload.filter(function (device) {
+                    return device.status === 'available' || device.status === 'online';
+                });
+                var newAvailableDeviceIds = data.payload.map(function (device) {
+                    return device._id;
+                });
+                if (JSON.stringify(availableDeviceIds) !== JSON.stringify(newAvailableDeviceIds)) {
+                    availableDeviceIds = newAvailableDeviceIds;
+                    ctrl.availableDevices = data.payload;
+                    // ctrl.availableBrands = ctrl.availableDevices.map(function (device) {
+                    //     console.log(device);
+                    //     return device.spec.manufacturer;
+                    // });
+                }
             });
-        });
+        }, 700);
     };
 
+    ctrl.cancelInterval = function () {
+        $interval.cancel(ctrl.intervalId);
+    };
+
+
     ctrl.create = function (selectedDevice) {
-        if (!selectedDevice) {
-            $window.alert('Please select device');
+        if (selectedDevice.status !== 'available') {
+            $window.alert('This device is unavailable now, please check back later.');
             return;
         }
         selectedDevice.status = 'occupied';

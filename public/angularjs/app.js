@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp', ['ngRoute', 'ngResource', 'chart.js', 'angular.filter'])
+angular.module('myApp', ['ngAnimate', 'ngRoute', 'ngResource', 'chart.js', 'angular.filter'])
     //.constant('host', 'http://private-e5a74-mtaas.apiary-mock.com')
     .constant('host', '')
 ;
