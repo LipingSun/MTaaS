@@ -7,8 +7,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
-var mongoose = require('mongoose');
-var mers = require('mers');
 
 const API_V1 = '/api/v1';
 const API_V2 = '/api/v2';
@@ -25,7 +23,7 @@ var deviceStock = require('./routes/deviceStock');
 var hubs = require('./routes/hubs');
 var users = require('./routes/users');
 var bills = require('./routes/bills');
-var DevicePool = require('./models/DevicePool');
+var proxy = require('express-http-proxy');
 
 var app = express();
 
@@ -62,9 +60,12 @@ app.use(function (req, res, next) {
 });
 
 // API V2
-app.put(API_V2 + '/device/:id', passport.ensureAuthenticated, device.updateDevice);  // Launch an device
-mongoose.connect(process.env.MONGODB_URI);
-app.use(API_V2, mers({mongoose: mongoose}).rest());
+app.put(API_V2 + '/device/:id', device.updateDevice);  // Launch an device
+app.use(API_V2, proxy('localhost:3000', {
+    forwardPath: function(req, res) {
+        return req.originalUrl.replace(API_V2, API_V1);
+    }
+}));
 
 // Routes
 app.get('/', passport.ensureAuthenticated, routes.index);  // Get index page
