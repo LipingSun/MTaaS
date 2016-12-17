@@ -1,4 +1,4 @@
-angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$window', '$interval', 'devicesService', 'deviceStockService', 'devicePoolService', 'hubsService', function ($scope, $http, $window, $interval, devicesService, deviceStockService, devicePoolService, hubsService) {
+angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$window', '$interval', 'devicesService', 'deviceServiceV2', 'hubsService', function ($scope, $http, $window, $interval, devicesService, deviceServiceV2, hubsService) {
 
     var ctrl = this;
 
@@ -9,7 +9,7 @@ angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$wi
     ctrl.availableDevices = [];
 
     ctrl.getAll = function () {
-        devicePoolService.findAllByOccupant(function (data) {
+        deviceServiceV2.findAllByOccupant(function (data) {
             ctrl.devices = data.payload;
         });
     };
@@ -17,14 +17,14 @@ angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$wi
     ctrl.getAll();
 
     ctrl.getOne = function (id) {
-        ctrl.device = devicePoolService.get(id);
+        ctrl.device = deviceServiceV2.get(id);
     };
 
     var availableDevices;
 
     ctrl.updateAvailableDevices = function () {
         ctrl.intervalId = $interval(function () {
-            devicePoolService.get(function (data) {
+            deviceServiceV2.get(function (data) {
                 data.payload = data.payload.filter(function (device) {
                     return device.status === 'available' || device.status === 'online';
                 });
@@ -55,49 +55,25 @@ angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$wi
         }
         selectedDevice.status = 'occupied';
         selectedDevice.occupant = sessionStorage.user;
-        $id = selectedDevice._id;
-        devicePoolService.update({id: $id}, selectedDevice, function () {
+        deviceServiceV2.update({id: selectedDevice._id}, selectedDevice, function () {
+            ctrl.cancelInterval();
             ctrl.getAll();
             $scope.deviceTab = 'devices';
         });
-        // var device = new devicesService(newDevice);
-        // device.$save();
-        // TODO: see hub
     };
 
     ctrl.delete = function (device) {
-        device.occupant = null;
+        device.occupant = '';
         device.status = 'available';
-        $id = device._id;
-        devicePoolService.update({id: $id}, device, function () {
-            ctrl.getAll();
+        deviceServiceV2.update({id: device._id}, device);
+        ctrl.devices = ctrl.devices.filter(function (item) {
+            return item !== device;
         });
     };
 
     ctrl.view = function (device) {
         var params = 'host=' + device.ip + '&' + 'port=' + device.vnc_port + '&' + 'autoconnect=true' + '&' + 'resize=downscale';
         $window.open('templates/pages/noVNC/vnc.html?' + params, device.name, 'height=682, width=360, resizable=no');
-    };
-
-    ctrl.attachToHub = function (device, hub_id) {
-        var data = {
-            resource_type: 'device',
-            resource_id: device.id
-        };
-        $http.post('api/v1/hubs/' + hub_id + '/connections', data).success(function (res) {
-            //TODO
-        });
-    };
-
-    var getIndexOfHub = function (emu, hubs) {
-
-        for (var i = 0; i < hubs.length; i++) {
-
-            if (emu.hub_id === hubs[i].id) {
-                return i;
-            }
-        }
-        return -1;
     };
 
 }]);

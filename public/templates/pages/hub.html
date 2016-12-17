@@ -42,11 +42,10 @@
                                 <thead>
                                 <tr>
                                     <!--<th>ID</th>-->
-                                    <th>Name</th>
-                                    <th>Create Time</th>
-                                    <th>Network Type</th>
-                                    <th>Network Provider</th>
-                                    <th>Ports Number</th>
+                                    <!--<th>Create Time</th>-->
+                                    <!--<th>Network Type</th>-->
+                                    <!--<th>Network Provider</th>-->
+                                    <!--<th>Ports Number</th>-->
                                     <th>Status</th>
                                     <th> </th>
                                 </tr>
@@ -54,14 +53,12 @@
                                 <tbody>
                                 <tr ng-repeat="hub in hubsCtrl.hubs">
                                     <!--<td>{{ hub.id }}</td>-->
-                                    <td>{{ hub.name }}</td>
-                                    <td>{{ hub.create_datetime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
-                                    <td>{{ hub.network_type }}</td>
-                                    <td>{{ hub.network_provider }}</td>
-                                    <td>{{ hub.ports_num }}</td>
+                                    <!--<td>{{ hub.create_datetime | date:'yyyy-MM-dd HH:mm:ss' }}</td>-->
+                                    <!--<td>{{ hub.network_type }}</td>-->
+                                    <!--<td>{{ hub.network_provider }}</td>-->
+                                    <!--<td>{{ hub.ports_num }}</td>-->
                                     <td>{{ hub.status }}</td>
                                     <td>
-                                        <!--<button type="button" class="btn btn-info" ng-click="hubsCtrl.view(hub)"><i class="fa fa-fw fa-eye"></i></button>-->
                                         <button type="button" class="btn btn-danger" ng-click="hubsCtrl.delete(hub)"><i class="fa fa-fw fa-trash-o"></i></button>
                                     </td>
                                 </tr>
@@ -76,19 +73,12 @@
                 <div class="col-md-12">
                     <div class="panel">
                         <div class="panel-body">
-                            <form action class="form-horizontal row-border" ng-init="newHub = {}">
-
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Name</label>
-                                    <div class="col-sm-6">
-                                        <input type="text" ng-model="newHub.name" ng-init="newHub.name = 'hub'" class="form-control"/>
-                                    </div>
-                                </div>
+                            <form action class="form-horizontal row-border" ng-init="newHub = {}; newHub.spec = {}">
 
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Netwrok Type</label>
                                     <div class="col-sm-6">
-                                        <select class="form-control" ng-model="newHub.network_type" ng-init="newHub.network_type = 'WiFi'">
+                                        <select class="form-control" ng-model="newHub.spec.network_type" ng-init="newHub.spec.network_type = 'WiFi'">
                                             <option>WiFi</option>
                                           <!--  <option>Mobile Carrier Network</option>-->
                                         </select>
@@ -98,13 +88,13 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Netwrok Provider</label>
                                     <div class="col-sm-6">
-                                        <select class="form-control" ng-model="newHub.network_provider" ng-init="newHub.network_provider = 'Comcast XFINITY'">
-                                            <option ng-if="newHub.network_type === 'WiFi'">Comcast XFINITY</option>
-                                          <!--  <option ng-if="newHub.network_type === 'WiFi'">AT&T U-verse</option>-->
-                                            <option ng-if="newHub.network_type === 'Mobile Carrier Network'">AT&T</option>
-                                            <option ng-if="newHub.network_type === 'Mobile Carrier Network'">Verizon</option>
-                                            <option ng-if="newHub.network_type === 'Mobile Carrier Network'">T-Mobile</option>
-                                            <option ng-if="newHub.network_type === 'Mobile Carrier Network'">Sprint</option>
+                                        <select class="form-control" ng-model="newHub.spec.network_provider" ng-init="newHub.spec.network_provider = 'Comcast XFINITY'">
+                                            <option ng-if="newHub.spec.network_type === 'WiFi'">Comcast XFINITY</option>
+                                          <!--  <option ng-if="newHub.spec.network_type === 'WiFi'">AT&T U-verse</option>-->
+                                            <option ng-if="newHub.spec.network_type === 'Mobile Carrier Network'">AT&T</option>
+                                            <option ng-if="newHub.spec.network_type === 'Mobile Carrier Network'">Verizon</option>
+                                            <option ng-if="newHub.spec.network_type === 'Mobile Carrier Network'">T-Mobile</option>
+                                            <option ng-if="newHub.spec.network_type === 'Mobile Carrier Network'">Sprint</option>
                                         </select>
                                     </div>
                                 </div>
@@ -112,7 +102,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Ports Number</label>
                                     <div class="col-sm-6">
-                                        <select class="form-control" ng-model="newHub.ports_num" ng-init="newHub.ports_num = '5'">
+                                        <select class="form-control" ng-model="newHub.spec.ports_num" ng-init="newHub.spec.ports_num = '5'">
                                             <option>5</option>
                                             <option>10</option>
                                             <option>15</option>
@@ -123,7 +113,7 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-sm-offset-3">
                                         <button type="button" class="btn btn-success" ng-click="hubsCtrl.create(newHub); hubTab = 'hubs';">Submit</button>
-                                        <button type="button" class="btn btn-danger" ng-click="newHub = null">Cancel</button>
+                                        <button type="button" class="btn btn-danger" ng-click="newHub = {}; newHub.spec = {}">Cancel</button>
                                     </div>
                                 </div>
 

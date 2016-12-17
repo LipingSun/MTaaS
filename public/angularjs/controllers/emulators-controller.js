@@ -1,63 +1,44 @@
 "use strict";
 
-angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '$timeout', 'emulatorsService', 'hubsService', function ($http, $window, $timeout, emulatorsService, hubsService) {
+angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '$timeout', 'emulatorsService', 'emulatorServiceV2', 'hubsService', function ($http, $window, $timeout, emulatorsService, emulatorServiceV2, hubsService) {
 
     var ctrl = this;
 
-    ctrl.hub = [];
-    var getIndexOfHub = function (emu, hubs) {
-        for (var i = 0; i < hubs.length; i++) {
-            if (emu.hub_id === hubs[i].id) {
-                return i;
-            }
-        }
-        return -1;
-    };
+    ctrl.emulators = [];
 
     ctrl.getAll = function () {
-        ctrl.hubs = hubsService.query(function () {
-            ctrl.emulators = emulatorsService.query(function () {
-
-                for (var i = 0; i < ctrl.emulators.length - 1; i++) {
-                    var index = getIndexOfHub(ctrl.emulators[i], ctrl.hubs);
-
-                    if (index !== -1) {
-                        ctrl.hub[i] = ctrl.hubs[index].id;
-                    }
-                }
+        emulatorServiceV2.get(function (data) {
+            ctrl.emulators = data.payload.filter(function (emulator) {
+                return emulator.status === 'processing' || emulator.status === 'occupied';
             });
-
         });
     };
 
     ctrl.getAll();
 
-    ctrl.getOne = function (id) {
-        ctrl.emulator = emulatorsService.get(id);
-    };
-
     ctrl.create = function (newEmulator) {
-        delete newEmulator.device;
-        var emulator = new emulatorsService(newEmulator);
-        emulator.ip = null;
-        emulator.ssh_port = null;
+        delete newEmulator.spec.device;
+        var emulator = new emulatorServiceV2(newEmulator);
+        emulator.adb_uri = '';
+        emulator.vnc_uri = '';
         emulator.status = "processing";
-        ctrl.emulators.push(emulator);
+        emulator.occupant = sessionStorage.user;
 
-        emulator.$save(function () {
-            $timeout(function () {
-                var data = emulatorsService.get({id: emulator.id}, function () {
-                    emulator.ip = data.ip;
-                    emulator.ssh_port = data.ssh_port;
-                    emulator.vnc_port = data.vnc_port;
-                    emulator.status = data.status;
-                });
-            }, 1000 * 60 * 5);
+        emulator.$save(function (data) {
+            ctrl.emulators.push(data.payload);
+            // $timeout(function () {
+            //     emulatorsService.get({id: emulator.id}, function (data) {
+            //         emulator.adb_uri = data.payload.adb_uri;
+            //         emulator.vnc_uri = data.payload.vnc_uri;
+            //         emulator.status = data.payload.status;
+            //     });
+            // }, 1000 * 3);
         });
     };
 
     ctrl.delete = function (emulator) {
-        emulator.$delete({id: emulator.id});
+        emulator.status = 'terminated';
+        emulatorServiceV2.update({id: emulator._id}, emulator);
         ctrl.emulators = ctrl.emulators.filter(function (item) {
             return item !== emulator;
         });
@@ -66,18 +47,6 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
     ctrl.view = function (emulator) {
         var params = 'host=' + emulator.ip + '&' + 'port=' + emulator.vnc_port + '&' + 'autoconnect=true' + '&' + 'resize=downscale';
         $window.open('templates/pages/noVNC/vnc.html?' + params, emulator.name, 'height=682, width=360, resizable=no');
-    };
-
-    ctrl.attachToHub = function (emulator, hub_id) {
-        if (hub_id) {
-            var resource = {
-                type: 'emulator',
-                id: emulator.id
-            };
-            $http.post('api/v1/hubs/' + hub_id + '/connections', resource).success(function (res) {
-                //TODO
-            });
-        }
     };
 
     ctrl.devices = [

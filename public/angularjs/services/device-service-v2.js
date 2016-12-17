@@ -1,4 +1,4 @@
-angular.module('myApp').factory('devicePoolService', function ($resource, host) {
+angular.module('myApp').factory('deviceServiceV2', function ($resource, host) {
     return $resource(host + '/api/v2/device/:id', {}, {
         findAllAvailable: {
             method: 'GET',

@@ -42,15 +42,14 @@
                                 <thead>
                                 <tr>
                                     <!--<th>ID</th>-->
-                                    <th>Name</th>
                                     <!--<th>Create Time</th>-->
                                     <th>System</th>
                                     <th>Version</th>
-                                    <th>CPU</th>
-                                    <th>RAM</th>
-                                    <th>Disk</th>
-                                    <th>SSH</th>
-                                    <th>Hub</th>
+                                    <!--<th>CPU</th>-->
+                                    <!--<th>RAM</th>-->
+                                    <!--<th>Disk</th>-->
+                                    <!--<th>SSH</th>-->
+                                    <!--<th>Hub</th>-->
                                     <th>Status</th>
                                     <th> </th>
                                 </tr>
@@ -58,22 +57,15 @@
                                 <tbody>
                                 <tr ng-repeat="emulator in emulatorsCtrl.emulators">
                                     <!--<td>{{ emulator.id }}</td>-->
-                                    <td>{{ emulator.name }}</td>
                                     <!--<td>{{ emulator.create_datetime | date:'yyyy-MM-dd HH:mm:ss' }}</td>-->
-                                    <td>{{ emulator.system }}</td>
-                                    <td>{{ emulator.version }}</td>
-                                    <td>{{ emulator.cpu }}</td>
-                                    <td>{{ emulator.ram }}</td>
-                                    <td>{{ emulator.disk }}</td>
-                                    <td>{{ emulator.ip + ":" + emulator.ssh_port }}</td>
+                                    <td>{{ emulator.spec.system }}</td>
+                                    <td>{{ emulator.spec.version }}</td>
+                                    <!--<td>{{ emulator.cpu }}</td>-->
+                                    <!--<td>{{ emulator.ram }}</td>-->
+                                    <!--<td>{{ emulator.disk }}</td>-->
+                                    <!--<td>{{ emulator.ip + ":" + emulator.ssh_port }}</td>-->
                                     <td>
-                                        <select class="form-control" ng-init="" ng-model="emulatorsCtrl.hub[$index]" ng-options="hub.id as hub.name for hub in emulatorsCtrl.hubs"  ng-change="emulatorsCtrl.attachToHub(emulator, emulatorsCtrl.hub[$index])" >
-                                            <option></option>
-                                        </select>
-                                    </td>
-                                    <!--<td>{{ emulator.status }}</td>-->
-                                    <td>
-                                        <div ng-show="emulator.status === 'running'">{{ emulator.status }}</div>
+                                        <div ng-show="emulator.status === 'occupied'">running</div>
                                         <div class="progress progress-striped active" ng-show="emulator.status === 'processing'">
                                             <div class="progress-bar three-sec-ease-in-out" aria-valuetransitiongoal="100" aria-valuenow="100" style="width: 100%;"></div>
                                         </div>
@@ -93,20 +85,13 @@
             <div ng-class="{ active: emulatorTab === 'launch' }" class="tab-pane fade in" id="launch" ng-show="emulatorTab === 'launch'">
                 <div class="col-md-12">
                     <div class="panel">
-                        <div class="panel-body" ng-init="newEmulator = {}">
+                        <div class="panel-body" ng-init="newEmulator = {}; newEmulator.spec = {}">
                             <form action class="form-horizontal row-border col-md-6" style="margin-top: 25px">
-
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Name</label>
-                                    <div class="col-md-9">
-                                        <input type="text" ng-model="newEmulator.name" ng-init="newEmulator.name = 'emulator'" class="form-control"/>
-                                    </div>
-                                </div>
 
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">System</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" ng-model="newEmulator.system" ng-init="newEmulator.system = 'Android'">
+                                        <select class="form-control" ng-model="newEmulator.spec.system" ng-init="newEmulator.spec.system = 'Android'">
                                             <option>Android</option>
                                             <!--<option>IOS</option>-->
                                         </select>
@@ -116,11 +101,11 @@
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Version</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" ng-model="newEmulator.version" ng-init="newEmulator.version = '2.3.3 (API10)'">
-                                            <option ng-if="newEmulator.system === 'Android'">2.3.3 (API10)</option>
+                                        <select class="form-control" ng-model="newEmulator.spec.version" ng-init="newEmulator.spec.version = '2.3.3 (API10)'">
+                                            <option ng-if="newEmulator.spec.system === 'Android'">2.3.3 (API10)</option>
                                             <!--<option ng-if="system === 'Android'">4.0.0</option>-->
-                                            <option ng-if="newEmulator.system === 'IOS'">8.1.3</option>
-                                            <option ng-if="newEmulator.system === 'IOS'">8.1.1</option>
+                                            <option ng-if="newEmulator.spec.system === 'IOS'">8.1.3</option>
+                                            <option ng-if="newEmulator.spec.system === 'IOS'">8.1.1</option>
                                         </select>
                                     </div>
                                 </div>
@@ -128,24 +113,24 @@
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Device</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" ng-model="newEmulator.device" ng-options="device.name for device in emulatorsCtrl.devices" ng-init="newEmulator.device = emulatorsCtrl.devices[0]"></select>
+                                        <select class="form-control" ng-model="newEmulator.spec.device" ng-options="device.name for device in emulatorsCtrl.devices" ng-init="newEmulator.spec.device = emulatorsCtrl.devices[0]"></select>
                                     </div>
                                 </div>
 
-                                <div class="form-group" ng-show="newEmulator.Device === 'Customize'">
+                                <div class="form-group" ng-show="newEmulator.spec.Device === 'Customize'">
                                     <label class="col-md-3 control-label">CPU</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" ng-model="newEmulator.cpu" ng-init="newEmulator.cpu = 'armeabi-v7a'">
+                                        <select class="form-control" ng-model="newEmulator.spec.cpu" ng-init="newEmulator.spec.cpu = 'armeabi-v7a'">
                                             <option>armeabi-v7a</option>
                                             <option>x86</option>
                                         </select>
                                     </div>
                                 </div>
 
-                                <div class="form-group" ng-show="newEmulator.Device === 'Customize'">
+                                <div class="form-group" ng-show="newEmulator.spec.Device === 'Customize'">
                                     <label class="col-md-3 control-label">RAM(M)</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" ng-model="newEmulator.ram" ng-init="newEmulator.ram = '64'">
+                                        <select class="form-control" ng-model="newEmulator.spec.ram" ng-init="newEmulator.spec.ram = '64'">
                                             <option>64</option>
                                             <option>128</option>
                                             <option>256</option>
@@ -154,8 +139,8 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group" ng-show="newEmulator.Device === 'Customize'">
-                                    <label class="col-md-3 control-label" ng-model="newEmulator.disk" ng-init="newEmulator.disk = '128'">Disk(M)</label>
+                                <div class="form-group" ng-show="newEmulator.spec.Device === 'Customize'">
+                                    <label class="col-md-3 control-label" ng-model="newEmulator.spec.disk" ng-init="newEmulator.spec.disk = '128'">Disk(M)</label>
                                     <div class="col-md-9">
                                         <select class="form-control">
                                             <option>128</option>
@@ -167,16 +152,16 @@
                                 </div>
 
                                 <div class="form-group" ng-show="false">
-                                    <label class="col-md-3 control-label" ng-model="newEmulator.number">Number</label>
+                                    <label class="col-md-3 control-label" ng-model="newEmulator.spec.number">Number</label>
                                     <div class="col-md-9">
-                                        <input type="number" class="form-control" ng-model="newEmulator.number" ng-init="newEmulator.number = 1" max="5"/>
+                                        <input type="number" class="form-control" ng-model="newEmulator.spec.number" ng-init="newEmulator.spec.number = 1" max="5"/>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-9 col-md-offset-3">
                                         <button type="button" class="btn btn-success" ng-click="emulatorsCtrl.create(newEmulator); emulatorTab = 'emulators';">Submit</button>
-                                        <button type="button" class="btn btn-danger" ng-click="newEmulator = null">Cancel</button>
+                                        <button type="button" class="btn btn-danger" ng-click="newEmulator = {}; newEmulator.spec = {}">Cancel</button>
                                     </div>
                                 </div>
                             </form>

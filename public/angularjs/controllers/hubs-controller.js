@@ -1,26 +1,29 @@
-angular.module('myApp').controller('HubsController', ['hubsService', function (hubsService) {
+angular.module('myApp').controller('HubsController', ['hubsService', 'hubServiceV2', function (hubsService, hubServiceV2) {
 
     var ctrl = this;
 
+    ctrl.hubs = [];
+
     ctrl.getAll = function () {
-        ctrl.hubs = hubsService.query();
+        hubServiceV2.get(function (data) {
+            ctrl.hubs = data.payload.filter(function (hub) {
+                return hub.status === 'processing' || hub.status === 'occupied';
+            });
+        });
     };
 
-    ctrl.getOne = function (id) {
-        ctrl.hub = hubsService.get(id);
-    };
-
-    ctrl.create = function (newEmulator) {
-        var hub = new hubsService(newEmulator);
+    ctrl.create = function (newHub) {
+        var hub = new hubServiceV2(newHub);
         hub.status = 'processing';
-        ctrl.hubs.push(hub);
+        hub.occupant = sessionStorage.user;
         hub.$save(function (data) {
-            hub = data;
+            ctrl.hubs.push(data.payload);
         });
     };
 
     ctrl.delete = function (hub) {
-        hub.$delete({id: hub.id});
+        hub.status = 'terminated';
+        hubServiceV2.update({id: hub._id}, hub);
         ctrl.hubs = ctrl.hubs.filter(function (item) {
             return item !== hub;
         });
