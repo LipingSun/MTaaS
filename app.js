@@ -7,6 +7,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var proxy = require('express-http-proxy');
 
 const API_V1 = '/api/v1';
 const API_V2 = '/api/v2';
@@ -18,12 +19,11 @@ var auth = require('./routes/auth');
 var infrastructure = require('./routes/infrastructure');
 var emulators = require('./routes/emulators');
 var devices = require('./routes/devices');
-var device = require('./routes/device');
 var deviceStock = require('./routes/deviceStock');
 var hubs = require('./routes/hubs');
 var users = require('./routes/users');
 var bills = require('./routes/bills');
-var proxy = require('express-http-proxy');
+var apiRouter = require('./routes/apiRouter');
 
 var app = express();
 
@@ -60,7 +60,7 @@ app.use(function (req, res, next) {
 });
 
 // API V2
-app.put(API_V2 + '/device/:id', device.updateDevice);  // Launch an device
+app.use(API_V2, apiRouter);
 app.use(API_V2, proxy('localhost:3000', {
     forwardPath: function(req, res) {
         return req.originalUrl.replace(API_V2, API_V1);
