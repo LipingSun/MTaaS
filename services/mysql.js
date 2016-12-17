@@ -74,18 +74,18 @@ mysql.execQuery = function (sql, params, callback) {
             callback(err, true);
             return;
         }
-        console.log("Query is >>>>>"+sql+params[0]);
+        // console.log("Query is >>>>>"+sql+params[0]);
         var qResult = connection.query(sql, params, callback);
         qResult.on('error', function(err) {
             console.log('MySql query error: ' + err);
             callback(err, true);
         });
         qResult.on('result', function(rows) {
-            console.log('Got result from DB');
+            // console.log('Got result from DB');
             callback(false, rows);
         });
         qResult.on('end', function() {
-            console.log('Going to release DB connection to the Pool');
+            // console.log('Going to release DB connection to the Pool');
             connection.release();
         });
     });
