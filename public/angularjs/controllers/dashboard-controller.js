@@ -29,22 +29,18 @@ angular.module('myApp').controller('DashboardController', ['emulatorServiceV2', 
     getRealTimeBill();
 
     var draw = function () {
+        hubServiceV2.get(function (hubData) {
+            ctrl.hubs = hubData.payload;
+            ctrl.hubs_num = ctrl.hubs.length;
 
-        deviceServiceV2.findAllByOccupant(function (deviceData) {
-            ctrl.devices = deviceData.payload;
-            ctrl.devices_num = ctrl.devices.length;
+            deviceServiceV2.findAllByOccupant(function (deviceData) {
+                ctrl.devices = deviceData.payload;
+                ctrl.devices_num = ctrl.devices.length;
 
-            emulatorServiceV2.get(function (emulatorData) {
-                ctrl.emulators = emulatorData.payload.filter(function (emulator) {
-                    return emulator.status === 'processing' || emulator.status === 'occupied';
-                });
-                ctrl.emulators_num = ctrl.emulators.length;
+                emulatorServiceV2.get(function (emulatorData) {
+                    ctrl.emulators = emulatorData.payload;
+                    ctrl.emulators_num = ctrl.emulators.length;
 
-                hubServiceV2.get(function (hubData) {
-                    ctrl.hubs = hubData.payload.filter(function (hub) {
-                        return hub.status === 'processing' || hub.status === 'occupied';
-                    });
-                    ctrl.hubs_num = ctrl.hubs.length;
 
                     //if (ctrl.emulators_num + ctrl.devices_num + ctrl.hubs_num > 0) {
                     //    ctrl.showWhich = 'topology';
@@ -68,12 +64,11 @@ angular.module('myApp').controller('DashboardController', ['emulatorServiceV2', 
 
                         wifi_node++;
                         nodes.push({
-                            id: ctrl.hubs[i].id,
+                            id: ctrl.hubs[i]._id,
                             label: 'HUB: ' + ctrl.hubs[i].name,
                             image: DIR + 'HUB.png',
                             shape: 'image'
                         });
-
 
                         //alert(ctrl.hubs[i].network_type);
                         if (ctrl.hubs[i].network_type === 'WiFi') {
@@ -84,7 +79,7 @@ angular.module('myApp').controller('DashboardController', ['emulatorServiceV2', 
                                 shape: 'image'
                             });
 
-                            edges.push({from: ctrl.hubs[i].id, to: wifi_node, length: EDGE_LENGTH_MAIN});
+                            edges.push({from: ctrl.hubs[i]._id, to: wifi_node, length: EDGE_LENGTH_MAIN});
                         }
                     }
 
@@ -98,7 +93,7 @@ angular.module('myApp').controller('DashboardController', ['emulatorServiceV2', 
 
 
                         //alert(ctrl.emulators[i].attached_hub);
-                        if (ctrl.emulators[i].hub_id !== null) {
+                        if (ctrl.emulators[i].hub && ctrl.emulators[i].hub !== null) {
 
                             if (ctrl.emulators[i].hub_port) {
                                 edges.push({
@@ -111,7 +106,7 @@ angular.module('myApp').controller('DashboardController', ['emulatorServiceV2', 
                             }
                             else {
                                 edges.push({
-                                    from: ctrl.emulators[i].hub_id,
+                                    from: ctrl.emulators[i].hub._id,
                                     to: ctrl.emulators[i]._id,
                                     length: EDGE_LENGTH_MAIN
                                 });
@@ -128,7 +123,7 @@ angular.module('myApp').controller('DashboardController', ['emulatorServiceV2', 
                         });
 
                         //alert(ctrl.emulators[i].attached_hub);
-                        if (ctrl.devices[i].hub_id !== null) {
+                        if (ctrl.devices[i].hub && ctrl.devices[i].hub !== null) {
 
                             if (ctrl.devices[i].hub_port) {
 
@@ -143,18 +138,11 @@ angular.module('myApp').controller('DashboardController', ['emulatorServiceV2', 
                             else {
 
                                 edges.push({
-                                    from: ctrl.devices[i].hub_id,
+                                    from: ctrl.devices[i].hub._id,
                                     to: ctrl.devices[i]._id,
                                     length: EDGE_LENGTH_MAIN
                                 });
                             }
-                        } else {
-                            edges.push({
-                                from: ctrl.hubs[0].id,
-                                to: ctrl.devices[i]._id,
-                                length: EDGE_LENGTH_MAIN
-                            });
-
                         }
                     }
 
