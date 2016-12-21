@@ -1,4 +1,4 @@
-angular.module('myApp').controller('HubsController', ['hubsService', 'hubServiceV2', function (hubsService, hubServiceV2) {
+angular.module('myApp').controller('HubsController', ['$window', 'hubsService', 'hubServiceV2', function ($window, hubsService, hubServiceV2) {
 
     var ctrl = this;
 
@@ -6,18 +6,24 @@ angular.module('myApp').controller('HubsController', ['hubsService', 'hubService
 
     ctrl.getAll = function () {
         hubServiceV2.get(function (data) {
-            ctrl.hubs = data.payload.filter(function (hub) {
-                return hub.status === 'processing' || hub.status === 'occupied';
-            });
+            ctrl.hubs = data.payload;
         });
     };
 
     ctrl.create = function (newHub) {
-        var hub = new hubServiceV2(newHub);
-        hub.status = 'processing';
-        hub.occupant = sessionStorage.user;
-        hub.$save(function (data) {
-            ctrl.hubs.push(data.payload);
+        hubServiceV2.findAvailable({limit: 1, 'filter[region]': newHub.region}, function (availableHubs) {
+            if (availableHubs.total < 1) {
+                $window.alert('Sorry, Currently we dot\'t have enough available hubs');
+            } else {
+                var hub = new hubServiceV2(availableHubs.payload[0]);
+                hub.status = 'occupied';
+                hub.occupant = sessionStorage.user;
+                hub.name = newHub.name;
+                hub.spec = newHub.spec;
+                hub.$save(function (data) {
+                    ctrl.hubs.push(data.payload);
+                });
+            }
         });
     };
 

@@ -42,10 +42,12 @@
                                 <thead>
                                 <tr>
                                     <!--<th>ID</th>-->
+                                    <th>Name</th>
                                     <!--<th>Create Time</th>-->
-                                    <!--<th>Network Type</th>-->
+                                    <th>Network Type</th>
                                     <!--<th>Network Provider</th>-->
-                                    <!--<th>Ports Number</th>-->
+                                    <th>Ports Number</th>
+                                    <th>Region</th>
                                     <th>Status</th>
                                     <th> </th>
                                 </tr>
@@ -53,12 +55,15 @@
                                 <tbody>
                                 <tr ng-repeat="hub in hubsCtrl.hubs">
                                     <!--<td>{{ hub.id }}</td>-->
+                                    <td>{{ hub.name }}</td>
                                     <!--<td>{{ hub.create_datetime | date:'yyyy-MM-dd HH:mm:ss' }}</td>-->
-                                    <!--<td>{{ hub.network_type }}</td>-->
-                                    <!--<td>{{ hub.network_provider }}</td>-->
-                                    <!--<td>{{ hub.ports_num }}</td>-->
+                                    <td>{{ hub.spec.network_type }}</td>
+                                    <!--<td>{{ hub.spec.network_provider }}</td>-->
+                                    <td>{{ hub.spec.ports_num }}</td>
+                                    <td>{{ hub.region }}</td>
                                     <td>{{ hub.status }}</td>
                                     <td>
+                                        <!--<button type="button" class="btn btn-info" ng-click=""><i class="fa fa-fw fa-eye"></i></button>-->
                                         <button type="button" class="btn btn-danger" ng-click="hubsCtrl.delete(hub)"><i class="fa fa-fw fa-trash-o"></i></button>
                                     </td>
                                 </tr>
@@ -74,13 +79,20 @@
                     <div class="panel">
                         <div class="panel-body">
                             <form action class="form-horizontal row-border" ng-init="newHub = {}; newHub.spec = {}">
+    
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Name</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" ng-model="newHub.name" ng-init="newHub.name = 'hub'" class="form-control"/>
+                                    </div>
+                                </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Netwrok Type</label>
                                     <div class="col-sm-6">
                                         <select class="form-control" ng-model="newHub.spec.network_type" ng-init="newHub.spec.network_type = 'WiFi'">
                                             <option>WiFi</option>
-                                          <!--  <option>Mobile Carrier Network</option>-->
+                                            <option>Mobile Carrier Network</option>
                                         </select>
                                     </div>
                                 </div>
@@ -90,7 +102,7 @@
                                     <div class="col-sm-6">
                                         <select class="form-control" ng-model="newHub.spec.network_provider" ng-init="newHub.spec.network_provider = 'Comcast XFINITY'">
                                             <option ng-if="newHub.spec.network_type === 'WiFi'">Comcast XFINITY</option>
-                                          <!--  <option ng-if="newHub.spec.network_type === 'WiFi'">AT&T U-verse</option>-->
+                                            <option ng-if="newHub.spec.network_type === 'WiFi'">AT&T U-verse</option>
                                             <option ng-if="newHub.spec.network_type === 'Mobile Carrier Network'">AT&T</option>
                                             <option ng-if="newHub.spec.network_type === 'Mobile Carrier Network'">Verizon</option>
                                             <option ng-if="newHub.spec.network_type === 'Mobile Carrier Network'">T-Mobile</option>
@@ -106,6 +118,18 @@
                                             <option>5</option>
                                             <option>10</option>
                                             <option>15</option>
+                                        </select>
+                                    </div>
+                                </div>
+    
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Region</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" ng-model="newHub.region" ng-init="newHub.region = 'us-west-2'">
+                                            <option value="us-west-2">US West - Oregon</option>
+                                            <option value="us-east-1">US East - N. Virginia</option>
+                                            <option value="eu-west-1">Europe - Ireland</option>
+                                            <option value="ap-southeast-1">Asia - Singapore</option>
                                         </select>
                                     </div>
                                 </div>
