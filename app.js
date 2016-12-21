@@ -8,6 +8,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var proxy = require('express-http-proxy');
+var SSH = require('simple-ssh');
 
 const API_V1 = '/api/v1';
 const API_V2 = '/api/v2';
@@ -43,17 +44,17 @@ app.use(session({
     secret: 'mtaas',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 30 * 60 * 1000 }
+    cookie: {maxAge: 30 * 60 * 1000}
 }));
 
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
 app.use(function (req, res, next) {
-    if (req.params && Object.keys(req.params).length  > 0) {
+    if (req.params && Object.keys(req.params).length > 0) {
         console.log('Request params: ' + JSON.stringify(req.params));
     }
-    if (req.body && Object.keys(req.body).length  > 0) {
+    if (req.body && Object.keys(req.body).length > 0) {
         console.log('Request body: ' + JSON.stringify(req.body));
     }
     next();
@@ -61,8 +62,61 @@ app.use(function (req, res, next) {
 
 // API V2
 app.use(API_V2, apiRouter);
-app.use(API_V2, proxy('localhost:3000', {
-    forwardPath: function(req, res) {
+app.post(API_V2 + '/emulator', proxy(process.env.MTAAS_WORKER_URL, {
+    forwardPath: function (req, res) {
+        return req.originalUrl.replace(API_V2, API_V1) + '/' + req.body._id;
+    },
+    decorateRequest: function (proxyReq, originalReq) {
+        proxyReq.method = 'PUT';
+        return proxyReq;
+    }
+}));
+app.post(API_V2 + '/hub', proxy(process.env.MTAAS_WORKER_URL, {
+    forwardPath: function (req, res) {
+        return req.originalUrl.replace(API_V2, API_V1) + '/' + req.body._id;
+    },
+    decorateRequest: function (proxyReq, originalReq) {
+        proxyReq.method = 'PUT';
+        return proxyReq;
+    }
+}));
+app.put(API_V2 + '/device/:id/hub', proxy(process.env.MTAAS_WORKER_URL, {
+    forwardPath: function (req, res) {
+        var device = req.body;
+        var ssh = new SSH({
+            host: device.hub.uri,
+            user: 'ubuntu',
+            key: require('fs').readFileSync('/Users/Liping/.ssh/aws-sjsu.pem')
+        });
+        ssh.exec('/home/ubuntu/android-sdk-linux/platform-tools/adb connect ' + device.adb_uri, {
+            out: console.log,
+            err: console.log
+        }).start();
+        return req.originalUrl.replace(API_V2, API_V1).substr(0, req.originalUrl.length - 4);
+    }
+}));
+// TODO: attach emulator to hub
+app.post(API_V2 + '/test', function (req, res) {
+    var test = req.body;
+    var ssh = new SSH({
+        host: test.hub.uri,
+        user: 'ubuntu',
+        key: require('fs').readFileSync('/Users/Liping/.ssh/aws-sjsu.pem')
+    });
+    ssh.exec('wget -N https://raw.githubusercontent.com/LipingSun/MTaaS-Appium-Script/master/package.json && /usr/bin/npm install && wget -N https://raw.githubusercontent.com/LipingSun/MTaaS-Appium-Script/master/test.js && /home/ubuntu/appium-test/sample-code/examples/node/node_modules/mocha/bin/mocha test.js', {
+        out: function (data) {
+            console.log(data);
+            // res.send(data);
+        },
+        err: function (data) {
+            console.log(data);
+            // res.send(data);
+        }
+    }).start();
+});
+
+app.use(API_V2, proxy(process.env.MTAAS_WORKER_URL, {
+    forwardPath: function (req, res) {
         return req.originalUrl.replace(API_V2, API_V1);
     }
 }));
@@ -74,7 +128,14 @@ app.get('/register', routes.register);  // Get register page
 
 // Authentication
 //app.get(api_v1 + '/auth/token', auth.getToken);  // Get user token
-app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login'}));  // Post login info
+app.post('/login', function (req, res, next) {
+    if (req.body.email === 'admin' && req.body.password === 'nimda') {
+        res.redirect('http://mtaas-admin.s3-website-us-west-2.amazonaws.com');
+    } else {
+        next();
+    }
+});
+app.post('/login', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/login'}));  // Post login info
 app.post('/register', auth.register);  // Post register info
 app.all('/logout', auth.logout);  // Log out user session
 
@@ -120,9 +181,9 @@ app.delete(API_V1 + '/users/:id', users.deleteUser);  // Delete an user
 //// Bills
 //app.get(api_v1 + '/bills', bills.getBills);
 //app.get(api_v1 + '/bills/:bill_id', bills.getBill);
-app.get(API_V1 +'/bill_plan', bills.getBillPlan);
-app.post(API_V1 +'/change_bill_plan', bills.changeBillPlan);
-app.get(API_V1 +'/realTimeBills', bills.getRealTimeBills);
+app.get(API_V1 + '/bill_plan', bills.getBillPlan);
+app.post(API_V1 + '/change_bill_plan', bills.changeBillPlan);
+app.get(API_V1 + '/realTimeBills', bills.getRealTimeBills);
 app.get(API_V1 + '/createBills', bills.createBills);
 app.get(API_V1 + '/bills', bills.getMonthBills);
 app.get(API_V1 + '/availBillDates', bills.getAvailDateList);
