@@ -1,38 +1,39 @@
 "use strict";
 
-angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '$timeout', 'emulatorsService', 'emulatorServiceV2', 'hubsService', function ($http, $window, $timeout, emulatorsService, emulatorServiceV2, hubsService) {
+angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '$timeout', 'emulatorsService', 'emulatorServiceV2', 'hubServiceV2', function ($http, $window, $timeout, emulatorsService, emulatorServiceV2, hubServiceV2) {
 
     var ctrl = this;
 
     ctrl.emulators = [];
+    ctrl.hubs = [];
 
     ctrl.getAll = function () {
         emulatorServiceV2.get(function (data) {
-            ctrl.emulators = data.payload.filter(function (emulator) {
-                return emulator.status === 'processing' || emulator.status === 'occupied';
-            });
+            ctrl.emulators = data.payload;
+        });
+        hubServiceV2.get(function (data) {
+            ctrl.hubs = data.payload;
         });
     };
 
     ctrl.getAll();
 
     ctrl.create = function (newEmulator) {
-        delete newEmulator.spec.device;
-        var emulator = new emulatorServiceV2(newEmulator);
-        emulator.adb_uri = '';
-        emulator.vnc_uri = '';
-        emulator.status = "processing";
-        emulator.occupant = sessionStorage.user;
+        var num = newEmulator.number;
+        emulatorServiceV2.findAvailable({ limit: num, 'filter[region]': newEmulator.region }, function (availableEmulators) {
+            if (availableEmulators.total < num) {
+                $window.alert('Sorry, Currently we dot\'t have enough available emulators');
+            }
 
-        emulator.$save(function (data) {
-            ctrl.emulators.push(data.payload);
-            // $timeout(function () {
-            //     emulatorsService.get({id: emulator.id}, function (data) {
-            //         emulator.adb_uri = data.payload.adb_uri;
-            //         emulator.vnc_uri = data.payload.vnc_uri;
-            //         emulator.status = data.payload.status;
-            //     });
-            // }, 1000 * 3);
+            availableEmulators.payload.forEach(function (availableEmulator) {
+                var emulator = new emulatorServiceV2(availableEmulator);
+                emulator.status = "occupied";
+                emulator.occupant = sessionStorage.user;
+                emulator.spec = newEmulator.spec;
+                emulator.$save(function (data) {
+                    ctrl.emulators.push(data.payload);
+                });
+            });
         });
     };
 
@@ -42,6 +43,10 @@ angular.module('myApp').controller('EmulatorsController', ['$http', '$window', '
         ctrl.emulators = ctrl.emulators.filter(function (item) {
             return item !== emulator;
         });
+    };
+
+    ctrl.attachToHub = function (emulator) {
+        emulatorServiceV2.update({id: emulator._id}, emulator);
     };
 
     ctrl.view = function (emulator) {

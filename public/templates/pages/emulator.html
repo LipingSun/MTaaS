@@ -1,22 +1,22 @@
 <div class="content">
-
+    
     <div class="row">
         <div class="col-mod-12">
-
+            
             <ul class="breadcrumb">
                 <li><a href="#/">MTaaS</a></li>
                 <li class="active">Emulators</li>
             </ul>
-
-           <!-- <div class="form-group hiddn-minibar pull-right">
-                <input type="text" class="form-control form-cascade-control nav-input-search" size="20" placeholder="Search through site"/>
-
-                <span class="input-icon fui-search"></span>
-            </div>-->
-
+            
+            <!-- <div class="form-group hiddn-minibar pull-right">
+                 <input type="text" class="form-control form-cascade-control nav-input-search" size="20" placeholder="Search through site"/>
+ 
+                 <span class="input-icon fui-search"></span>
+             </div>-->
+            
             <h3 class="page-header"><i class="fa fa-mobile"></i> Emulator
                 <i class="fa fa-info-circle animated bounceInDown show-info"></i></h3>
-
+            
             <blockquote class="page-information hidden">
                 <p>
                     Emulators information.
@@ -26,14 +26,16 @@
     </div>
     <!--<link href="emulator.css" rel="stylesheet">-->
     <div class="profile-tabs">
-
+        
         <ul id="myTab" class="nav nav-tabs" ng-init="emulatorTab = 'emulators'">
-            <li ng-class="{ active: emulatorTab === 'emulators' }" ng-click="emulatorsCtrl.getAll()"><a href data-toggle="tab" ng-click="emulatorTab = 'emulators'">Emulators</a></li>
-            <li ng-class="{ active: emulatorTab === 'launch' }"><a href data-toggle="tab" ng-click="emulatorTab = 'launch'">Launch</a></li>
+            <li ng-class="{ active: emulatorTab === 'emulators' }" ng-click="emulatorsCtrl.getAll()">
+                <a href data-toggle="tab" ng-click="emulatorTab = 'emulators'">Emulators</a></li>
+            <li ng-class="{ active: emulatorTab === 'launch' }">
+                <a href data-toggle="tab" ng-click="emulatorTab = 'launch'">Launch</a></li>
         </ul>
-
+        
         <div id="myTabContent" class="tab-content">
-
+            
             <div ng-class="{ active: emulatorTab === 'emulators' }" class="tab-pane fade in" id="emulators" ng-show="emulatorTab === 'emulators'">
                 <div class="col-md-12">
                     <div class="panel ">
@@ -48,10 +50,11 @@
                                     <!--<th>CPU</th>-->
                                     <!--<th>RAM</th>-->
                                     <!--<th>Disk</th>-->
-                                    <!--<th>SSH</th>-->
-                                    <!--<th>Hub</th>-->
+                                    <th>ADB</th>
+                                    <th>Hub</th>
+                                    <th>Region</th>
                                     <th>Status</th>
-                                    <th> </th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -63,7 +66,12 @@
                                     <!--<td>{{ emulator.cpu }}</td>-->
                                     <!--<td>{{ emulator.ram }}</td>-->
                                     <!--<td>{{ emulator.disk }}</td>-->
-                                    <!--<td>{{ emulator.ip + ":" + emulator.ssh_port }}</td>-->
+                                    <td>{{ emulator.adb_uri }}</td>
+                                    <td>
+                                        <select class="form-control" ng-init="" ng-model="emulator.hub._id" ng-options="hub._id as hub.name for hub in emulatorsCtrl.hubs" ng-change="emulatorsCtrl.attachToHub(emulator)" >
+                                        </select>
+                                    </td>
+                                    <td>{{ emulator.region }}</td>
                                     <td>
                                         <div ng-show="emulator.status === 'occupied'">running</div>
                                         <div class="progress progress-striped active" ng-show="emulator.status === 'processing'">
@@ -71,7 +79,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-info" ng-disabled="emulator.status === 'processing'" ng-click="emulatorsCtrl.view(emulator)"><i class="fa fa-fw fa-eye"></i></button>
+                                        <button type="button" class="btn btn-info" ng-click="emulatorsCtrl.view(emulator)"><i class="fa fa-fw fa-eye"></i></button>
                                         <button type="button" class="btn btn-danger" ng-click="emulatorsCtrl.delete(emulator)"><i class="fa fa-fw fa-trash-o"></i></button>
                                     </td>
                                 </tr>
@@ -81,13 +89,13 @@
                     </div>
                 </div>
             </div>
-
+            
             <div ng-class="{ active: emulatorTab === 'launch' }" class="tab-pane fade in" id="launch" ng-show="emulatorTab === 'launch'">
                 <div class="col-md-12">
                     <div class="panel">
                         <div class="panel-body" ng-init="newEmulator = {}; newEmulator.spec = {}">
                             <form action class="form-horizontal row-border col-md-6" style="margin-top: 25px">
-
+                                
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">System</label>
                                     <div class="col-md-9">
@@ -97,27 +105,27 @@
                                         </select>
                                     </div>
                                 </div>
-
+                                
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Version</label>
                                     <div class="col-md-9">
                                         <select class="form-control" ng-model="newEmulator.spec.version" ng-init="newEmulator.spec.version = '2.3.3 (API10)'">
                                             <option ng-if="newEmulator.spec.system === 'Android'">2.3.3 (API10)</option>
-                                            <!--<option ng-if="system === 'Android'">4.0.0</option>-->
+                                            <!--<option ng-if="newEmulator.spec.system === 'Android'">4.4.4 (API19)</option>-->
                                             <option ng-if="newEmulator.spec.system === 'IOS'">8.1.3</option>
                                             <option ng-if="newEmulator.spec.system === 'IOS'">8.1.1</option>
                                         </select>
                                     </div>
                                 </div>
-
+                                
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Device</label>
                                     <div class="col-md-9">
                                         <select class="form-control" ng-model="newEmulator.spec.device" ng-options="device.name for device in emulatorsCtrl.devices" ng-init="newEmulator.spec.device = emulatorsCtrl.devices[0]"></select>
                                     </div>
                                 </div>
-
-                                <div class="form-group" ng-show="newEmulator.spec.Device === 'Customize'">
+                                
+                                <div class="form-group" ng-show="newEmulator.Device === 'Customize'">
                                     <label class="col-md-3 control-label">CPU</label>
                                     <div class="col-md-9">
                                         <select class="form-control" ng-model="newEmulator.spec.cpu" ng-init="newEmulator.spec.cpu = 'armeabi-v7a'">
@@ -126,8 +134,8 @@
                                         </select>
                                     </div>
                                 </div>
-
-                                <div class="form-group" ng-show="newEmulator.spec.Device === 'Customize'">
+                                
+                                <div class="form-group" ng-show="newEmulator.Device === 'Customize'">
                                     <label class="col-md-3 control-label">RAM(M)</label>
                                     <div class="col-md-9">
                                         <select class="form-control" ng-model="newEmulator.spec.ram" ng-init="newEmulator.spec.ram = '64'">
@@ -138,8 +146,8 @@
                                         </select>
                                     </div>
                                 </div>
-
-                                <div class="form-group" ng-show="newEmulator.spec.Device === 'Customize'">
+                                
+                                <div class="form-group" ng-show="newEmulator.Device === 'Customize'">
                                     <label class="col-md-3 control-label" ng-model="newEmulator.spec.disk" ng-init="newEmulator.spec.disk = '128'">Disk(M)</label>
                                     <div class="col-md-9">
                                         <select class="form-control">
@@ -150,14 +158,26 @@
                                         </select>
                                     </div>
                                 </div>
-
-                                <div class="form-group" ng-show="false">
-                                    <label class="col-md-3 control-label" ng-model="newEmulator.spec.number">Number</label>
+                                
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Region</label>
                                     <div class="col-md-9">
-                                        <input type="number" class="form-control" ng-model="newEmulator.spec.number" ng-init="newEmulator.spec.number = 1" max="5"/>
+                                        <select class="form-control" ng-model="newEmulator.region" ng-init="newEmulator.region = 'us-west-2'">
+                                            <option value="us-west-2">US West - Oregon</option>
+                                            <option value="us-east-1">US East - N. Virginia</option>
+                                            <option value="eu-west-1">Europe - Ireland</option>
+                                            <option value="ap-southeast-1">Asia - Singapore</option>
+                                        </select>
                                     </div>
                                 </div>
-
+                                
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label" ng-model="newEmulator.number">Number</label>
+                                    <div class="col-md-9">
+                                        <input type="number" class="form-control" ng-model="newEmulator.number" ng-init="newEmulator.number = 1" max="100"/>
+                                    </div>
+                                </div>
+                                
                                 <div class="row">
                                     <div class="col-md-9 col-md-offset-3">
                                         <button type="button" class="btn btn-success" ng-click="emulatorsCtrl.create(newEmulator); emulatorTab = 'emulators';">Submit</button>
@@ -165,7 +185,7 @@
                                     </div>
                                 </div>
                             </form>
-
+                            
                             <div class="col-md-6">
                                 <img src="img/temp/device.jpg" width="202" class="col-md-6">
                                 <ul class="col-md-6" style="margin-top: 25px">
@@ -179,7 +199,7 @@
                     </div>
                 </div>
             </div>
-
+        
         </div>
     </div>
 </div>

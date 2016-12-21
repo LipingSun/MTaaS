@@ -1,16 +1,19 @@
-angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$window', '$interval', 'devicesService', 'deviceServiceV2', 'hubsService', function ($scope, $http, $window, $interval, devicesService, deviceServiceV2, hubsService) {
+angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$window', '$interval', 'devicesService', 'deviceServiceV2', 'hubServiceV2', function ($scope, $http, $window, $interval, devicesService, deviceServiceV2, hubServiceV2) {
 
     var ctrl = this;
 
     ctrl.devices = [];
 
-    ctrl.hub = [];
+    ctrl.hubs = [];
 
     ctrl.availableDevices = [];
 
     ctrl.getAll = function () {
         deviceServiceV2.findAllByOccupant(function (data) {
             ctrl.devices = data.payload;
+        });
+        hubServiceV2.get(function (data) {
+            ctrl.hubs = data.payload;
         });
     };
 
@@ -69,6 +72,13 @@ angular.module('myApp').controller('DevicesController', ['$scope', '$http', '$wi
         ctrl.devices = ctrl.devices.filter(function (item) {
             return item !== device;
         });
+    };
+
+    ctrl.attachToHub = function (device) {
+        device.hub.uri = ctrl.hubs.find(function (hub) {
+            return hub._id === device.hub._id;
+        }).uri;
+        deviceServiceV2.attachToHub({id: device._id}, device);
     };
 
     ctrl.view = function (device) {

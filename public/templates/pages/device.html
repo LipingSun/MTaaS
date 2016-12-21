@@ -52,6 +52,7 @@
                                     <th>CPU</th>
                                     <th>Android Version</th>
                                     <th>ADB</th>
+                                    <th>Hub</th>
                                     <th>Status</th>
                                     <th></th>
                                 </tr>
@@ -65,6 +66,9 @@
                                     <td>{{ device.spec.cpu }}</td>
                                     <td>{{ device.spec.os_release }}</td>
                                     <td>{{ device.adb_uri }}</td>
+                                    <td>
+                                        <select class="form-control" ng-init="" ng-model="device.hub._id" ng-options="hub._id as hub.name for hub in devicesCtrl.hubs" ng-change="devicesCtrl.attachToHub(device)" ></select>
+                                    </td>
                                     <td>{{ device.status }}</td>
                                     <td>
                                         <!--<button type="button" class="btn btn-info" ng-click="devicesCtrl.view(device)">-->
