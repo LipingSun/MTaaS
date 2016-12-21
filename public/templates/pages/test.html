@@ -1,0 +1,99 @@
+<div class="content">
+
+    <div class="row">
+        <div class="col-mod-12">
+
+            <ul class="breadcrumb">
+                <li><a href="#/">MTaaS</a></li>
+                <li class="active">Test</li>
+            </ul>
+
+           <!-- <div class="form-group hiddn-minibar pull-right">
+                <input type="text" class="form-control form-cascade-control nav-input-search" size="20" placeholder="Search through site"/>
+
+                <span class="input-icon fui-search"></span>
+            </div>-->
+
+            <h3 class="page-header"><i class="fa fa-mobile"></i> Hub
+                <i class="fa fa-info-circle animated bounceInDown show-info"></i></h3>
+
+            <blockquote class="page-information hidden">
+                <p>
+                    Test information.
+                </p>
+            </blockquote>
+        </div>
+    </div>
+    <!--<link href="test.css" rel="stylesheet">-->
+    <div class="profile-tabs">
+
+        <ul id="myTab" class="nav nav-tabs" ng-init="testTab = 'tests'">
+            <!--<li ng-class="{ active: testTab === 'tests' }" ng-click="testsCtrl.getAll()"><a href data-toggle="tab" ng-click="testTab = 'tests'">Test</a></li>-->
+            <li ng-class="{ active: testTab === 'tests' }"><a href data-toggle="tab" ng-click="testTab = 'tests'">Test</a></li>
+        </ul>
+
+        <div id="myTabContent" class="tab-content">
+
+            <div ng-class="{ active: testTab === 'tests' }" class="tab-pane fade in" id="launch" ng-show="testTab === 'tests'">
+                <div class="col-md-12">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <form action class="form-horizontal row-border" ng-init="newTest = {}; newTest.spec = {}">
+    
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Name</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" ng-model="newTest.name" ng-init="newTest.name = 'test'" class="form-control"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Hub</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" ng-model="newTest.hub._id" ng-options="hub._id as hub.name for hub in testsCtrl.hubs">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">App</label>
+                                    <div class="col-sm-6">
+                                        <input type="file" class="btn btn-default"></input>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Script</label>
+                                    <div class="col-sm-6">
+                                        <textarea class="form-control" rows="10"></textarea>
+                                    </div>
+                                </div>
+    
+
+                                <div class="row">
+                                    <div class="col-sm-6 col-sm-offset-3">
+                                        <button type="button" class="btn btn-success" ng-click="testsCtrl.create(newTest); showResult = true;">Start</button>
+                                        <button type="button" class="btn btn-danger" ng-click="newTest = {}; newTest.spec = {}">Cancel</button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                        <!-- /panel body -->
+                    </div>
+                </div>
+            </div>
+            
+            <div ng-if="showResult">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">Result</label>
+                    <div class="col-sm-10">
+                        <textarea readonly class="form-control" rows="20">{{ testsCtrl.result }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

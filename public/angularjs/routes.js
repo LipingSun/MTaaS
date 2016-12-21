@@ -30,6 +30,11 @@ angular.module('myApp').config(function ($routeProvider) {
             controller: 'HubsController',
             controllerAs: 'hubsCtrl'
         })
+        .when('/test', {
+            templateUrl: 'templates/pages/test.html',
+            controller: 'TestsController',
+            controllerAs: 'testsCtrl'
+        })
         .when('/bills', {
             templateUrl: 'templates/pages/billing.html',
             controller: 'BillingController',
